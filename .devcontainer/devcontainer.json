@@ -8,7 +8,10 @@
     "remoteUser": "root",
     "customizations": {
         "vscode": {
-            "extensions": ["trufflesuite-csi.truffle-vscode"]
+            "extensions": [
+                "trufflesuite-csi.truffle-vscode",
+                "EditorConfig.EditorConfig"
+            ]
         }
     }
 }
