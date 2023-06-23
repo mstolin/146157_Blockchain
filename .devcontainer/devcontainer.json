@@ -3,7 +3,7 @@
     "build": {
         "dockerfile": "./Dockerfile"
     },
-    "forwardPorts": ["3000:3000"],
+    "forwardPorts": ["8080:8080"],
     "runArgs": ["--network=host"],
     "remoteUser": "root",
     "customizations": {
