@@ -1,0 +1,14 @@
+{
+    "name": "Node.js",
+    "build": {
+        "dockerfile": "./Dockerfile"
+    },
+    "forwardPorts": ["3000:3000"],
+    "runArgs": ["--network=host"],
+    "remoteUser": "root",
+    "customizations": {
+        "vscode": {
+            "extensions": ["trufflesuite-csi.truffle-vscode"]
+        }
+    }
+}
