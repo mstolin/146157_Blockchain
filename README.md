@@ -1,11 +1,22 @@
 # Project Name
 
+- [Introduction](#introduction)
 - [Setup](#setup)
-    - [Installation](#installation)
-    - [Deployment](#deployment)
-    - [Testing](#testing)
+- [Smart Contracts](#smart_contracts)
+- [Frontend](#frontend)
 
 This is a blockchain project. Description and name are WIP.
+
+## Introduction
+
+The idea of this project is too combine Crowdbutching, Crowdfarming, and a Supply Chain.
+
+The conceptual design looks like the following: First, a farmer creates a crowdfunding campain for an animal. After the 
+crowdfunding was successfull, this means that all eatable/usable parts of the animal have been sold, the supply chain 
+starts automatically.
+
+The supply chain contains the farmer, the butcher, and the delivery service. After the customer has received his meats, 
+all participants of the supply chain are automatically paid with the crowdfunding stake. 
 
 ## Setup
 
@@ -17,16 +28,5 @@ Additionally, the dev editor should support dev containers. When using VSCode, t
 be installed.
 
 ## Smart Contracts
-
-### Deployment
-
-To deploy locally, start a local instance of ganache by running `ganache`
-Then, simply call `truffle migrate`
-
-### Testing
-
-This box has examples for testing your smart contracts in both Javascript and Solidity.
-
-To run the tests locally, call `truffle test`
 
 ## Frontend
