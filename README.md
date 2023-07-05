@@ -20,13 +20,21 @@ all participants of the supply chain are automatically paid with the crowdfundin
 
 ## Setup
 
-This project is developed using [dev containers](https://containers.dev/). Therefore, no additional requirements,
-except a container runtime (e.g. Docker), are required.
+This project is developed using [dev containers](https://containers.dev/). Therefore, a container runtime (e.g. Docker) 
+is required. This dev container should install the required runtime to run the project.
 
 Additionally, the dev editor should support dev containers. When using VSCode, the 
 [Dev Container Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) should
 be installed.
 
+## Ganache
+
+This project requires [Ganache](https://trufflesuite.com/ganache/). Simply install the desktop application. Afterward, 
+connect you [MetaMask](https://metamask.io/) wallet with some test account. See 
+https://www.geeksforgeeks.org/how-to-set-up-ganche-with-metamask/.
+
 ## Smart Contracts
 
 ## Frontend
+
+The frontend application is a simple React app located at `./frontend`. To start, run `yarn start`.
