@@ -5,12 +5,16 @@ import { MetaMaskContextProvider } from './hooks/useMetaMask';
 
 function App() {
   return (
-    <MetaMaskContextProvider>
-      <div>
-        <Header></Header>
-        <main></main>
-      </div>
-    </MetaMaskContextProvider>
+    <div>
+      <MetaMaskContextProvider>
+        <div>
+          <div>
+            <Header />
+          </div>
+          <main></main>
+        </div>
+      </MetaMaskContextProvider>
+    </div>
   );
 }
 
