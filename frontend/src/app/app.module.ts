@@ -6,12 +6,18 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CampaignThumbnailComponent } from './components/campaign-thumbnail/campaign-thumbnail.component';
+import { HomeComponent } from './components/home/home.component';
+import { AllCampaignsComponent } from './components/all-campaigns/all-campaigns.component';
+import { NewCampaignComponent } from './components/new-campaign/new-campaign.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
-    CampaignThumbnailComponent
+    CampaignThumbnailComponent,
+    HomeComponent,
+    AllCampaignsComponent,
+    NewCampaignComponent
   ],
   imports: [
     BrowserModule,
