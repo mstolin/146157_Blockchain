@@ -8,7 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class HeaderComponent {
 
-  @Input() links!: { title: string, fragment: string }[];
+  @Input() links!: { title: string, link: string }[];
 
   constructor(public route: ActivatedRoute) {}
 
