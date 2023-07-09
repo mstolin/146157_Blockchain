@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import detectEthereumProvider from '@metamask/detect-provider';
 import { WalletService } from 'src/app/service/wallet.service';
 import Wallet from 'src/app/models/wallet';
+import { WalletActions } from 'src/app/state/wallet.actions';
 
 @Component({
   selector: 'app-header',
@@ -18,6 +19,7 @@ export class HeaderComponent {
   hasProvider = false;
 
   ngOnInit(): void {
+    console.log(this.wallet);
     this.detectProvider();
   }
 
@@ -33,7 +35,7 @@ export class HeaderComponent {
 
   connectWallet() {
     this.walletService.getAccounts().subscribe((account) => {
-
+      this.store.dispatch(WalletActions.retrievedAccount({ account }));
     });
   }
 
