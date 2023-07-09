@@ -4,5 +4,6 @@ export const WalletActions = createActionGroup({
   source: 'Wallet',
   events: {
     'Retrieved Account': props<{ account: string }>(),
+    'Set Active Account': props<{ account: string }>(),
   },
 });
