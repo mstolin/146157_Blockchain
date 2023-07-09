@@ -1,4 +1,4 @@
-export default class Wallet {
+/*export default class Wallet {
 
   private _accounts: string[] = [];
 
@@ -10,4 +10,8 @@ export default class Wallet {
     return this._accounts;
   }
 
+}*/
+
+export default interface Wallet {
+  accounts: string[];
 }
