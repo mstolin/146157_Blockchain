@@ -20,9 +20,12 @@
     "@angular/router": "^16.1.0",
     "@ng-bootstrap/ng-bootstrap": "15.1.0",
     "@popperjs/core": "^2.11.6",
+    "@web3modal/ethereum": "^2.6.2",
+    "@web3modal/html": "^2.6.2",
     "bootstrap": "^5.2.3",
     "rxjs": "7.8.1",
     "tslib": "^2.3.0",
+    "web3": "^4.0.2",
     "zone.js": "~0.13.0"
   },
   "devDependencies": {
