@@ -19,7 +19,6 @@ export class HeaderComponent {
   hasProvider = false;
 
   ngOnInit(): void {
-    console.log(this.wallet);
     this.detectProvider();
   }
 
