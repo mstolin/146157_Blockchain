@@ -2408,6 +2408,11 @@ bl@^4.1.0:
     inherits "^2.0.4"
     readable-stream "^3.4.0"
 
+blockies-base64-svg@^0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/blockies-base64-svg/-/blockies-base64-svg-0.0.10.tgz#d8b697997e7cdc93f42b86ad2516efa2a2cb1605"
+  integrity sha512-hsJuvVpEWAAHjum/lYq85gGh+fkft2PXOgjZvSrqKNoAZOO/EbYMpYynBGaYCz0mPOsn1oUwxNphZcSY6DM9ig==
+
 bn.js@^4.11.9:
   version "4.12.0"
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-4.12.0.tgz#775b3f278efbb9718eec7361f483fb36fbbfea88"

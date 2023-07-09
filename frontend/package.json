@@ -22,6 +22,7 @@
     "@ng-bootstrap/ng-bootstrap": "15.1.0",
     "@ngrx/store": "^16.1.0",
     "@popperjs/core": "^2.11.6",
+    "blockies-base64-svg": "^0.0.10",
     "bootstrap": "^5.2.3",
     "rxjs": "7.8.1",
     "tslib": "^2.3.0",
