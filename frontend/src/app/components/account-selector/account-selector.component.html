@@ -2,10 +2,16 @@
   <div class="col">
     <div ngbDropdown class="d-inline-block">
       <button type="button" class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>
-        {{ selectedAccount }}
+        <span class="badge"><img width="15" height="15" [src]="getBlockieFromAddress(activeAccount[0])"
+            alt="{{ activeAccount }}" /></span>
+        {{ activeAccount }}
       </button>
       <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-        <button ngbDropdownItem *ngFor="let account of accounts">{{ account }}</button>
+        <button ngbDropdownItem [ngClass]="{'active' : account == activeAccount}" *ngFor="let account of accounts">
+          <span class="badge"><img width="15" height="15" [src]="getBlockieFromAddress(account[0])"
+              alt="{{ account }}" /></span>
+          {{ account }}
+        </button>
       </div>
     </div>
   </div>

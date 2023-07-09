@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import makeBlockiesUrl from 'blockies-base64-svg'
 
 @Component({
   selector: 'app-account-selector',
@@ -7,7 +8,11 @@ import { Component, Input } from '@angular/core';
 })
 export class AccountSelectorComponent {
 
-  @Input() selectedAccount!: string;
+  @Input() activeAccount!: string;
   @Input() accounts!: string[];
+
+  getBlockieFromAddress(address: string): string {
+    return makeBlockiesUrl(address);
+  }
 
 }
