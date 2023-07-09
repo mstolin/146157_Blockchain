@@ -10,7 +10,7 @@
     <div class="d-flex">
       <div *ngIf="hasProvider; else providerError">
         <span *ngIf="wallet.accounts.length > 0; else connectButton" class="navbar-text">
-          {{ wallet.accounts }}
+          <app-account-selector [accounts]="wallet.accounts" [selectedAccount]="wallet.accounts[0]" />
         </span>
         <ng-template #connectButton>
           <button class="btn btn-outline-success" (click)="connectWallet()">Connect to Wallet</button>
