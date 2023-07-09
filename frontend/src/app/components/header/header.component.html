@@ -8,7 +8,17 @@
       </div>
     </div>
     <div class="d-flex">
-      <button class="btn btn-outline-success">Login with MetaMask</button>
+      <div *ngIf="hasProvider; else providerError">
+        <span *ngIf="wallet.accounts.length > 0; else connectButton" class="navbar-text">
+          {{ wallet.accounts }}
+        </span>
+        <ng-template #connectButton>
+          <button class="btn btn-outline-success" (click)="connectWallet()">Connect to Wallet</button>
+        </ng-template>
+      </div>
+      <ng-template #providerError>
+        <span>NoProvider!</span>
+      </ng-template>
     </div>
   </div>
 </nav>
