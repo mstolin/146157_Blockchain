@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { StoreModule } from '@ngrx/store';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -9,6 +10,8 @@ import { CampaignThumbnailComponent } from './components/campaign-thumbnail/camp
 import { HomeComponent } from './components/home/home.component';
 import { AllCampaignsComponent } from './components/all-campaigns/all-campaigns.component';
 import { NewCampaignComponent } from './components/new-campaign/new-campaign.component';
+
+import { walletReducer } from './state/wallet.reducer';
 
 @NgModule({
   declarations: [
@@ -22,7 +25,8 @@ import { NewCampaignComponent } from './components/new-campaign/new-campaign.com
   imports: [
     BrowserModule,
     AppRoutingModule,
-    NgbModule
+    NgbModule,
+    StoreModule.forRoot({ wallet: walletReducer }),
   ],
   providers: [],
   bootstrap: [AppComponent]

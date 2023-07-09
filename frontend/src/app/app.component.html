@@ -1,4 +1,4 @@
-<app-header [links]="links" />
+<app-header [links]="links" [wallet]="(wallet$ | async)!" />
 <main>
   <div class="container">
     <router-outlet></router-outlet>
