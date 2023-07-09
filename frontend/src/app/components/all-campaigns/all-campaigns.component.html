@@ -1,1 +1,3 @@
-<p>all-campaigns works!</p>
+<div *ngFor="let campaign of campaigns" class="row">
+  <app-campaign-thumbnail [title]="campaign.title" [description]="campaign.description" />
+</div>
