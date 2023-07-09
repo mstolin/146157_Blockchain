@@ -1,6 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import detectEthereumProvider from '@metamask/detect-provider'
+import { Store } from '@ngrx/store';
+import detectEthereumProvider from '@metamask/detect-provider';
+import { WalletService } from 'src/app/service/wallet.service';
+import Wallet from 'src/app/models/wallet';
 
 @Component({
   selector: 'app-header',
@@ -10,17 +13,15 @@ import detectEthereumProvider from '@metamask/detect-provider'
 export class HeaderComponent {
 
   @Input() links!: { title: string, link: string }[];
+  @Input() wallet!: Wallet;
 
   hasProvider = false;
-
-  // TODO move to store
-  wallet: { accounts: [] } = { 'accounts': [] };
 
   ngOnInit(): void {
     this.detectProvider();
   }
 
-  constructor(public route: ActivatedRoute) {}
+  constructor(public route: ActivatedRoute, private walletService: WalletService, private store: Store) {}
 
   private detectProvider() {
     detectEthereumProvider({ silent: true }).then(provider => {
@@ -30,16 +31,10 @@ export class HeaderComponent {
     });
   }
 
-  async connectWallet() {
-    let accounts = await window.ethereum.request({
-      method: "eth_requestAccounts",
-    });
-    this.wallet.accounts = accounts;
+  connectWallet() {
+    this.walletService.getAccounts().subscribe((account) => {
 
-    /*
-    TODO now set store accounts to accounts
-    this way we now if login was successful
-    */
+    });
   }
 
 }
