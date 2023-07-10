@@ -1,1 +1,22 @@
-<p>new-campaign works!</p>
+<div>
+  <form>
+    <div class="mb-3">
+      <label for="campaignTitle" class="form-label">Title</label>
+      <input type="text" class="form-control" id="campaignTitle" />
+    </div>
+    <div class="mb-3">
+      <label for="campaignDescription" class="form-label">Description</label>
+      <textarea class="form-control" id="campaignDescription" rows="3"></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="campaignOwner" class="form-label">Owner</label>
+      <input *ngIf="activeAccount; else accountError" type="text" class="form-control" id="campaignOwner" [value]="activeAccount" disabled />
+      <ng-template #accountError>
+        <div class="alert alert-light" role="alert">
+          Please connect to your wallet first.
+        </div>
+      </ng-template>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+  </form>
+</div>
