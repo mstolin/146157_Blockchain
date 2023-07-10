@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -28,6 +29,7 @@ import { AccountSelectorComponent } from './components/account-selector/account-
     BrowserModule,
     AppRoutingModule,
     NgbModule,
+    FormsModule,
     StoreModule.forRoot({ wallet: walletReducer }),
   ],
   providers: [],
