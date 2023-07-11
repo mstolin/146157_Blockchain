@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EMPTY, Observable, from } from 'rxjs';
+import Web3 from 'web3';
 
 @Injectable({
   providedIn: 'root'
@@ -8,14 +8,23 @@ export class WalletService {
 
   constructor() { }
 
-  getAccounts(): Observable<string> {
-    const accounts: string[] = window.ethereum.request({
-      method: "eth_requestAccounts",
-    }).catch(() => {
-      return EMPTY;
+  getAccounts(): Promise<string[]> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { ethereum } = window;
+        if (ethereum) {
+          let accounts: string[] = await ethereum.request({
+            method: "eth_requestAccounts",
+          });
+          accounts = accounts.map(account => Web3.utils.toChecksumAddress(account));
+          resolve(accounts);
+        } else {
+          reject();
+        }
+      } catch (err) {
+        reject(err);
+      }
     });
-
-    return from(accounts);
   }
 
 }
