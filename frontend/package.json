@@ -24,9 +24,10 @@
     "@popperjs/core": "^2.11.6",
     "blockies-base64-svg": "^0.0.10",
     "bootstrap": "^5.2.3",
-    "ethers": "^6.6.2",
+    "process": "^0.11.10",
     "rxjs": "7.8.1",
     "tslib": "^2.3.0",
+    "web3": "^4.0.2",
     "zone.js": "~0.13.0"
   },
   "devDependencies": {
