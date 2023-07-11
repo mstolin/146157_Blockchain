@@ -7,8 +7,11 @@ export const initialState: Wallet = { accounts: [], activeAccount: null };
 
 export const walletReducer = createReducer(
   initialState,
+  on(WalletActions.retrievedAccounts, (_wallet, { accounts }) => {
+    return { accounts , activeAccount: _wallet.activeAccount };
+  }),
   on(WalletActions.retrievedAccount, (_wallet, { account }) => {
-    let accounts = [..._wallet.accounts, account];
+    const accounts = [..._wallet.accounts, account];
     return { accounts , activeAccount: _wallet.activeAccount };
   }),
   on(WalletActions.setActiveAccount, (_wallet, { account }) => {
