@@ -1,8 +1,8 @@
-const ConvertLib = artifacts.require("ConvertLib");
-const MetaCoin = artifacts.require("MetaCoin");
+const Crowdfunding = artifacts.require("Crowdfunding");
 
 module.exports = function(deployer) {
-  deployer.deploy(ConvertLib);
+  deployer.deploy(Crowdfunding);
+  /*deployer.deploy(ConvertLib);
   deployer.link(ConvertLib, MetaCoin);
-  deployer.deploy(MetaCoin);
+  deployer.deploy(MetaCoin);*/
 };

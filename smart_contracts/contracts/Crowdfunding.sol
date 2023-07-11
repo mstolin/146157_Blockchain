@@ -23,8 +23,10 @@ contract Crowdfunding {
     struct BoxOffer {
         /// The box to sell
         Box box;
-        /// Number of available boxes of this kind
+        /// Number of available boxes
         uint256 available;
+        /// Total number of boxes
+        uint256 total;
     }
 
     struct Campaign {
@@ -40,14 +42,14 @@ contract Crowdfunding {
         uint8 progress;
         /// The deadline of this campaign
         uint256 deadline;
-        /// Available boxes
-        BoxOffer[] availableBoxes;
-        /// All sold boxes
-        BoxSell[] soldBoxes;
     }
 
-    // This allows to access campaigns like campaigns[0]
+    // all campaigns
     mapping(uint256 => Campaign) public campaigns;
+    // available boxes for specific campaigns
+    mapping(uint256 => BoxOffer[]) public availableBoxes;
+    // sold boxes for specific campaign
+    mapping(uint256 => BoxSell[]) public soldBoxes;
 
     uint256 public numberOfCampaigns = 0;
 
@@ -62,6 +64,7 @@ contract Crowdfunding {
         BoxOffer[] memory _boxes
     ) public returns (uint256) {
         Campaign storage campaign = campaigns[numberOfCampaigns];
+        BoxOffer[] storage _availableBoxes = availableBoxes[numberOfCampaigns];
 
         // deadline can't be in the past
         require(
@@ -96,8 +99,12 @@ contract Crowdfunding {
         campaign.collectedAmount = 0;
         campaign.progress = 0;
         campaign.deadline = _deadline;
-        campaign.availableBoxes = _boxes;
-        campaign.soldBoxes = new BoxSell[](_boxes.length);
+
+        // add boxes
+        for (uint256 index = 0; index < _boxes.length; index++) {
+            BoxOffer memory offer = _boxes[index];
+            _availableBoxes.push(offer);
+        }
 
         // increase total num of campaigns
         numberOfCampaigns++;
@@ -115,7 +122,7 @@ contract Crowdfunding {
         // get desired campaign and box
         Campaign storage campaign = campaigns[_campaignId];
         require(campaign.deadline <= block.timestamp, "This campaign is over");
-        BoxOffer storage boxOffer = campaign.availableBoxes[_boxId];
+        BoxOffer storage boxOffer = availableBoxes[_campaignId][_boxId];
         require(boxOffer.available > 0, "All boxes of this type have been sold");
         Box memory box = boxOffer.box;
         require(box.price <= amount, "Given amount is below box price");
@@ -127,8 +134,9 @@ contract Crowdfunding {
         // Add total collected amount
         campaign.collectedAmount+=amount;
         // Add buyer
+        BoxSell[] storage _soldBoxes = soldBoxes[_campaignId];
         BoxSell memory boxSell = BoxSell({buyer: msg.sender, box: box});
-        campaign.soldBoxes.push(boxSell);
+        _soldBoxes.push(boxSell);
 
         // TODO Check if percentage is 100%, if yes -> start chain
     }
@@ -136,8 +144,8 @@ contract Crowdfunding {
     /**
      * Returns a specific campaign
      */
-    function getCampaign(uint256 _id) public view returns (Campaign memory) {
-        Campaign storage campaign = campaigns[_id];
+    function getCampaign(uint256 _campaignId) public view returns (Campaign memory) {
+        Campaign storage campaign = campaigns[_campaignId];
         return campaign;
     }
 
@@ -154,5 +162,13 @@ contract Crowdfunding {
 
         return allCampaigns;
     }
-    
+
+    /**
+     * Returns all available boxes for a specific campaign
+     */
+    function getAvailableBoxes(uint256 _campaignId) public view returns (BoxOffer[] memory) {
+        BoxOffer[] storage boxOffer = availableBoxes[_campaignId];
+        return boxOffer;
+    }
+
 }
