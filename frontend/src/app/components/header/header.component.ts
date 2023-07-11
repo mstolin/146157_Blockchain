@@ -33,8 +33,8 @@ export class HeaderComponent {
   }
 
   connectWallet() {
-    this.walletService.getAccounts().subscribe((account) => {
-      this.store.dispatch(WalletActions.retrievedAccount({ account }));
+    this.walletService.getAccounts().then(accounts => {
+      this.store.dispatch(WalletActions.retrievedAccounts({ accounts }));
     });
   }
 
