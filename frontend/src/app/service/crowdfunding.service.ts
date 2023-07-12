@@ -1,12 +1,13 @@
 // @ts-nocheck
 
 import { Injectable } from '@angular/core';
-import { Web3 } from 'web3';
+import { ContractAbi, Web3 } from 'web3';
 
 import Campaign from '../models/campaign';
 import Crowdfunding from '../../assets/abi/Crowdfunding.json';
 import BoxOffer from '../models/boxOffer';
 import Box from '../models/box';
+import ContractService from './contract.service';
 
 type CampaignRes = {
   title: string;
@@ -20,13 +21,13 @@ type CampaignRes = {
 @Injectable({
   providedIn: 'root'
 })
-export class CrowdfundingService {
+export class CrowdfundingService extends ContractService {
 
-  private web3?: Web3;
+  /*private web3?: Web3;
   private selectedAddress?: string;
-  private contract?: Web3EthInterface.Contract;
+  private contract?: Web3EthInterface.Contract;*/
 
-  constructor() {
+  /*constructor() {
     const { ethereum } = window as any;
     if (ethereum) {
       this.web3 = new Web3(ethereum);
@@ -36,6 +37,19 @@ export class CrowdfundingService {
         '0xb9d1f4d6878d22aa50c1da31f40b8c3a88b31b5e',
       );
     }
+  }*/
+
+  private readonly _contractAddress: string = '0xb9d1f4d6878d22aa50c1da31f40b8c3a88b31b5e';
+
+  constructor() {
+    super();
+  }
+
+  override getContract(): Contract<ContractAbi> | undefined {
+    return new this.web3.eth.Contract(
+      Crowdfunding.abi,
+      this._contractAddress,
+    );
   }
 
   async createCampaign(campaign: Campaign): Promise<boolean> {
@@ -67,9 +81,10 @@ export class CrowdfundingService {
 
   async getCampaigns(): Promise<any[]> {
     return new Promise(async (resolve, reject) => {
-      if (this.contract) {
+      const contract = this.getContract();
+      if (contract) {
         try {
-          let campaigns: CampaignRes[] = await this.contract
+          let campaigns: CampaignRes[] = await contract
             .methods
             .getCampaigns()
             .call();
