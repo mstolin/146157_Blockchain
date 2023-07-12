@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 import { Injectable } from '@angular/core';
-import { ContractAbi, Web3 } from 'web3';
+import { ContractAbi } from 'web3';
 
 import Campaign from '../models/campaign';
 import Crowdfunding from '../../assets/abi/Crowdfunding.json';
@@ -13,7 +13,7 @@ type CampaignRes = {
   title: string;
   description: string;
   owner: string;
-  progress: bigint;
+  progress: number;
   deadline: bigint;
   collectedAmount: bigint;
 };
@@ -23,22 +23,6 @@ type CampaignRes = {
 })
 export class CrowdfundingService extends ContractService {
 
-  /*private web3?: Web3;
-  private selectedAddress?: string;
-  private contract?: Web3EthInterface.Contract;*/
-
-  /*constructor() {
-    const { ethereum } = window as any;
-    if (ethereum) {
-      this.web3 = new Web3(ethereum);
-      this.selectedAddress = Web3.utils.toChecksumAddress(ethereum.selectedAddress);
-      this.contract = new this.web3.eth.Contract(
-        Crowdfunding.abi,
-        '0xb9d1f4d6878d22aa50c1da31f40b8c3a88b31b5e',
-      );
-    }
-  }*/
-
   private readonly _contractAddress: string = '0xb9d1f4d6878d22aa50c1da31f40b8c3a88b31b5e';
 
   constructor() {
@@ -46,40 +30,40 @@ export class CrowdfundingService extends ContractService {
   }
 
   override getContract(): Contract<ContractAbi> | undefined {
-    return new this.web3.eth.Contract(
-      Crowdfunding.abi,
-      this._contractAddress,
-    );
+    if (this.web3) {
+      return new this.web3.eth.Contract(
+        Crowdfunding.abi,
+        this._contractAddress,
+      );
+    } else {
+      return undefined;
+    }
   }
 
   async createCampaign(campaign: Campaign): Promise<boolean> {
-    const { ethereum } = window as any;
-    const web3 = new Web3(ethereum);
-    const selectedAddress = Web3.utils.toChecksumAddress(ethereum.selectedAddress);
+    return new Promise(async (resolve, reject) => {
+      const contract = this.getContract();
+      if (contract) {
+        try {
+          const boxes = [
+            new BoxOffer(new Box('Super box', 'very nice', 100, 2), 1, 1),
+          ];
 
-    /*
-    TODO PROBIER MAL OB WEB3 mit ethereum provider klappt
-    */
+          await contract
+            .methods.createCampaign(campaign.owner, campaign.title, campaign.description, 1000000000, boxes)
+            .send({ 'from': this.selectedAddress });
 
-
-    web3.eth.defaultAccount = selectedAddress;
-    //const contract = new web3.eth.Contract(Crowdfunding.abi);
-
-    const contract = new web3.eth.Contract(
-      Crowdfunding.abi,
-      '0xb9d1f4d6878d22aa50c1da31f40b8c3a88b31b5e',
-    );
-
-    const boxes = [
-      new BoxOffer(new Box('Super box', 'very nice', 100, 2), 1, 1),
-    ];
-
-    await contract
-      .methods.createCampaign(campaign.owner, campaign.title, campaign.description, 1000000000, boxes)
-      .send({ 'from': selectedAddress });
+          resolve(true);
+        } catch(err) {
+          reject(false);
+        }
+      } else {
+        reject(false);
+      }
+    });
   }
 
-  async getCampaigns(): Promise<any[]> {
+  async getCampaigns(): Promise<Campaign[]> {
     return new Promise(async (resolve, reject) => {
       const contract = this.getContract();
       if (contract) {
@@ -88,10 +72,19 @@ export class CrowdfundingService extends ContractService {
             .methods
             .getCampaigns()
             .call();
-          campaigns = campaigns.map(campaign => new Date(Number(campaign.deadline) * 1000));
+          campaigns = campaigns.map(campaign => {
+            const deadline = new Date(Number(campaign.deadline) * 1000);
+            return new Campaign(
+              campaign.title,
+              campaign.description,
+              campaign.owner,
+              campaign.progress,
+              deadline,
+              campaign.collectedAmount);
+            });
 
           resolve(campaigns);
-        } catch(err) {
+        } catch (err) {
           reject(err);
         }
       } else {
