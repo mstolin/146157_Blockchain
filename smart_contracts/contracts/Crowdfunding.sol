@@ -7,15 +7,17 @@ contract Crowdfunding {
         string title;
         /// Description of a box
         string description;
-        /// The price of this box in eth
+        /// The price of this box in wei
         uint16 price;
     }
 
     struct BoxOffer {
         /// The box to sell
         Box box;
+        /// Total number of boxes
+        uint32 total;
         /// Number of available boxes
-        uint8 available;
+        uint32 available;
     }
 
     struct Campaign {
@@ -29,6 +31,8 @@ contract Crowdfunding {
         uint256 collectedAmount;
         /// The deadline of this campaign
         uint256 deadline;
+        /// Number of left boxes
+        uint256 boxesLeft;
         /// Is it already stopped
         bool isStopped;
     }
@@ -50,21 +54,6 @@ contract Crowdfunding {
     mapping(address => mapping(uint => Box[])) public soldBoxesAddress;
 
     uint256 public numberOfCampaigns = 0;
-
-    /**
-     * Determines of a campaign has been sold out
-     */
-    function isCampaignSoldOut(uint256 _campaignId) private view returns (bool) {
-      BoxOffer[] storage offers = boxOffers[_campaignId];
-      uint256 availableBoxes = 0;
-
-      for (uint256 index = 0; index < offers.length; index++) {
-        BoxOffer memory offer = offers[index];
-        availableBoxes += offer.available;
-      }
-
-      return availableBoxes == 0;
-    }
 
     /**
      * Adds a buyer
@@ -100,10 +89,12 @@ contract Crowdfunding {
         );
 
         // validate boxes
-        require(_boxes.length > 0, "At least one box is required");
+        uint256 numberOfBoxes = 0;
         for (uint256 index = 0; index < _boxes.length; index++) {
             BoxOffer memory offer = _boxes[index];
-            require(offer.available > 0, "There must be at least one box to sell");
+            require(offer.total > 0, "There must be at least one box to sell");
+            require(offer.total == offer.available, "Initially total number of boxes and available must be equal");
+            numberOfBoxes += offer.total;
 
             Box memory box = offer.box;
             // A box requires a price
@@ -113,6 +104,8 @@ contract Crowdfunding {
             );
         }
 
+        require(numberOfBoxes > 0, "At least one box is required");
+
         // Create campaign
         Campaign storage campaign = campaigns[numberOfCampaigns];
         campaign.owner = _owner;
@@ -121,6 +114,7 @@ contract Crowdfunding {
         campaign.collectedAmount = 0;
         campaign.deadline = deadline;
         campaign.isStopped = false;
+        campaign.boxesLeft = numberOfBoxes;
 
         // add boxes
         BoxOffer[] storage _offers = boxOffers[numberOfCampaigns];
@@ -181,12 +175,12 @@ contract Crowdfunding {
         addBuyer(_campaignId, msg.sender, box);
 
         // Reduce available boxes by one
-        boxOffer.available = boxOffer.available - 1;
+        boxOffer.available-=1;
+        campaign.boxesLeft-=1;
         // Add to total collected amount
         campaign.collectedAmount+=amount;
 
-        bool isSoldOut = isCampaignSoldOut(_campaignId);
-        if (isSoldOut) {
+        if (campaign.boxesLeft == 0) {
           // Mark campaign as stopped
           campaign.isStopped = true;
           // TODO Start Supply Chain
