@@ -1,13 +1,12 @@
 // @ts-nocheck
 
 import { Injectable } from '@angular/core';
-import Web3, { ContractAbi } from 'web3';
+import { ContractAbi } from 'web3';
 
 import Campaign from '../models/campaign';
 import Crowdfunding from '../../assets/abi/Crowdfunding.json';
 import BoxOffer from '../models/boxOffer';
 import ContractService from './contract.service';
-import CampaignRef from '../models/campaignRef';
 
 type CampaignResp = {
   title: string;
@@ -17,6 +16,10 @@ type CampaignResp = {
   collectedAmount: string;
   boxesLeft: string;
   isStopped: string;
+};
+type CampaignRefResp = {
+  id: number;
+  campaign: CampaignResp;
 };
 type CreateCampaignReq = {
   owner: string,
@@ -81,13 +84,15 @@ export class CrowdfundingService extends ContractService {
       const contract = this.getContract();
       if (contract) {
         try {
-          let campaigns: CampaignResp[] = await contract
+          let campaigns: CampaignRefResp[] = await contract
             .methods
             .getCampaigns()
             .call();
-          campaigns = campaigns.map(res => res.campaign).map(campaign => {
+          campaigns = campaigns.map(ref => {
+            const campaign = ref.campaign;
             const deadline = new Date(Number(campaign.deadline) * 1000);
             return new Campaign(
+              ref.id,
               campaign.title,
               campaign.description,
               campaign.owner,
@@ -112,23 +117,24 @@ export class CrowdfundingService extends ContractService {
       const contract = this.getContract();
       if (contract) {
         try {
-          let campaign: CampaignResp = await contract
+          let ref: CampaignRefResp = await contract
             .methods
             .getCampaign(campaignId)
             .call();
 
           const deadline = new Date(Number(campaign.deadline) * 1000);
-          campaign = Campaign(
+          const campaign = ref.campaign;
+
+          resolve(new Campaign(
+            ref.id,
             campaign.title,
             campaign.description,
             campaign.owner,
             deadline,
-            BigInt(campaign.collectedAmount),
-            BigInt(campaign.boxesLeft),
+            Number(campaign.collectedAmount),
+            Number(campaign.boxesLeft),
             campaign.isStopped
-          );
-
-          resolve(campaign);
+          ));
         } catch (err) {
           reject(err);
         }
