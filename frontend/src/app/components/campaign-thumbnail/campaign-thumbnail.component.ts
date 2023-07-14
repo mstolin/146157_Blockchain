@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import Campaign from 'src/app/models/campaign';
 
 @Component({
   selector: 'app-campaign-thumbnail',
@@ -7,7 +8,6 @@ import { Component, Input } from '@angular/core';
 })
 export class CampaignThumbnailComponent {
 
-  @Input() title!: string;
-  @Input() description!: string;
+  @Input() campaign!: Campaign;
 
 }
