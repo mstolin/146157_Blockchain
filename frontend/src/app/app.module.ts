@@ -14,6 +14,7 @@ import { NewCampaignComponent } from './components/new-campaign/new-campaign.com
 
 import { walletReducer } from './state/wallet.reducer';
 import { AccountSelectorComponent } from './components/account-selector/account-selector.component';
+import { CampaignDetailComponent } from './components/campaign-detail/campaign-detail.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { AccountSelectorComponent } from './components/account-selector/account-
     HomeComponent,
     AllCampaignsComponent,
     NewCampaignComponent,
-    AccountSelectorComponent
+    AccountSelectorComponent,
+    CampaignDetailComponent
   ],
   imports: [
     BrowserModule,
