@@ -122,8 +122,8 @@ export class CrowdfundingService extends ContractService {
             .getCampaign(campaignId)
             .call();
 
-          const deadline = new Date(Number(campaign.deadline) * 1000);
           const campaign = ref.campaign;
+          const deadline = new Date(Number(campaign.deadline) * 1000);
 
           resolve(new Campaign(
             ref.id,
