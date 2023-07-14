@@ -1,13 +1,11 @@
 export default class Box {
   private _title: string;
   private _description: string;
-  private _percentage: number;
   private _price: number;
 
-  constructor(title: string, description: string, percentage: number, price: number) {
+  constructor(title: string, description: string, price: number) {
     this._title = title;
     this._description = description;
-    this._percentage = percentage;
     this._price = price;
   }
 
@@ -17,10 +15,6 @@ export default class Box {
 
   get description() {
     return this._description;
-  }
-
-  get percentage() {
-    return this._percentage;
   }
 
   get price() {
