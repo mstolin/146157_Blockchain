@@ -1,6 +1,6 @@
 #!/bin/bash
 
 port="${1:-8545}"
-mnemonic="deny vault maximum sort call drama barrel tongue upon equal tennis equip"
+mnemonic="view spoon hybrid small bridge quit any token either tuition net witness"
 
 ganache -p "${port}" -m "${mnemonic}" --db $(pwd)/debug/
