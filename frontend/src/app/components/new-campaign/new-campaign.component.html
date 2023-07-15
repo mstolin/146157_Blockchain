@@ -1,0 +1,22 @@
+<div>
+  <form #campaignForm="ngForm" (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label for="campaignTitle" class="form-label">Title</label>
+      <input [(ngModel)]="title" name="title" type="text" class="form-control" id="campaignTitle" required />
+    </div>
+    <div class="mb-3">
+      <label for="campaignDescription" class="form-label">Description</label>
+      <textarea [(ngModel)]="description" name="description" class="form-control" id="campaignDescription" rows="3" required></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="campaignOwner" class="form-label">Owner</label>
+      <input [(ngModel)]="owner" name="owner" type="text" class="form-control" id="campaignOwner" *ngIf="owner; else accountError" disabled required />
+      <ng-template #accountError>
+        <div class="alert alert-light" role="alert">
+          Please connect to your wallet first.
+        </div>
+      </ng-template>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+  </form>
+</div>

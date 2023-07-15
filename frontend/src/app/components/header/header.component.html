@@ -1,0 +1,24 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <div class="collapse navbar-collapse">
+      <div ngbNav [activeId]="route.fragment | async" class="navbar-nav">
+        <a ngbNavLink [ngbNavItem]="link.link" *ngFor="let link of links" [routerLink]="link.link">{{ link.title
+          }}</a>
+      </div>
+    </div>
+    <div class="d-flex">
+      <div *ngIf="hasProvider; else providerError">
+        <span *ngIf="wallet.activeAccount && wallet.accounts.length > 0; else connectButton" class="navbar-text">
+          <app-account-selector [accounts]="wallet.accounts" [activeAccount]="wallet.activeAccount" />
+        </span>
+        <ng-template #connectButton>
+          <button class="btn btn-outline-success" (click)="connectWallet()">Connect to Wallet</button>
+        </ng-template>
+      </div>
+      <ng-template #providerError>
+        <span>NoProvider!</span>
+      </ng-template>
+    </div>
+  </div>
+</nav>
