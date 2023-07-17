@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { BoxOfferReq } from 'src/app/models/requestModels';
 
 @Component({
   selector: 'app-box-input',
@@ -6,5 +7,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./box-input.component.css']
 })
 export class BoxInputComponent {
+
+  @Input() boxIndex!: number;
+  @Input() boxOffer!: BoxOfferReq;
 
 }
