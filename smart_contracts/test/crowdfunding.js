@@ -1,5 +1,9 @@
 const Crowdfunding = artifacts.require('Crowdfunding');
 
+const farmerAddr = '0x4B2B359aa58431E975Bd93C223190228f0705bFF';
+const butcherAddr = '0x319562f93692a4cb1DA6D37c041dA04D1d5a2Cd0';
+const deliveryAddr = '0x14a560B6aAc843227A426B49555cbb70D47eb9F5';
+
 function generateBoxes(numberOfBoxes, boxesTotal) {
   let boxes = [];
   for (let index = 0; index < numberOfBoxes; index++) {
@@ -24,7 +28,19 @@ function generateCampaigns(numberOfCampaigns, numberOfBoxes, boxesTotal) {
       'title': `Campaign #${index + 1}`,
       'description': `Campaign #${index + 1} is a very nice one`,
       'duration': '3628800',
-      'boxes': generateBoxes(numberOfBoxes, boxesTotal)
+      'boxes': generateBoxes(numberOfBoxes, boxesTotal),
+      'farmer': {
+        'owner': farmerAddr,
+        'share': '40'
+      },
+      'butcher': {
+        'owner': butcherAddr,
+        'share': '30'
+      },
+      'delivery': {
+        'owner': deliveryAddr,
+        'share': '30'
+      }
     };
     campaigns[index] = campaign;
   }
@@ -39,6 +55,9 @@ contract('Crowdfunding', (accounts) => {
         campaign.title,
         campaign.description,
         campaign.duration,
+        campaign.farmer,
+        campaign.butcher,
+        campaign.delivery,
         campaign.boxes,
         { 'from': from }
       );
@@ -61,6 +80,12 @@ contract('Crowdfunding', (accounts) => {
     assert.equal(campaignRes.campaign.description, campaign.description);
     assert.equal(campaignRes.campaign.collectedAmount, '0');
     assert.equal(campaignRes.campaign.boxesLeft, '12')
+    assert.equal(campaignRes.campaign.farmer.owner, farmerAddr);
+    assert.equal(campaignRes.campaign.farmer.share, '40');
+    assert.equal(campaignRes.campaign.butcher.owner, butcherAddr);
+    assert.equal(campaignRes.campaign.butcher.share, '30');
+    assert.equal(campaignRes.campaign.delivery.owner, deliveryAddr);
+    assert.equal(campaignRes.campaign.delivery.share, '30');
     assert.isAbove(Number(campaignRes.campaign.deadline), (new Date()).getTime() / 1000);
     assert.isFalse(campaignRes.campaign.isStopped);
 
