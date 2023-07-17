@@ -1,24 +1,14 @@
 export default class Box {
-  private _title: string;
-  private _description: string;
-  private _price: number;
+  title: string;
+  description: string;
+  price: number;
+  total: number;
 
-  constructor(title: string, description: string, price: number) {
-    this._title = title;
-    this._description = description;
-    this._price = price;
-  }
-
-  get title() {
-    return this._title;
-  }
-
-  get description() {
-    return this._description;
-  }
-
-  get price() {
-    return this._price;
+  constructor(title: string, description: string, price: number, total: number) {
+    this.title = title;
+    this.description = description;
+    this.price = price;
+    this.total = total;
   }
 
 }
