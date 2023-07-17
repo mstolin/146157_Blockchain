@@ -15,7 +15,7 @@ import ContractService from './contract.service';
 })
 export class CrowdfundingService extends ContractService {
 
-  private readonly _contractAddress: string = '0x5Ecc3617a452fa0341C374085b963CAA39c9f699';
+  private readonly _contractAddress: string = '0x5e3163C42DF556Be7E2A0fb555f686fCccdE0aa8';
 
   constructor() {
     super();
