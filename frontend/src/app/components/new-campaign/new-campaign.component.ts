@@ -20,9 +20,9 @@ export class NewCampaignComponent {
   owner?: string;
   duration?: number;
 
-  farmer: StakeholderReq = { address: '', share: 40 };
-  butcher: StakeholderReq = { address: '', share: 30 };
-  delivery: StakeholderReq = { address: '', share: 30 };
+  farmer: StakeholderReq = { owner: '', share: 40 };
+  butcher: StakeholderReq = { owner: '', share: 30 };
+  delivery: StakeholderReq = { owner: '', share: 30 };
 
   firstBox: BoxOfferReq = { total: 10, available: 10, box: { title: 'Box #1', description: 'Nice Box #1', price: 20 } };
   secondBox: BoxOfferReq = { total: 10, available: 10, box: { title: 'Box #2', description: 'Nice Box #1', price: 20 } };
@@ -56,11 +56,11 @@ export class NewCampaignComponent {
       console.log('CAMPAIGN', campaign);
       console.log('BOXES', boxes);
 
-      /*this.crowdfundingService.createCampaign(campaign, boxes).then(() => {
+      this.crowdfundingService.createCampaign(campaign, boxes).then(() => {
         console.log("OKIDOKI");
       }).catch(error => {
         console.log("ERR:" + error);
-      });*/
+      });
     } else {
       console.log("SOMETHING MISSING");
     }
