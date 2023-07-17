@@ -20,6 +20,13 @@ contract Crowdfunding {
         uint32 available;
     }
 
+    struct Stakeholder {
+      /// Address of the stakeholder
+      address owner;
+      /// Share in %
+      uint8 share;
+    }
+
     struct Campaign {
         /// Owner of this campaign
         address owner;
@@ -35,6 +42,12 @@ contract Crowdfunding {
         uint256 boxesLeft;
         /// Is it already stopped
         bool isStopped;
+        /// Responsible farmer
+        Stakeholder farmer;
+        /// Resonsible butcher
+        Stakeholder butcher;
+        /// Responsible delivery service
+        Stakeholder delivery;
     }
 
     struct CampaignRef {
@@ -73,6 +86,9 @@ contract Crowdfunding {
         string memory _title,
         string memory _description,
         uint32 _duration,
+        Stakeholder memory _farmer,
+        Stakeholder memory _butcher,
+        Stakeholder memory _delivery,
         BoxOffer[] memory _boxes
     ) public returns (uint256) {
         // check crowdfunding duration
@@ -115,6 +131,9 @@ contract Crowdfunding {
         campaign.deadline = deadline;
         campaign.isStopped = false;
         campaign.boxesLeft = numberOfBoxes;
+        campaign.farmer = _farmer;
+        campaign.butcher = _butcher;
+        campaign.delivery = _delivery;
 
         // add boxes
         BoxOffer[] storage _offers = boxOffers[numberOfCampaigns];
