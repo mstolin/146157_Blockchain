@@ -6,37 +6,9 @@ import { ContractAbi } from 'web3';
 import Campaign from '../models/campaign';
 import Crowdfunding from '../../assets/abi/Crowdfunding.json';
 import BoxOffer from '../models/boxOffer';
+import { CreateCampaignReq, BoxOfferReq } from '../models/requestModels';
+import { CampaignRefResp } from '../models/responseModels';
 import ContractService from './contract.service';
-
-type CampaignResp = {
-  title: string;
-  description: string;
-  owner: string;
-  deadline: string;
-  collectedAmount: string;
-  boxesLeft: string;
-  isStopped: string;
-};
-type CampaignRefResp = {
-  id: number;
-  campaign: CampaignResp;
-};
-type CreateCampaignReq = {
-  owner: string,
-  title: string;
-  description: string;
-  duration: number;
-}
-type BoxReq = {
-  title: string;
-  description: string;
-  price: number;
-};
-type BoxOfferReq = {
-  total: number;
-  available: number;
-  box: BoxReq
-};
 
 @Injectable({
   providedIn: 'root'
@@ -66,11 +38,20 @@ export class CrowdfundingService extends ContractService {
       if (contract) {
         try {
           await contract
-            .methods.createCampaign(campaign.owner, campaign.title, campaign.description, Number(campaign.duration), boxes)
+            .methods.createCampaign(
+              campaign.owner,
+              campaign.title,
+              campaign.description,
+              Number(campaign.duration),
+              campaign.farmer,
+              campaign.butcher,
+              campaign.delivery,
+              boxes
+            )
             .send({ 'from': this.selectedAddress });
 
           resolve([campaign, boxes]);
-        } catch(err) {
+        } catch (err) {
           reject(err);
         }
       } else {
