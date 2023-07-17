@@ -19,7 +19,7 @@
   </div>
   <div class="mb-3">
     <label for="duration" class="form-label">Duration</label>
-    <input type="range" name="duration" class="form-range" min="1" max="42" step="1" id="customRange3" />
+    <input [(ngModel)]="duration" type="range" name="duration" class="form-range" min="1" max="42" step="1" id="customRange3" />
   </div>
 
   <div>
@@ -27,13 +27,13 @@
       <h2>Stakeholder</h2>
     </div>
     <div class="mb-3">
-      <app-stakeholder-input role="Farmer" />
+      <app-stakeholder-input role="Farmer" [model]="farmer" />
     </div>
     <div class="mb-3">
-      <app-stakeholder-input role="Butcher" />
+      <app-stakeholder-input role="Butcher" [model]="butcher" />
     </div>
     <div class="mb-3">
-      <app-stakeholder-input role="Delivery Service" />
+      <app-stakeholder-input role="Delivery Service" [model]="delivery" />
     </div>
   </div>
 
@@ -42,8 +42,15 @@
       <h2>Boxes</h2>
       <p class="text-body-secondary">Define your boxes.</p>
     </div>
+
     <div class="mb-3">
-      <app-box-input />
+      <app-box-input [boxOffer]="firstBox" [boxIndex]="0" />
+    </div>
+    <div class="mb-3">
+      <app-box-input [boxOffer]="secondBox" [boxIndex]="1" />
+    </div>
+    <div class="mb-3">
+      <app-box-input [boxOffer]="thirdBox" [boxIndex]="2" />
     </div>
   </div>
 

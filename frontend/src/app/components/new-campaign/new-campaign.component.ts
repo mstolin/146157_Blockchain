@@ -3,6 +3,7 @@ import { Store } from '@ngrx/store';
 
 import { selectWallet } from '../../state/wallet.selectors';
 import { CrowdfundingService } from 'src/app/service/crowdfunding.service';
+import { BoxOfferReq, StakeholderReq } from 'src/app/models/requestModels';
 
 @Component({
   selector: 'app-new-campaign',
@@ -13,13 +14,19 @@ export class NewCampaignComponent {
 
   wallet$ = this.store.select(selectWallet);
 
+  numberOfBoxes = 1;
   title?: string;
   description?: string;
   owner?: string;
-  farmer?: string;
-  butcher?: string;
-  deliveryService?: string;
-  deadline?: number;
+  duration?: number;
+
+  farmer: StakeholderReq = { address: '', share: 40 };
+  butcher: StakeholderReq = { address: '', share: 30 };
+  delivery: StakeholderReq = { address: '', share: 30 };
+
+  firstBox: BoxOfferReq = { total: 10, available: 10, box: { title: 'Box #1', description: 'Nice Box #1', price: 20 } };
+  secondBox: BoxOfferReq = { total: 10, available: 10, box: { title: 'Box #2', description: 'Nice Box #1', price: 20 } };
+  thirdBox: BoxOfferReq = { total: 10, available: 10, box: { title: 'Box #3', description: 'Nice Box #1', price: 20 } };
 
   constructor(private store: Store, private crowdfundingService: CrowdfundingService) {
     this.wallet$.subscribe(wallet => {
@@ -29,32 +36,31 @@ export class NewCampaignComponent {
     });
   }
 
+  private getBoxes(): BoxOfferReq[] {
+    return [this.firstBox, this.secondBox, this.thirdBox];
+  }
+
   onSubmit() {
-    if (this.title && this.description && this.owner) {
-      // 6 weeks from now
+    if (this.title && this.description && this.owner && this.duration && this.farmer && this.butcher && this.delivery) {
       const campaign = {
         title: this.title,
         description: this.description,
         owner: this.owner,
-        duration: 3600
+        duration: this.duration * 86400,
+        farmer: this.farmer,
+        butcher: this.butcher,
+        delivery: this.delivery,
       };
-      const boxes = [
-        {
-          total: 2,
-          available: 2,
-          box: {
-            title: 'Very nice box',
-            description: 'This is a great box',
-            price: 2
-          }
-        }
-      ];
+      const boxes = this.getBoxes();
 
-      this.crowdfundingService.createCampaign(campaign, boxes).then(() => {
+      console.log('CAMPAIGN', campaign);
+      console.log('BOXES', boxes);
+
+      /*this.crowdfundingService.createCampaign(campaign, boxes).then(() => {
         console.log("OKIDOKI");
       }).catch(error => {
         console.log("ERR:" + error);
-      });
+      });*/
     } else {
       console.log("SOMETHING MISSING");
     }

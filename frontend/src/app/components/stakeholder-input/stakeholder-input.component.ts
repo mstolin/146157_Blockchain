@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { StakeholderReq } from 'src/app/models/requestModels';
 
 @Component({
   selector: 'app-stakeholder-input',
@@ -8,5 +9,6 @@ import { Component, Input } from '@angular/core';
 export class StakeholderInputComponent {
 
   @Input() role!: string;
+  @Input() model!: StakeholderReq;
 
 }
