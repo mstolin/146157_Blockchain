@@ -8,7 +8,7 @@ export type CreateCampaignReq = {
   delivery: StakeholderReq;
 }
 export type StakeholderReq = {
-  address: string;
+  owner: string;
   share: number;
 }
 export type BoxReq = {
