@@ -1,1 +1,49 @@
-<p>{{ campaign.title }}</p>
+<div class="container">
+  <div class="row">
+    <h2>{{ campaign.title }}</h2>
+  </div>
+
+  <div class="row">
+    <div class="column">
+      <p>{{ campaign.description }}</p>
+    </div>
+    <div class="column">
+      <ol class="list-group list-group-numbered">
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto">
+            <div class="fw-bold">Farmer</div>
+            {{ campaign.farmer.owner }}
+          </div>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto">
+            <div class="fw-bold">Butcher</div>
+            {{ campaign.butcher.owner }}
+          </div>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto">
+            <div class="fw-bold">Delivery-Service</div>
+            {{ campaign.delivery.owner }}
+          </div>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <div>
+    <div *ngFor="let box of boxes" class="row">
+      <div class="col">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ box.title }}</h5>
+            <h6 class="card-subtitle mb-2 text-body-secondary">{{ box.available }} of {{ box.total }} Boxes left</h6>
+            <p class="card-text">{{ box.description }}</p>
+            <!--<a [routerLink]="['/campaign', campaign.id]" class="btn btn-primary">More</a>-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
