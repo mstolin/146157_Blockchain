@@ -7,8 +7,11 @@ import Campaign from '../models/campaign';
 import Crowdfunding from '../../assets/abi/Crowdfunding.json';
 import BoxOffer from '../models/boxOffer';
 import { CreateCampaignReq, BoxOfferReq } from '../models/requestModels';
-import { CampaignRefResp } from '../models/responseModels';
+import { BoxOfferResp, CampaignRefResp } from '../models/responseModels';
 import ContractService from './contract.service';
+import Stakeholder from '../models/stakeholder';
+import Box from '../models/box';
+import { off } from 'process';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +22,24 @@ export class CrowdfundingService extends ContractService {
 
   constructor() {
     super();
+  }
+
+  private mapCampaign(ref: CampaignRefResp): Campaign {
+    const campaign = ref.campaign;
+    const deadline = new Date(Number(campaign.deadline) * 1000);
+    return new Campaign(
+      ref.id,
+      campaign.title,
+      campaign.description,
+      campaign.owner,
+      deadline,
+      Number(campaign.collectedAmount),
+      Number(campaign.boxesLeft),
+      campaign.isStopped,
+      new Stakeholder(campaign.farmer.owner, campaign.farmer.share),
+      new Stakeholder(campaign.butcher.owner, campaign.butcher.share),
+      new Stakeholder(campaign.delivery.owner, campaign.delivery.share)
+    );
   }
 
   override getContract(): Contract<ContractAbi> | undefined {
@@ -69,20 +90,7 @@ export class CrowdfundingService extends ContractService {
             .methods
             .getCampaigns()
             .call();
-          campaigns = campaigns.map(ref => {
-            const campaign = ref.campaign;
-            const deadline = new Date(Number(campaign.deadline) * 1000);
-            return new Campaign(
-              ref.id,
-              campaign.title,
-              campaign.description,
-              campaign.owner,
-              deadline,
-              Number(campaign.collectedAmount),
-              Number(campaign.boxesLeft),
-              campaign.isStopped
-            );
-          });
+          campaigns = campaigns.map(ref => this.mapCampaign(ref));
           resolve(campaigns);
         } catch (err) {
           reject(err);
@@ -102,20 +110,8 @@ export class CrowdfundingService extends ContractService {
             .methods
             .getCampaign(campaignId)
             .call();
-
-          const campaign = ref.campaign;
-          const deadline = new Date(Number(campaign.deadline) * 1000);
-
-          resolve(new Campaign(
-            ref.id,
-            campaign.title,
-            campaign.description,
-            campaign.owner,
-            deadline,
-            Number(campaign.collectedAmount),
-            Number(campaign.boxesLeft),
-            campaign.isStopped
-          ));
+          const campaign = this.mapCampaign(ref);
+          resolve(campaign);
         } catch (err) {
           reject(err);
         }
@@ -125,15 +121,19 @@ export class CrowdfundingService extends ContractService {
     });
   }
 
-  getBoxes(campaignId: number): Promise<BoxOffer[]> {
+  getBoxes(campaignId: number): Promise<Box[]> {
     return new Promise(async (resolve, reject) => {
       const contract = this.getContract();
       if (contract) {
         try {
-          let boxes: BoxOffer[] = await contract
+          let boxes: BoxOfferResp[] = await contract
             .methods
             .getBoxes(campaignId)
             .call();
+          boxes = boxes.map(offer => {
+            const box = offer.box;
+            return new Box(box.title, box.description, box.price, offer.total, offer.available);
+          });
           resolve(boxes);
         } catch (err) {
           reject(err);
