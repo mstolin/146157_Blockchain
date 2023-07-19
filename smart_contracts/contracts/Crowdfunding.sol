@@ -30,6 +30,8 @@ contract Crowdfunding {
       Box box;
       /// Address of the owner
       address owner;
+      /// Physical address of the box owner
+      string physAddress;
     }
 
     struct Stakeholder {
@@ -42,6 +44,8 @@ contract Crowdfunding {
     struct Campaign {
         /// Owner of this campaign
         address owner;
+        /// Owners public key
+        string ownerPublicKey;
         /// The campaigns title
         string title;
         /// The campaigns description
@@ -85,7 +89,7 @@ contract Crowdfunding {
     /**
      * Adds a buyer
      */
-    function addBuyer(uint256 _campaignId, address _buyer, Box memory _box) private {
+    function addBuyer(uint256 _campaignId, address _buyer, Box memory _box, string memory _physAddress) private {
       Campaign storage campaign = campaigns[_campaignId];
       // Make sure boxesSold has not been increased yet
       uint256 boxId = campaign.boxesSold;
@@ -94,6 +98,7 @@ contract Crowdfunding {
       soldBox.id = boxId;
       soldBox.owner = _buyer;
       soldBox.box = _box;
+      soldBox.physAddress = _physAddress;
     }
 
     /**
@@ -101,6 +106,7 @@ contract Crowdfunding {
      */
     function createCampaign(
         address _owner,
+        string memory _ownerPublicKey,
         string memory _title,
         string memory _description,
         uint32 _duration,
@@ -150,6 +156,7 @@ contract Crowdfunding {
         // Create campaign
         Campaign storage campaign = campaigns[numberOfCampaigns];
         campaign.owner = _owner;
+        campaign.ownerPublicKey = _ownerPublicKey;
         campaign.title = _title;
         campaign.description = _description;
         campaign.collectedAmount = 0;
@@ -199,7 +206,7 @@ contract Crowdfunding {
     /**
      * Buys a box
      */
-    function buyBox(uint256 _campaignId, uint256 _boxId) public payable {
+    function buyBox(uint256 _campaignId, uint256 _boxId, string memory _physAddress) public payable {
         // get campaign ref
         Campaign storage campaign = campaigns[_campaignId];
 
@@ -218,7 +225,7 @@ contract Crowdfunding {
         require(amount >= box.price, "Given amount is below box price");
 
         // Add buyer
-        addBuyer(_campaignId, msg.sender, box);
+        addBuyer(_campaignId, msg.sender, box, _physAddress);
 
         // Updates available boxes by one
         boxOffer.available-=1;
