@@ -8,6 +8,7 @@ function generateBoxes(numberOfBoxes, boxesTotal) {
   let boxes = [];
   for (let index = 0; index < numberOfBoxes; index++) {
     const box = {
+      'id': `${index}`,
       'available': `${boxesTotal[index]}`,
       'total': `${boxesTotal[index]}`,
       'box': {
@@ -79,7 +80,8 @@ contract('Crowdfunding', (accounts) => {
     assert.equal(campaignRes.campaign.title, campaign.title);
     assert.equal(campaignRes.campaign.description, campaign.description);
     assert.equal(campaignRes.campaign.collectedAmount, '0');
-    assert.equal(campaignRes.campaign.boxesLeft, '12')
+    assert.equal(campaignRes.campaign.totalBoxes, '12');
+    assert.equal(campaignRes.campaign.boxesSold, '0')
     assert.equal(campaignRes.campaign.farmer.owner, farmerAddr);
     assert.equal(campaignRes.campaign.farmer.share, '40');
     assert.equal(campaignRes.campaign.butcher.owner, butcherAddr);
@@ -94,6 +96,7 @@ contract('Crowdfunding', (accounts) => {
     for (let index = 0; index < campaign.boxes.length; index++) {
       const box = campaign.boxes[index];
       const boxRef = boxesRes[index];
+      assert.equal(boxRef.id, `${index}`);
       assert.equal(boxRef.available, `${boxesTotal[index]}`);
       assert.equal(boxRef.total, `${boxesTotal[index]}`);
       assert.equal(boxRef.box.title, box.box.title);
@@ -113,7 +116,7 @@ contract('Crowdfunding', (accounts) => {
     await contract.buyBox(campaignId, 0, { 'from': owner, 'value': web3.utils.toWei('2', 'wei') });
 
     let campaignRes = await contract.getCampaign.call(campaignId);
-    assert.equal(campaignRes.campaign.boxesLeft, 2);
+    assert.equal(campaignRes.campaign.boxesSold, 1);
     assert.equal(campaignRes.campaign.collectedAmount, web3.utils.toWei('2', 'wei'));
     assert.isFalse(campaignRes.campaign.isStopped);
 
@@ -121,17 +124,30 @@ contract('Crowdfunding', (accounts) => {
     assert.equal(boxesRes[0].available, 0);
     assert.equal(boxesRes[1].available, 2);
 
+    let soldBoxes = await contract.getSoldBoxes.call(campaignId);
+    assert.equal(soldBoxes.length, 1);
+    assert.equal(soldBoxes[0].id, 0);
+    assert.equal(soldBoxes[0].owner, owner);
+
     // Buy last boxes
     await contract.buyBox(campaignId, 1, { 'from': owner, 'value': web3.utils.toWei('2', 'wei') });
     await contract.buyBox(campaignId, 1, { 'from': owner, 'value': web3.utils.toWei('2', 'wei') });
 
     campaignRes = await contract.getCampaign.call(campaignId);
-    assert.equal(campaignRes.campaign.boxesLeft, 0);
+    assert.equal(campaignRes.campaign.boxesSold, 3);
     assert.equal(campaignRes.campaign.collectedAmount, web3.utils.toWei('6', 'wei'));
     assert.isTrue(campaignRes.campaign.isStopped);
 
     boxesRes = await contract.getBoxes.call(campaignId);
     assert.equal(boxesRes[1].available, 0);
+
+    soldBoxes = await contract.getSoldBoxes.call(campaignId);
+    assert.equal(soldBoxes.length, 3);
+    for (let index = 0; index < soldBoxes.length; index++) {
+      const soldBoxRef = soldBoxes[index];
+      assert.equal(soldBoxRef.id, index);
+      assert.equal(soldBoxRef.owner, owner);
+    }
   });
 
   it('should stop a campaign', async () => {

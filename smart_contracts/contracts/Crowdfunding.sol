@@ -2,6 +2,7 @@
 pragma solidity ^0.8.13;
 
 contract Crowdfunding {
+
     struct Box {
         /// Title of a box
         string title;
@@ -12,6 +13,8 @@ contract Crowdfunding {
     }
 
     struct BoxOffer {
+        /// Id of the Offer
+        uint256 id;
         /// The box to sell
         Box box;
         /// Total number of boxes
@@ -20,9 +23,18 @@ contract Crowdfunding {
         uint32 available;
     }
 
+    struct BoxSellRef {
+      /// The id of the specific sell
+      uint256 id;
+      /// The box
+      Box box;
+      /// Address of the owner
+      address owner;
+    }
+
     struct Stakeholder {
       /// Address of the stakeholder
-      address owner;
+      address payable owner;
       /// Share in %
       uint8 share;
     }
@@ -38,8 +50,10 @@ contract Crowdfunding {
         uint256 collectedAmount;
         /// The deadline of this campaign
         uint256 deadline;
-        /// Number of left boxes
-        uint256 boxesLeft;
+        /// Total number of boxes
+        uint256 totalBoxes;
+        /// Number of sold boxes
+        uint256 boxesSold;
         /// Is it already stopped
         bool isStopped;
         /// Responsible farmer
@@ -61,10 +75,10 @@ contract Crowdfunding {
     mapping(uint256 => Campaign) public campaigns;
     // available boxes for specific campaigns
     mapping(uint256 => BoxOffer[]) public boxOffers;
-    // sold boxes for specific campaigns
-    mapping(uint256 => mapping(address => Box[])) public soldBoxesCampaign;
+    // sold boxes for specific campaigns (campginId => sellId => BoxSellRef)
+    mapping(uint256 => mapping(uint256 => BoxSellRef)) public soldBoxesCampaign;
     // sold boxes for specific addresses
-    mapping(address => mapping(uint => Box[])) public soldBoxesAddress;
+    //mapping(address => mapping(uint => BoxSellRef[])) public soldBoxesAddress;
 
     uint256 public numberOfCampaigns = 0;
 
@@ -72,10 +86,14 @@ contract Crowdfunding {
      * Adds a buyer
      */
     function addBuyer(uint256 _campaignId, address _buyer, Box memory _box) private {
-      Box[] storage _soldBoxesCampaign = soldBoxesCampaign[_campaignId][_buyer];
-      Box[] storage _soldBoxesAddress = soldBoxesAddress[_buyer][_campaignId];
-      _soldBoxesCampaign.push(_box);
-      _soldBoxesAddress.push(_box);
+      Campaign storage campaign = campaigns[_campaignId];
+      // Make sure boxesSold has not been increased yet
+      uint256 boxId = campaign.boxesSold;
+
+      BoxSellRef storage soldBox = soldBoxesCampaign[_campaignId][boxId];
+      soldBox.id = boxId;
+      soldBox.owner = _buyer;
+      soldBox.box = _box;
     }
 
     /**
@@ -104,6 +122,13 @@ contract Crowdfunding {
             "Deadline must be in the future"
         );
 
+        // validate stakeholders
+        require(_farmer.share > 0 && _farmer.share <= 100, "Farmer share must be higher than 0% and can't be higher than 100%");
+        require(_butcher.share > 0 && _butcher.share <= 100, "Butcher share must be higher than 0% and can't be higher than 100%");
+        require(_delivery.share > 0 && _delivery.share <= 100, "Delivery Service share must be higher than 0% and can't be higher than 100%");
+        uint8 totalShare = _farmer.share + _butcher.share + _delivery.share;
+        require(totalShare == 100, "The total share of all stakeholders must be equal to 100%");
+
         // validate boxes
         uint256 numberOfBoxes = 0;
         for (uint256 index = 0; index < _boxes.length; index++) {
@@ -130,7 +155,8 @@ contract Crowdfunding {
         campaign.collectedAmount = 0;
         campaign.deadline = deadline;
         campaign.isStopped = false;
-        campaign.boxesLeft = numberOfBoxes;
+        campaign.totalBoxes = numberOfBoxes;
+        campaign.boxesSold = 0;
         campaign.farmer = _farmer;
         campaign.butcher = _butcher;
         campaign.delivery = _delivery;
@@ -183,6 +209,7 @@ contract Crowdfunding {
 
         // check if this campaign still has available boxes for the requested kind
         BoxOffer storage boxOffer = boxOffers[_campaignId][_boxId];
+        require(boxOffer.id == _boxId, "The box ID is invalid");
         require(boxOffer.available > 0, "All boxes of this type have been sold");
 
         // check if the offer is valid
@@ -193,13 +220,13 @@ contract Crowdfunding {
         // Add buyer
         addBuyer(_campaignId, msg.sender, box);
 
-        // Reduce available boxes by one
+        // Updates available boxes by one
         boxOffer.available-=1;
-        campaign.boxesLeft-=1;
+        campaign.boxesSold+=1;
         // Add to total collected amount
         campaign.collectedAmount+=amount;
 
-        if (campaign.boxesLeft == 0) {
+        if (campaign.boxesSold == campaign.totalBoxes) {
           // Mark campaign as stopped
           campaign.isStopped = true;
           // TODO Start Supply Chain
@@ -253,6 +280,42 @@ contract Crowdfunding {
     function getBoxes(uint256 _campaignId) public view returns (BoxOffer[] memory) {
         BoxOffer[] storage boxOffer = boxOffers[_campaignId];
         return boxOffer;
+    }
+
+    /**
+     * Returns a list of all sold boxes for a specific campaign
+     */
+    function getSoldBoxes(uint256 _campaignId) public view returns(BoxSellRef[] memory) {
+      Campaign storage campaign = campaigns[_campaignId];
+      BoxSellRef[] memory boxSells = new BoxSellRef[](campaign.boxesSold);
+
+      for (uint256 index = 0; index < boxSells.length; index++) {
+        boxSells[index] = soldBoxesCampaign[_campaignId][index];
+      }
+
+      return boxSells;
+    }
+
+    /**
+     * Pay-out all stakeholders of the campaign
+     */
+    function payOut(uint256 _campaignId) public {
+      Campaign storage campaign = campaigns[_campaignId];
+      require(campaign.isStopped, "The campaign must be finished");
+      require(campaign.boxesSold == campaign.totalBoxes, "There can't be any boxes left");
+
+      // TODO Check if supply chain has been completed
+      // e.g. require(campaign.supplyChain.isCompleted);
+
+      // Generate shares
+      uint256 farmerShare = campaign.collectedAmount * campaign.farmer.share;
+      uint256 butcherShare = campaign.collectedAmount * campaign.farmer.share;
+      uint256 deliveryShare = campaign.collectedAmount * campaign.farmer.share;
+
+      // payout stakeholders
+      payable(campaign.farmer.owner).transfer(farmerShare);
+      payable(campaign.butcher.owner).transfer(butcherShare);
+      payable(campaign.delivery.owner).transfer(deliveryShare);
     }
 
 }
