@@ -190,6 +190,14 @@ contract Crowdfunding {
     }
 
     /**
+     * Returns the public key of a campaign
+     */
+    function getPublicKey(uint256 _campaignId) public view returns (string memory) {
+      Campaign storage campaign = campaigns[_campaignId];
+      return campaign.ownerPublicKey;
+    }
+
+    /**
      * Removes a campaign
      */
     function stopCampaign(uint256 _campaignId) public returns (bool) {
