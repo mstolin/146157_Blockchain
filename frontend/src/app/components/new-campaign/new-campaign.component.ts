@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { selectWallet } from '../../state/wallet.selectors';
 import { CrowdfundingService } from 'src/app/service/crowdfunding.service';
 import { BoxOfferReq, StakeholderReq } from 'src/app/models/requestModels';
+import { WalletService } from 'src/app/service/wallet.service';
 
 @Component({
   selector: 'app-new-campaign',
@@ -24,11 +25,11 @@ export class NewCampaignComponent {
   butcher: StakeholderReq = { owner: '', share: 30 };
   delivery: StakeholderReq = { owner: '', share: 30 };
 
-  firstBox: BoxOfferReq = { total: 10, available: 10, box: { title: 'Box #1', description: 'Nice Box #1', price: 20 } };
-  secondBox: BoxOfferReq = { total: 10, available: 10, box: { title: 'Box #2', description: 'Nice Box #1', price: 20 } };
-  thirdBox: BoxOfferReq = { total: 10, available: 10, box: { title: 'Box #3', description: 'Nice Box #1', price: 20 } };
+  firstBox: BoxOfferReq = { id: 0, total: 1, available: 1, box: { title: 'Box #1', description: 'Nice Box #1', price: 20 } };
+  secondBox: BoxOfferReq = { id: 1, total: 1, available: 1, box: { title: 'Box #2', description: 'Nice Box #1', price: 20 } };
+  thirdBox: BoxOfferReq = { id: 2, total: 1, available: 1, box: { title: 'Box #3', description: 'Nice Box #1', price: 20 } };
 
-  constructor(private store: Store, private crowdfundingService: CrowdfundingService) {
+  constructor(private store: Store, private crowdfundingService: CrowdfundingService, private walletService: WalletService) {
     this.wallet$.subscribe(wallet => {
       if (wallet.activeAccount) {
         this.owner = wallet.activeAccount;
@@ -40,12 +41,13 @@ export class NewCampaignComponent {
     return [this.firstBox, this.secondBox, this.thirdBox];
   }
 
-  onSubmit() {
+  private createNewCampaign(publicKey: string) {
     if (this.title && this.description && this.owner && this.duration && this.farmer && this.butcher && this.delivery) {
       const campaign = {
         title: this.title,
         description: this.description,
         owner: this.owner,
+        ownerPublicKey: publicKey,
         duration: this.duration * 86400,
         farmer: this.farmer,
         butcher: this.butcher,
@@ -63,6 +65,16 @@ export class NewCampaignComponent {
       });
     } else {
       console.log("SOMETHING MISSING");
+    }
+  }
+
+  onSubmit() {
+    if (this.owner) {
+      this.walletService.getPublicKey(this.owner).then((publicKey) => {
+        this.createNewCampaign(publicKey);
+      }).catch(err => {
+        console.log(err);
+      });
     }
   }
 

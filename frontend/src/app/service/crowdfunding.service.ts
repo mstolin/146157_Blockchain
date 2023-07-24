@@ -11,14 +11,13 @@ import { BoxOfferResp, CampaignRefResp } from '../models/responseModels';
 import ContractService from './contract.service';
 import Stakeholder from '../models/stakeholder';
 import Box from '../models/box';
-import { off } from 'process';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CrowdfundingService extends ContractService {
 
-  private readonly _contractAddress: string = '0x5e3163C42DF556Be7E2A0fb555f686fCccdE0aa8';
+  private readonly _contractAddress: string = '0x0D77b48367caCF880647DA5cBDDe013B5FD2eE0A';
 
   constructor() {
     super();
@@ -61,9 +60,10 @@ export class CrowdfundingService extends ContractService {
           await contract
             .methods.createCampaign(
               campaign.owner,
+              campaign.ownerPublicKey,
               campaign.title,
               campaign.description,
-              Number(campaign.duration),
+              campaign.duration,
               campaign.farmer,
               campaign.butcher,
               campaign.delivery,

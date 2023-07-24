@@ -15,4 +15,5 @@
 export default interface Wallet {
   accounts: string[];
   activeAccount: string | null;
+  publicKey: string | null;
 }

@@ -1,5 +1,6 @@
 export type CreateCampaignReq = {
   owner: string,
+  ownerPublicKey: string,
   title: string;
   description: string;
   duration: number;
@@ -17,6 +18,7 @@ export type BoxReq = {
   price: number;
 };
 export type BoxOfferReq = {
+  id: number;
   total: number;
   available: number;
   box: BoxReq
