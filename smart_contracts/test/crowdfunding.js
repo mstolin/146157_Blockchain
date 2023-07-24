@@ -9,9 +9,9 @@ function generateBoxes(numberOfBoxes, boxesTotal) {
   let boxes = [];
   for (let index = 0; index < numberOfBoxes; index++) {
     const box = {
-      'id': `${index}`,
-      'available': `${boxesTotal[index]}`,
-      'total': `${boxesTotal[index]}`,
+      'id': index,
+      'available': boxesTotal[index],
+      'total': boxesTotal[index],
       'box': {
         'title': `Box #${numberOfBoxes}`,
         'description': `Box #${numberOfBoxes} is a very good one`,
@@ -29,7 +29,7 @@ function generateCampaigns(numberOfCampaigns, numberOfBoxes, boxesTotal) {
     const campaign = {
       'title': `Campaign #${index + 1}`,
       'description': `Campaign #${index + 1} is a very nice one`,
-      'duration': '3628800',
+      'duration': 3628800,
       'boxes': generateBoxes(numberOfBoxes, boxesTotal),
       'farmer': {
         'owner': FARMER_ADDR,
