@@ -1,1 +1,9 @@
-<p>buy-box works!</p>
+<form #campaignForm="ngForm" (ngSubmit)="onSubmit()">
+  <div class="mb-3">
+    <label for="address" class="form-label">Your Address</label>
+    <textarea [(ngModel)]="address" name="address" class="form-control" id="address" rows="3" required></textarea>
+  </div>
+  <div class="row">
+    <button type="submit" class="btn btn-primary">Buy</button>
+  </div>
+</form>
