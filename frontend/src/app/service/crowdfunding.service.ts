@@ -7,7 +7,7 @@ import Campaign from '../models/campaign';
 import Crowdfunding from '../../assets/abi/Crowdfunding.json';
 import BoxOffer from '../models/boxOffer';
 import { CreateCampaignReq, BoxOfferReq } from '../models/requestModels';
-import { BoxOfferResp, CampaignRefResp } from '../models/responseModels';
+import { BoxOfferResp, BoxSellRefResp, CampaignRefResp } from '../models/responseModels';
 import ContractService from './contract.service';
 import Stakeholder from '../models/stakeholder';
 import Box from '../models/box';
@@ -17,7 +17,7 @@ import Box from '../models/box';
 })
 export class CrowdfundingService extends ContractService {
 
-  private readonly _contractAddress: string = '0x0D77b48367caCF880647DA5cBDDe013B5FD2eE0A';
+  private readonly _contractAddress: string = '0xa3B697dA482883d42779b9C474D7973160e47194';
 
   constructor() {
     super();
@@ -31,6 +31,7 @@ export class CrowdfundingService extends ContractService {
       campaign.title,
       campaign.description,
       campaign.owner,
+      campaign.ownerPublicKey,
       deadline,
       Number(campaign.collectedAmount),
       Number(campaign.boxesLeft),
@@ -132,8 +133,43 @@ export class CrowdfundingService extends ContractService {
             .call();
           boxes = boxes.map(offer => {
             const box = offer.box;
-            return new Box(box.title, box.description, box.price, offer.total, offer.available);
+            return new Box(offer.id, box.title, box.description, box.price, offer.total, offer.available);
           });
+          resolve(boxes);
+        } catch (err) {
+          reject(err);
+        }
+      } else {
+        reject();
+      }
+    });
+  }
+
+  getBox(campaignId: number, boxId: number): Promise<Box> {
+    return this.getBoxes(campaignId).then(boxes => {
+      return boxes.filter(box => box.id == boxId)[0];
+    });
+  }
+
+  getAvailableBoxes(campaignId: number): Promise<Box[]> {
+    return this.getBoxes(campaignId).then(boxes => {
+      return boxes.filter(box => box.available > 0);
+    });
+  }
+
+  getSoldBoxes(campaignId: number): Promise<BoxSellRefResp[]> {
+    return new Promise(async (resolve, reject) => {
+      const contract = this.getContract();
+      if (contract) {
+        try {
+          let boxes: BoxSellRefResp[] = await contract
+            .methods
+            .getSoldBoxes(campaignId)
+            .call();
+          /*boxes = boxes.map(offer => {
+            const box = offer.box;
+            return new Box(offer.id, box.title, box.description, box.price, offer.total, offer.available);
+          });*/
           resolve(boxes);
         } catch (err) {
           reject(err);
@@ -163,23 +199,16 @@ export class CrowdfundingService extends ContractService {
     });
   }
 
-  buyBox(campaignId: number, boxId: number): Promise {
-    return new Promise(async (resolve, reject) => {
-      const contract = this.getContract();
-      if (contract) {
-        try {
-          await contract
-            .methods
-            .buyBox(campaignId, boxId)
-            .send({ 'from': this.selectedAddress });
-          resolve();
-        } catch (err) {
-          reject(err);
-        }
-      } else {
-        reject();
-      }
-    });
+  async buyBox(campaignId: number, boxId: number, address: string, value: string) {
+    const contract = this.getContract();
+    if (contract) {
+      await contract
+        .methods
+        .buyBox(campaignId, boxId, address)
+        .send({ from: this.selectedAddress, value });
+    } else {
+      throw('');
+    }
   }
 
 }
