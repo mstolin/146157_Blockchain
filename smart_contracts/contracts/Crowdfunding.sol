@@ -9,7 +9,7 @@ contract Crowdfunding {
         /// Description of a box
         string description;
         /// The price of this box in wei
-        uint16 price;
+        uint256 price;
     }
 
     struct BoxOffer {
