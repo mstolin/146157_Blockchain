@@ -1,22 +1,60 @@
-<div>
-  <form #campaignForm="ngForm" (ngSubmit)="onSubmit()">
+<form #campaignForm="ngForm" (ngSubmit)="onSubmit()">
+  <h2>General</h2>
+  <div class="mb-3">
+    <label for="campaignTitle" class="form-label">Title</label>
+    <input [(ngModel)]="title" name="title" type="text" class="form-control" id="campaignTitle" required />
+  </div>
+  <div class="mb-3">
+    <label for="campaignDescription" class="form-label">Description</label>
+    <textarea [(ngModel)]="description" name="description" class="form-control" id="campaignDescription" rows="3" required></textarea>
+  </div>
+  <div class="mb-3">
+    <label for="campaignOwner" class="form-label">Owner</label>
+    <input [(ngModel)]="owner" name="owner" type="text" class="form-control" id="campaignOwner" *ngIf="owner; else accountError" readonly required />
+    <ng-template #accountError>
+      <div class="alert alert-light" role="alert">
+        Please connect to your wallet first.
+      </div>
+    </ng-template>
+  </div>
+  <div class="mb-3">
+    <label for="duration" class="form-label">Duration</label>
+    <input [(ngModel)]="duration" type="range" name="duration" class="form-range" min="1" max="42" step="1" id="customRange3" />
+  </div>
+
+  <div>
     <div class="mb-3">
-      <label for="campaignTitle" class="form-label">Title</label>
-      <input [(ngModel)]="title" name="title" type="text" class="form-control" id="campaignTitle" required />
+      <h2>Stakeholder</h2>
     </div>
     <div class="mb-3">
-      <label for="campaignDescription" class="form-label">Description</label>
-      <textarea [(ngModel)]="description" name="description" class="form-control" id="campaignDescription" rows="3" required></textarea>
+      <app-stakeholder-input role="Farmer" [model]="farmer" />
     </div>
     <div class="mb-3">
-      <label for="campaignOwner" class="form-label">Owner</label>
-      <input [(ngModel)]="owner" name="owner" type="text" class="form-control" id="campaignOwner" *ngIf="owner; else accountError" disabled required />
-      <ng-template #accountError>
-        <div class="alert alert-light" role="alert">
-          Please connect to your wallet first.
-        </div>
-      </ng-template>
+      <app-stakeholder-input role="Butcher" [model]="butcher" />
     </div>
+    <div class="mb-3">
+      <app-stakeholder-input role="Delivery Service" [model]="delivery" />
+    </div>
+  </div>
+
+  <div>
+    <div class="mb-3">
+      <h2>Boxes</h2>
+      <p class="text-body-secondary">Define your boxes.</p>
+    </div>
+
+    <div class="mb-3">
+      <app-box-input [boxOffer]="firstBox" [boxIndex]="0" />
+    </div>
+    <div class="mb-3">
+      <app-box-input [boxOffer]="secondBox" [boxIndex]="1" />
+    </div>
+    <div class="mb-3">
+      <app-box-input [boxOffer]="thirdBox" [boxIndex]="2" />
+    </div>
+  </div>
+
+  <div class="row">
     <button type="submit" class="btn btn-primary">Create</button>
-  </form>
-</div>
+  </div>
+</form>

@@ -5,6 +5,7 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import { WalletService } from 'src/app/service/wallet.service';
 import Wallet from 'src/app/models/wallet';
 import { WalletActions } from 'src/app/state/wallet.actions';
+import { selectWallet } from 'src/app/state/wallet.selectors';
 
 @Component({
   selector: 'app-header',

@@ -15,6 +15,9 @@ import { NewCampaignComponent } from './components/new-campaign/new-campaign.com
 import { walletReducer } from './state/wallet.reducer';
 import { AccountSelectorComponent } from './components/account-selector/account-selector.component';
 import { CampaignDetailComponent } from './components/campaign-detail/campaign-detail.component';
+import { StakeholderInputComponent } from './components/stakeholder-input/stakeholder-input.component';
+import { BoxInputComponent } from './components/box-input/box-input.component';
+import { BuyBoxComponent } from './components/buy-box/buy-box.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +28,10 @@ import { CampaignDetailComponent } from './components/campaign-detail/campaign-d
     AllCampaignsComponent,
     NewCampaignComponent,
     AccountSelectorComponent,
-    CampaignDetailComponent
+    CampaignDetailComponent,
+    StakeholderInputComponent,
+    BoxInputComponent,
+    BuyBoxComponent
   ],
   imports: [
     BrowserModule,

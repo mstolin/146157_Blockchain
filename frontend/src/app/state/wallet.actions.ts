@@ -6,5 +6,6 @@ export const WalletActions = createActionGroup({
     'Retrieved Accounts': props<{ accounts: string[] }>(),
     'Retrieved Account': props<{ account: string }>(),
     'Set Active Account': props<{ account: string }>(),
+    'Set Owner Public Key': props<{ publicKey: string }>(),
   },
 });

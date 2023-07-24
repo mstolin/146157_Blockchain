@@ -27,4 +27,23 @@ export class WalletService {
     });
   }
 
+  getPublicKey(account: string): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { ethereum } = window;
+        if (ethereum) {
+          const keyB64 = await window.ethereum.request({
+            method: 'eth_getEncryptionPublicKey',
+            params: [account],
+          }) as string;
+          resolve(keyB64);
+        } else {
+          reject();
+        }
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
+
 }

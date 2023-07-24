@@ -3,6 +3,7 @@ import { Store } from '@ngrx/store';
 
 import { WalletActions } from './state/wallet.actions';
 import { selectWallet } from './state/wallet.selectors';
+import { WalletService } from './service/wallet.service';
 
 @Component({
   selector: 'app-root',
