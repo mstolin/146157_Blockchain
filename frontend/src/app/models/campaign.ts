@@ -6,6 +6,7 @@ export default class Campaign {
   private readonly _title: string;
   private readonly _description: string;
   private readonly _owner: string;
+  private readonly _ownerPublicKey: string;
   private readonly _deadline: Date;
   private readonly _collectedAmount: number;
   private readonly _boxesLeft: number;
@@ -19,6 +20,7 @@ export default class Campaign {
     title: string,
     description: string,
     owner: string,
+    ownerPublicKey: string,
     deadline: Date,
     collectedAmount: number,
     boxesLeft: number,
@@ -31,6 +33,7 @@ export default class Campaign {
     this._title = title;
     this._description = description;
     this._owner = owner;
+    this._ownerPublicKey = ownerPublicKey;
     this._deadline = deadline;
     this._collectedAmount = collectedAmount;
     this._boxesLeft = boxesLeft;
@@ -54,6 +57,10 @@ export default class Campaign {
 
   get owner() {
     return this._owner;
+  }
+
+  get ownerPublicKey() {
+    return this._ownerPublicKey;
   }
 
   get deadline() {

@@ -1,16 +1,22 @@
 export default class Box {
+  private readonly _id: number;
   private readonly _title: string;
   private readonly _description: string;
   private readonly _price: number;
   private readonly _available: number;
   private readonly _total: number;
 
-  constructor(title: string, description: string, price: number, total: number, available: number) {
+  constructor(id: number, title: string, description: string, price: number, total: number, available: number) {
+    this._id = id;
     this._title = title;
     this._description = description;
     this._price = price;
     this._total = total;
     this._available = available;
+  }
+
+  get id() {
+    return this._id;
   }
 
   get title() {

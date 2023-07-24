@@ -12,6 +12,7 @@ export type CampaignResp = {
   title: string;
   description: string;
   owner: string;
+  ownerPublicKey: string;
   deadline: string;
   collectedAmount: string;
   boxesLeft: string;
@@ -28,7 +29,15 @@ export type BoxResp = {
 };
 
 export type BoxOfferResp = {
+  id: number;
   available: number;
   total: number;
   box: BoxResp;
 };
+
+export type BoxSellRefResp = {
+  id: number;
+  owner: string;
+  physAddress: string;
+  box: BoxResp;
+}

@@ -15,7 +15,7 @@ export type StakeholderReq = {
 export type BoxReq = {
   title: string;
   description: string;
-  price: number;
+  price: string;
 };
 export type BoxOfferReq = {
   id: number;
