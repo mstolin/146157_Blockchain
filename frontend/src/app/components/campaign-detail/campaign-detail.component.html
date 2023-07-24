@@ -1,45 +1,78 @@
 <div class="container">
   <div class="row">
-    <h2>{{ campaign.title }}</h2>
+    <h1>{{ campaign.title }}</h1>
   </div>
 
   <div class="row">
-    <div class="column">
-      <p>{{ campaign.description }}</p>
-    </div>
-    <div class="column">
-      <ol class="list-group list-group-numbered">
-        <li class="list-group-item d-flex justify-content-between align-items-start">
-          <div class="ms-2 me-auto">
-            <div class="fw-bold">Farmer</div>
-            {{ campaign.farmer.owner }}
-          </div>
-        </li>
-        <li class="list-group-item d-flex justify-content-between align-items-start">
-          <div class="ms-2 me-auto">
-            <div class="fw-bold">Butcher</div>
-            {{ campaign.butcher.owner }}
-          </div>
-        </li>
-        <li class="list-group-item d-flex justify-content-between align-items-start">
-          <div class="ms-2 me-auto">
-            <div class="fw-bold">Delivery-Service</div>
-            {{ campaign.delivery.owner }}
-          </div>
-        </li>
-      </ol>
+    <p>By <strong>{{ campaign.owner }}</strong></p>
+  </div>
+
+  <div class="row">
+    <p>
+      Collected: <strong>{{ collectedEther }} ETH</strong> ·
+      Created: <strong>01.01.2020</strong> ·
+      Deadline: <strong>01.01.2020</strong>
+    </p>
+  </div>
+
+  <div class="row">
+    <p>{{ campaign.description }}</p>
+  </div>
+
+  <div class="card">
+    <h5 class="card-header">Stakeholder</h5>
+    <div class="card-body">
+      <dl>
+        <dt class="col-sm-2">Farmer:</dt>
+        <dd class="col-sm-10">Earnings: {{ campaign.farmer.share }}% · {{ campaign.farmer.owner }}</dd>
+        <dt class="col-sm-2">Butcher:</dt>
+        <dd class="col-sm-10">Earnings: {{ campaign.butcher.share }}% · {{ campaign.butcher.owner }}</dd>
+        <dt class="col-sm-2">Delivery-Service:</dt>
+        <dd class="col-sm-10">Earnings: {{ campaign.delivery.share }}% · {{ campaign.delivery.owner }}</dd>
+      </dl>
     </div>
   </div>
 
   <div>
-    <div *ngFor="let box of boxes" class="row">
+    <ul class="nav nav-underline">
+      <li class="nav-item">
+        <p class="nav-link active" aria-current="page" href="#">Boxes</p>
+      </li>
+    </ul>
+  </div>
+
+  <div>
+    <div *ngFor="let box of availableBoxes" class="row">
       <div class="col">
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">{{ box.title }}</h5>
             <h6 class="card-subtitle mb-2 text-body-secondary">{{ box.available }} of {{ box.total }} Boxes left</h6>
             <p class="card-text">{{ box.description }}</p>
-            <!--<a [routerLink]="['/box/buy', campaign.id, box.id]" class="btn btn-primary">Buy</a>-->
+            <a [routerLink]="['buy', box.id]" class="btn btn-primary">Buy for {{ box.price }} WEI</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <ul class="nav nav-underline">
+      <li class="nav-item">
+        <p class="nav-link active" aria-current="page" href="#">Sold Boxes</p>
+      </li>
+    </ul>
+  </div>
+
+  <div>
+    <div *ngFor="let sellRef of soldBoxes" class="row">
+      <div class="col">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ sellRef.box.title }}</h5>
+            <h6 class="card-subtitle mb-2 text-body-secondary">Owner: {{ sellRef.owner }}</h6>
+            <p class="card-text">{{ sellRef.physAddress }}</p>
+            <a [routerLink]="['status', sellRef.id]" class="btn btn-primary">See Status</a>
           </div>
         </div>
       </div>
