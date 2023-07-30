@@ -102,6 +102,19 @@ contract Crowdfunding {
     }
 
     /**
+     * Starts the Supply Chain for a specific campaign
+     */
+    function startSupplyChain(uint256 _campaignId) private {
+      // This will start the supply chain for a specific campaign
+      // Definitely need to change the camapign struct
+      // eg add a new struct called SupplyChain and add a new
+      // field called supplyChain to CampaignRef
+
+      // Maybe SupplyChain struct needs properties like
+      // isAnimalDleivered: bool, isAnimalProcessed: bool, ...
+    }
+
+    /**
      * Creates a new campaign
      */
     function createCampaign(
@@ -331,6 +344,42 @@ contract Crowdfunding {
       payable(campaign.farmer.owner).transfer(farmerShare);
       payable(campaign.butcher.owner).transfer(butcherShare);
       payable(campaign.delivery.owner).transfer(deliveryShare);
+    }
+
+    /**
+     * Marks the animal of a campaign as delivered (to the butcher)
+     */
+    function markAnimalAsDelivered(uint256 _campaignId) public {
+      // Update the supply chain reference, e.g. isAnimalDelivered = true
+    }
+
+    /**
+    * Marks the animal as processed by the butcher
+    */
+    function markAnimalAsProcessed(uint256 _campaignId) public {
+
+    }
+
+    /**
+     * Marks that all boxes have been prepared by the butcher
+     */
+    function markBoxesAsPrepared(uint256 _campaignId) public {
+
+    }
+
+    /**
+     * Marks that all boxes have been distributed to the delivery service
+     */
+    function markBoxesAsDistributed(uint256 _campaignId) public {
+      // e.g. set isDistributed = true
+    }
+
+    /**
+     * Marks all boxes as delivered by the delivery service
+     */
+    function markBoxAsDelivered(uint256 _campaignId, uint256 _boxId) public {
+      // supply chain.boxes[_boxId].isDelivered = true
+      // also check if all boxes have been delivered, then call pay out function
     }
 
 }
