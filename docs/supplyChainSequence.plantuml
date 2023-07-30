@@ -1,0 +1,39 @@
+@startuml
+actor Farmer as farmer
+actor Butcher as butcher
+actor Delivery as delivery
+actor Customer as customer
+participant Contract as contract
+
+farmer --> butcher: deliver animal
+activate farmer
+activate butcher
+farmer --> contract: animalDelivered()
+deactivate farmer
+activate contract
+butcher --> contract: animalDelivered()
+
+butcher --> butcher: process animal
+butcher --> contract: animalProcessed()
+butcher --> butcher: process boxes
+butcher --> contract: boxesProcessed()
+butcher --> delivery: distribute boxes
+activate delivery
+butcher --> contract: boxesDistributed()
+deactivate butcher
+delivery --> contract: boxesDistributed)
+
+delivery --> customer: deliver box
+activate customer
+delivery --> contract: boxDelivered()
+deactivate customer
+deactivate delivery
+
+alt all boxes delivered
+    contract -> contract: payOut()
+    contract -> farmer: pay share
+    contract -> butcher: pay share
+    contract -> delivery: pay share
+end
+deactivate contract
+@enduml

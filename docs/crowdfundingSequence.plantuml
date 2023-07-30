@@ -1,0 +1,24 @@
+@startuml
+actor Owner as owner
+actor Costumer as customer
+participant Contract as contract
+
+owner --> contract: createCampaign()
+activate contract
+contract --> contract: Validate Campaign
+contract --> contract: Save Campaign
+deactivate contract
+
+customer --> contract: buyBox()
+activate contract
+contract --> contract: Validate Campaign
+contract --> contract: Validate Message
+contract --> contract: Mark Box
+contract --> contract: Add Buyer
+contract --> contract: Increase collected Amount for Campaign
+
+alt all boxes sold
+    contract -> contract: Start Supply Chain
+end
+deactivate contract
+@enduml
