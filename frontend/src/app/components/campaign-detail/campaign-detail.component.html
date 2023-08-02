@@ -71,8 +71,7 @@
           <div class="card-body">
             <h5 class="card-title">{{ sellRef.box.title }}</h5>
             <h6 class="card-subtitle mb-2 text-body-secondary">Owner: {{ sellRef.owner }}</h6>
-            <p class="card-text">{{ sellRef.physAddress }}</p>
-            <a [routerLink]="['status', sellRef.id]" class="btn btn-primary">See Status</a>
+            <a [routerLink]="['box', sellRef.id]" class="btn btn-primary">See Status</a>
           </div>
         </div>
       </div>

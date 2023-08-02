@@ -36,16 +36,14 @@ export class BuyBoxComponent implements OnInit {
       .catch(err => console.log('ERR:', err));
   }
 
-  private encryptAddress(campaignId: number, address: string): Promise<Buffer> {
+  private encryptAddress(campaignId: number, address: string): Promise<string> {
     return new Promise(async (resolve, reject) => {
       try {
-        console.log('TEST 1');
         const campaign = await this.crowdfundingService.getCampaign(campaignId);
-        console.log('TEST 2');
         const publicKey = campaign.ownerPublicKey;
         const enc = encrypt({
           publicKey,
-          data: 'TEst1234',
+          data: Buffer.from(address, 'utf-8').toString('base64'),
           version: 'x25519-xsalsa20-poly1305',
         });
         const buf = Buffer.concat([
@@ -53,42 +51,11 @@ export class BuyBoxComponent implements OnInit {
           Buffer.from(enc.nonce, 'base64'),
           Buffer.from(enc.ciphertext, 'base64'),
         ]);
-        console.log('BUF', buf.toString('base64'));
-
-        const structuredData = {
-          version: 'x25519-xsalsa20-poly1305',
-          ephemPublicKey: buf.slice(0, 32).toString('base64'),
-          nonce: buf.slice(32, 56).toString('base64'),
-          ciphertext: buf.slice(56).toString('base64'),
-        };
-        const ct = `0x${Buffer.from(JSON.stringify(structuredData), 'utf8').toString('hex')}`;
-
-        console.log('ct', ct);
-
-        const decrypt = await window.ethereum.request({
-          method: 'eth_decrypt',
-          params: [ct, this.owner!],
-        });
-
-        console.log('DEC', decrypt);
-
-        resolve(Buffer.from(''));
+        resolve(buf.toString('base64'))
       } catch(err) {
         reject(err);
       }
     });
-    /*if (this.campaignId) {
-      .then(campaign => {
-        let publicKey = campaign.ownerPublicKey;
-        let privateKey = '0x9796b9d00a95e375afd0e87094f92552bb029c1bb7020fbcd0f15063d5a06077';
-        console.log('PUBLIC', publicKey);
-        console.log('PRIVATE', privateKey);
-        let cipher =
-        console.log('CIPHER', cipher.toString('base64'));
-        let decipher = privateDecrypt(privateKey, cipher);
-        console.log('DECIPHER', decipher.toString('base64'));
-      });
-    }*/
   }
 
   ngOnInit(): void {
@@ -114,13 +81,11 @@ export class BuyBoxComponent implements OnInit {
       const address = this.address;
       const box = this.box;
       this.encryptAddress(campaignId, address).then(async cipher => {
-        console.log('CIPHER', cipher.toString('base64'));
-        /*try {
-          await this.crowdfundingService.buyBox(campaignId, boxId, cipher.toString('base64'), `${box.price}`);
-          console.log('SUCCESS');
+        try {
+          await this.crowdfundingService.buyBox(campaignId, boxId, cipher, `${box.price}`);
         } catch(err) {
           console.log('ERR:', err);
-        }*/
+        }
       }).catch(err => console.log(err));
     } else {
       console.log(this.campaignId, this.boxId, this.address);

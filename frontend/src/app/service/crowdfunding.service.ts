@@ -182,6 +182,12 @@ export class CrowdfundingService extends ContractService {
     });
   }
 
+  getSoldBox(campaignId: number, boxId: number): Promise<BoxSellRefResp> {
+    return this.getSoldBoxes(campaignId).then(boxes => {
+      return boxes.filter(box => box.id == boxId)[0];
+    });
+  }
+
   stopCampaign(campaignId: number): Promise {
     return new Promise(async (resolve, reject) => {
       const contract = this.getContract();

@@ -1,1 +1,33 @@
-<p>box-detail works!</p>
+<div class="container">
+  <div class="row">
+    <h1>{{ sellRef.box.title }}</h1>
+  </div>
+
+  <div class="row">
+    <p>{{ sellRef.box.description }}</p>
+  </div>
+
+  <div class="row">
+    <p>
+      Sell ID: <strong>{{ sellRef.id }}</strong> ·
+      Owner: <strong>{{ sellRef.owner }}</strong> ·
+      Price: <strong>{{ sellRef.box.price }} WEI</strong>
+    </p>
+  </div>
+
+  <div class="card">
+    <h5 class="card-header">Address</h5>
+    <div class="card-body">
+      <div *ngIf="address; else encryptAction">
+        <p>{{ address }}</p>
+      </div>
+      <ng-template #encryptAction>
+        <div class="row">
+          <p>{{ sellRef.physAddress }}</p>
+        </div>
+        <input [(ngModel)]="privateKey" type="text" class="form-control" placeholder="Private Key" />
+        <button class="btn btn-primary" (click)="decryptAddress()">Decrypt Address</button>
+      </ng-template>
+    </div>
+  </div>
+</div>
