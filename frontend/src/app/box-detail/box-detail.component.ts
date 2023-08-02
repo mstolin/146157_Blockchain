@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import Box from '../models/box';
 import { ActivatedRoute } from '@angular/router';
 import { CrowdfundingService } from '../service/crowdfunding.service';
 import { BoxSellRefResp } from '../models/responseModels';
