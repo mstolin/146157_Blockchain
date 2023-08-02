@@ -33,6 +33,20 @@
     </div>
   </div>
 
+  <div class="card">
+    <h5 class="card-header">Supply Chain (TODO Only if status is completed)</h5>
+    <div class="card-body">
+      <dl>
+        <dt class="col-sm-2">Animal delivered to butcher:</dt>
+        <dd class="col-sm-10">Yes (at 24/06/2023)</dd>
+        <dt class="col-sm-2">Animal processed by butcher:</dt>
+        <dd class="col-sm-10">No</dd>
+        <dt class="col-sm-2">Boxes processed by butcher:</dt>
+        <dd class="col-sm-10">No</dd>
+      </dl>
+    </div>
+  </div>
+
   <div>
     <ul class="nav nav-underline">
       <li class="nav-item">
@@ -71,8 +85,7 @@
           <div class="card-body">
             <h5 class="card-title">{{ sellRef.box.title }}</h5>
             <h6 class="card-subtitle mb-2 text-body-secondary">Owner: {{ sellRef.owner }}</h6>
-            <p class="card-text">{{ sellRef.physAddress }}</p>
-            <a [routerLink]="['status', sellRef.id]" class="btn btn-primary">See Status</a>
+            <a [routerLink]="['box', sellRef.id]" class="btn btn-primary">See Status</a>
           </div>
         </div>
       </div>

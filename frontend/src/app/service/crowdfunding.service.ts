@@ -17,7 +17,7 @@ import Box from '../models/box';
 })
 export class CrowdfundingService extends ContractService {
 
-  private readonly _contractAddress: string = '0xa3B697dA482883d42779b9C474D7973160e47194';
+  private readonly _contractAddress: string = '0x53F6419b0E262d7e25b14e319Cff819C0Bb5E5FC';
 
   constructor() {
     super();
@@ -131,6 +131,7 @@ export class CrowdfundingService extends ContractService {
             .methods
             .getBoxes(campaignId)
             .call();
+          console.log('BOXES', boxes);
           boxes = boxes.map(offer => {
             const box = offer.box;
             return new Box(offer.id, box.title, box.description, box.price, offer.total, offer.available);
@@ -153,6 +154,7 @@ export class CrowdfundingService extends ContractService {
 
   getAvailableBoxes(campaignId: number): Promise<Box[]> {
     return this.getBoxes(campaignId).then(boxes => {
+      console.log(boxes);
       return boxes.filter(box => box.available > 0);
     });
   }
@@ -177,6 +179,12 @@ export class CrowdfundingService extends ContractService {
       } else {
         reject();
       }
+    });
+  }
+
+  getSoldBox(campaignId: number, boxId: number): Promise<BoxSellRefResp> {
+    return this.getSoldBoxes(campaignId).then(boxes => {
+      return boxes.filter(box => box.id == boxId)[0];
     });
   }
 

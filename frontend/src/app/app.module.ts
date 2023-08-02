@@ -18,6 +18,7 @@ import { CampaignDetailComponent } from './components/campaign-detail/campaign-d
 import { StakeholderInputComponent } from './components/stakeholder-input/stakeholder-input.component';
 import { BoxInputComponent } from './components/box-input/box-input.component';
 import { BuyBoxComponent } from './components/buy-box/buy-box.component';
+import { BoxDetailComponent } from './box-detail/box-detail.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { BuyBoxComponent } from './components/buy-box/buy-box.component';
     CampaignDetailComponent,
     StakeholderInputComponent,
     BoxInputComponent,
-    BuyBoxComponent
+    BuyBoxComponent,
+    BoxDetailComponent
   ],
   imports: [
     BrowserModule,
