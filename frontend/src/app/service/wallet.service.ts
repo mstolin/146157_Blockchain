@@ -27,7 +27,7 @@ export class WalletService {
     });
   }
 
-  getPublicKey(account: string): Promise<string> {
+  getPublicKey(account: string): Promise<Buffer> {
     return new Promise(async (resolve, reject) => {
       try {
         const { ethereum } = window;
@@ -36,7 +36,8 @@ export class WalletService {
             method: 'eth_getEncryptionPublicKey',
             params: [account],
           }) as string;
-          resolve(keyB64);
+          const publicKey = Buffer.from(keyB64, 'base64');
+          resolve(publicKey);
         } else {
           reject();
         }
