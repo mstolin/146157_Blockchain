@@ -5,7 +5,12 @@
     "outDir": "./out-tsc/app",
     "types": [
       "@angular/localize"
-    ]
+    ],
+    "paths": {
+      "url": [
+        "./node_modules/url",
+      ]
+    }
   },
   "files": [
     "src/main.ts",
@@ -13,5 +18,8 @@
   ],
   "include": [
     "src/**/*.d.ts"
-  ]
+  ],
+  "paths": {
+    "zlib": ["node_modules/browserify-zlib"],
+  }
 }

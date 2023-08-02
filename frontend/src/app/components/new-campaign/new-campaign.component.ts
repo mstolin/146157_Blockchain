@@ -55,9 +55,6 @@ export class NewCampaignComponent {
       };
       const boxes = this.getBoxes();
 
-      console.log('CAMPAIGN', campaign);
-      console.log('BOXES', boxes);
-
       this.crowdfundingService.createCampaign(campaign, boxes).then(() => {
         console.log("OKIDOKI");
       }).catch(error => {
@@ -71,7 +68,7 @@ export class NewCampaignComponent {
   onSubmit() {
     if (this.owner) {
       this.walletService.getPublicKey(this.owner).then((publicKey) => {
-        this.createNewCampaign(publicKey);
+        this.createNewCampaign(publicKey.toString('base64'));
       }).catch(err => {
         console.log(err);
       });

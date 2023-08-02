@@ -13,7 +13,6 @@ import { utils } from 'web3';
 })
 export class CampaignDetailComponent implements OnInit {
 
-  campaignId!: number;
   campaign!: Campaign;
   collectedEther!: string;
   availableBoxes: Box[] = [];
@@ -21,24 +20,38 @@ export class CampaignDetailComponent implements OnInit {
 
   constructor(private route: ActivatedRoute, private crowdfundingService: CrowdfundingService) { }
 
-  ngOnInit(): void {
-    this.crowdfundingService.getCampaign(this.campaignId).then(campaign => {
+  private loadData(campaignId: number) {
+    this.crowdfundingService.getCampaign(campaignId).then(campaign => {
       this.campaign = campaign;
       this.collectedEther = utils.fromWei(campaign.collectedAmount, 'ether');
     }).catch(err => {
       console.log(err);
     });
 
-    this.crowdfundingService.getAvailableBoxes(this.campaignId).then(boxes => {
+    this.crowdfundingService.getAvailableBoxes(campaignId).then(boxes => {
       this.availableBoxes = boxes;
     }).catch(err => {
       console.log(err);
     });
 
-    this.crowdfundingService.getSoldBoxes(this.campaignId).then(boxes => {
+    this.crowdfundingService.getSoldBoxes(campaignId).then(boxes => {
       this.soldBoxes = boxes;
     }).catch(err => {
       console.log(err);
+    });
+  }
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      const campaignIdParam = params.get('id');
+      if (campaignIdParam) {
+        try {
+          const campaignId = Number(campaignIdParam);
+          this.loadData(campaignId);
+        } catch(err) {
+          console.log(err);
+        }
+      }
     });
   }
 

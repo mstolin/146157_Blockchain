@@ -8,6 +8,11 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
+  "browser": {
+    "zlib": false,
+    "http": false,
+    "https": false
+  },
   "private": true,
   "dependencies": {
     "@angular/animations": "^16.1.0",
@@ -19,14 +24,21 @@
     "@angular/platform-browser-dynamic": "^16.1.0",
     "@angular/router": "^16.1.0",
     "@metamask/detect-provider": "^2.0.0",
+    "@metamask/eth-sig-util": "^6.0.0",
     "@ng-bootstrap/ng-bootstrap": "15.1.0",
     "@ngrx/store": "^16.1.0",
     "@popperjs/core": "^2.11.6",
+    "@types/crypto-js": "^4.1.1",
     "blockies-base64-svg": "^0.0.10",
     "bootstrap": "^5.2.3",
+    "browserify-zlib": "^0.2.0",
+    "crypto-js": "^4.1.1",
+    "https-browserify": "^1.0.0",
     "process": "^0.11.10",
     "rxjs": "7.8.1",
+    "stream-http": "^3.2.0",
     "tslib": "^2.3.0",
+    "url": "^0.11.1",
     "web3": "^4.0.2",
     "zone.js": "~0.13.0"
   },
