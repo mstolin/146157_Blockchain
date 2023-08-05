@@ -50,9 +50,13 @@ struct CampaignMeta {
 }
 
 struct CampaignAnimalData {
+  /// Animal ear tag
   string earTag;
+  /// Animal name
   string name;
+  /// Farm name
   string farm;
+  /// Animal age
   uint8 age;
 }
 

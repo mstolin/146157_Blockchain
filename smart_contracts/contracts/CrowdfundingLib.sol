@@ -31,4 +31,24 @@ library CrowdfundingLib {
     require(numberOfBoxes > 0, "At least one box is required");
   }
 
+  function getTotalNumberOfBoxes(BoxOffer[] memory _boxes) internal pure returns(uint256) {
+    uint256 numberOfBoxes = 0;
+    for (uint256 index = 0; index < _boxes.length; index++) {
+      BoxOffer memory offer = _boxes[index];
+      numberOfBoxes += offer.total;
+    }
+    return numberOfBoxes;
+  }
+
+  function getFarmerShare(Campaign storage _campaign) internal view returns(uint256) {
+    return _campaign.meta.collectedAmount * _campaign.stakeholders.farmer.share;
+  }
+
+  function getButcherShare(Campaign storage _campaign) internal view returns(uint256) {
+    return _campaign.meta.collectedAmount * _campaign.stakeholders.butcher.share;
+  }
+
+  function getDeliveryShare(Campaign storage _campaign) internal view returns(uint256) {
+    return _campaign.meta.collectedAmount * _campaign.stakeholders.delivery.share;
+  }
 }
