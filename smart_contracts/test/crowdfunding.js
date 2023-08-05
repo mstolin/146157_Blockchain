@@ -95,7 +95,7 @@ contract('Crowdfunding', (accounts) => {
     assert.equal(campaignRes.campaign.meta.title, campaign.meta.title);
     assert.equal(campaignRes.campaign.meta.description, campaign.meta.description);
     assert.equal(campaignRes.campaign.meta.collectedAmount, 0);
-    //assert.equal(campaignRes.campaign.meta.totalBoxes, 12);
+    assert.equal(campaignRes.campaign.meta.totalBoxes, 12);
     assert.equal(campaignRes.campaign.meta.boxesSold, 0)
     assert.isAbove(Number(campaignRes.campaign.meta.deadline), (new Date()).getTime() / 1000);
     assert.isFalse(campaignRes.campaign.meta.isStopped);
@@ -124,7 +124,46 @@ contract('Crowdfunding', (accounts) => {
     }
   });
 
-  /*it('should buy all from a campaign', async () => {
+  /*it('should fail for creating false campaigns', async () => {
+    const contract = await Crowdfunding.deployed();
+    const owner = accounts[0];
+
+    async function failWithFalseDeadline() {
+      await contract
+      .createCampaign(
+        'title',
+        'desc',
+        0,
+        owner,
+        {
+          'farmer': {
+            'owner': FARMER_ADDR,
+            'share': 40
+          },
+          'butcher': {
+            'owner': BUTCHER_ADDR,
+            'share': 30
+          },
+          'delivery': {
+            'owner': DELIVERY_ADDR,
+            'share': 30
+          },
+        },
+        {
+          'earTag': 'DE12345',
+          'name': 'Erna',
+          'farm': 'Nice Farm',
+          'age': 2
+        },
+        generateBoxes(1, 1),
+        { 'from': owner }
+      );
+    }
+
+    assert.throws(failWithFalseDeadline(), 'Duration must be higher than 0');
+  });*/
+
+  it('should buy all from a campaign', async () => {
     const contract = await Crowdfunding.deployed();
     const owner = accounts[0];
 
@@ -136,9 +175,9 @@ contract('Crowdfunding', (accounts) => {
     await contract.buyBox(campaignId, 0, someAddr, { 'from': owner, 'value': 2 });
 
     let campaignRes = await contract.getCampaign.call(campaignId);
-    assert.equal(campaignRes.campaign.boxesSold, 1);
-    assert.equal(campaignRes.campaign.collectedAmount, 2);
-    assert.isFalse(campaignRes.campaign.isStopped);
+    assert.equal(campaignRes.campaign.meta.boxesSold, 1);
+    assert.equal(campaignRes.campaign.meta.collectedAmount, 2);
+    assert.isFalse(campaignRes.campaign.meta.isStopped);
 
     let boxesRes = await contract.getBoxes.call(campaignId);
     assert.equal(boxesRes[0].available, 0);
@@ -154,9 +193,9 @@ contract('Crowdfunding', (accounts) => {
     await contract.buyBox(campaignId, 1, someAddr, { 'from': owner, 'value': 2 });
 
     campaignRes = await contract.getCampaign.call(campaignId);
-    assert.equal(campaignRes.campaign.boxesSold, 3);
-    assert.equal(campaignRes.campaign.collectedAmount, web3.utils.toWei('6', 'wei'));
-    assert.isTrue(campaignRes.campaign.isStopped);
+    assert.equal(campaignRes.campaign.meta.boxesSold, 3);
+    assert.equal(campaignRes.campaign.meta.collectedAmount, web3.utils.toWei('6', 'wei'));
+    assert.isTrue(campaignRes.campaign.meta.isStopped);
 
     boxesRes = await contract.getBoxes.call(campaignId);
     assert.equal(boxesRes[1].available, 0);
@@ -179,12 +218,12 @@ contract('Crowdfunding', (accounts) => {
     const campaignId = await createCampaign(contract, campaign, owner);
 
     let campaignRes = await contract.getCampaign.call(campaignId);
-    assert.isFalse(campaignRes.campaign.isStopped);
+    assert.isFalse(campaignRes.campaign.meta.isStopped);
 
     await contract.stopCampaign(campaignId, { 'from': owner });
 
     campaignRes = await contract.getCampaign.call(campaignId);
-    assert.isTrue(campaignRes.campaign.isStopped);
-  });*/
+    assert.isTrue(campaignRes.campaign.meta.isStopped);
+  });
 
 });
