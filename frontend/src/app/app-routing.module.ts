@@ -5,7 +5,7 @@ import { AllCampaignsComponent } from './components/all-campaigns/all-campaigns.
 import { NewCampaignComponent } from './components/new-campaign/new-campaign.component';
 import { CampaignDetailComponent } from './components/campaign-detail/campaign-detail.component';
 import { BuyBoxComponent } from './components/buy-box/buy-box.component';
-import { BoxDetailComponent } from './box-detail/box-detail.component';
+import { BoxDetailComponent } from './components/box-detail/box-detail.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
