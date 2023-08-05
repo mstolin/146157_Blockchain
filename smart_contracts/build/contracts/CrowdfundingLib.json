@@ -1,0 +1,2186 @@
+{
+  "contractName": "CrowdfundingLib",
+  "abi": [],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.13+commit.abaa5c0e\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/CrowdfundingLib.sol\":\"CrowdfundingLib\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/CrowdfundingLib.sol\":{\"keccak256\":\"0x3dab22982918f2a29d3c1b85952d98fcd292a121da88af0dc2d80b0730c4fe24\",\"license\":\"AGPL\",\"urls\":[\"bzz-raw://5f5dc4d202b05ae806dcc636e60e03a80e72b72987d4d6dbf5377339430228d4\",\"dweb:/ipfs/QmaAUc8h9PH1RqTVc9VynmnMLcsQscr1BhuJcDMBiTREdg\"]},\"project:/contracts/Types.sol\":{\"keccak256\":\"0x715b7b1a21eb411546e59da9220dd665ab309f85ecf3b042d97bcd164d691de3\",\"license\":\"AGPL\",\"urls\":[\"bzz-raw://d3eb508432903814dc9a47721efc214782911f40c651da72a856cd875291bfa2\",\"dweb:/ipfs/Qme55MnSuHVoqRctszLQmXqMSFqUHuMLyR5aKjMF339rB9\"]}},\"version\":1}",
+  "bytecode": "0x60566050600b82828239805160001a6073146043577f4e487b7100000000000000000000000000000000000000000000000000000000600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220bdbd10760f03aac91096f4052a27beccc6e51ef6a82036f356e8795847b797e964736f6c634300080d0033",
+  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220bdbd10760f03aac91096f4052a27beccc6e51ef6a82036f356e8795847b797e964736f6c634300080d0033",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "82:1459:1:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "82:1459:1:-:0;;;;;;;;",
+  "source": "// SPDX-License-Identifier: AGPL\npragma solidity ^0.8.13;\n\nimport './Types.sol';\n\nlibrary CrowdfundingLib {\n\n  function validateStakeholders(StakeholderList memory _stakeholders) internal pure {\n    require(_stakeholders.farmer.share > 0 && _stakeholders.farmer.share <= 100, \"Farmer share must be higher than 0% and can't be higher than 100%\");\n    require(_stakeholders.butcher.share > 0 && _stakeholders.butcher.share <= 100, \"Butcher share must be higher than 0% and can't be higher than 100%\");\n    require(_stakeholders.delivery.share > 0 && _stakeholders.delivery.share <= 100, \"Delivery Service share must be higher than 0% and can't be higher than 100%\");\n    uint8 totalShare = _stakeholders.farmer.share + _stakeholders.butcher.share + _stakeholders.delivery.share;\n    require(totalShare == 100, \"The total share of all stakeholders must be equal to 100%\");\n  }\n\n  function validateBoxes(BoxOffer[] memory _boxes) internal pure {\n    uint256 numberOfBoxes = 0;\n    for (uint256 index = 0; index < _boxes.length; index++) {\n      BoxOffer memory offer = _boxes[index];\n      require(offer.total > 0, \"There must be at least one box to sell\");\n      require(offer.total == offer.available, \"Initially total number of boxes and available must be equal\");\n      numberOfBoxes += offer.total;\n\n      Box memory box = offer.box;\n      // A box requires a price\n      require(\n          box.price > 0,\n          \"A box requires a price higher than 0\"\n      );\n    }\n    require(numberOfBoxes > 0, \"At least one box is required\");\n  }\n\n}\n",
+  "sourcePath": "/workspaces/146157_Blockchain/smart_contracts/contracts/CrowdfundingLib.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/CrowdfundingLib.sol",
+    "exportedSymbols": {
+      "Box": [
+        490
+      ],
+      "BoxOffer": [
+        504
+      ],
+      "BoxSellRef": [
+        518
+      ],
+      "Campaign": [
+        589
+      ],
+      "CampaignAnimalData": [
+        549
+      ],
+      "CampaignMeta": [
+        540
+      ],
+      "CampaignOwner": [
+        556
+      ],
+      "CampaignRef": [
+        597
+      ],
+      "CrowdfundingLib": [
+        478
+      ],
+      "Stakeholder": [
+        563
+      ],
+      "StakeholderList": [
+        576
+      ]
+    },
+    "id": 479,
+    "license": "AGPL",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 328,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".13"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "33:24:1"
+      },
+      {
+        "absolutePath": "project:/contracts/Types.sol",
+        "file": "./Types.sol",
+        "id": 329,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 479,
+        "sourceUnit": 598,
+        "src": "59:21:1",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "CrowdfundingLib",
+        "contractDependencies": [],
+        "contractKind": "library",
+        "fullyImplemented": true,
+        "id": 478,
+        "linearizedBaseContracts": [
+          478
+        ],
+        "name": "CrowdfundingLib",
+        "nameLocation": "90:15:1",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 401,
+              "nodeType": "Block",
+              "src": "193:680:1",
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "commonType": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
+                        "id": 346,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "commonType": {
+                            "typeIdentifier": "t_uint8",
+                            "typeString": "uint8"
+                          },
+                          "id": 340,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "leftExpression": {
+                            "expression": {
+                              "expression": {
+                                "id": 336,
+                                "name": "_stakeholders",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 332,
+                                "src": "207:13:1",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$_StakeholderList_$576_memory_ptr",
+                                  "typeString": "struct StakeholderList memory"
+                                }
+                              },
+                              "id": 337,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "farmer",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 567,
+                              "src": "207:20:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_struct$_Stakeholder_$563_memory_ptr",
+                                "typeString": "struct Stakeholder memory"
+                              }
+                            },
+                            "id": 338,
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "memberName": "share",
+                            "nodeType": "MemberAccess",
+                            "referencedDeclaration": 562,
+                            "src": "207:26:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint8",
+                              "typeString": "uint8"
+                            }
+                          },
+                          "nodeType": "BinaryOperation",
+                          "operator": ">",
+                          "rightExpression": {
+                            "hexValue": "30",
+                            "id": 339,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": true,
+                            "kind": "number",
+                            "lValueRequested": false,
+                            "nodeType": "Literal",
+                            "src": "236:1:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_rational_0_by_1",
+                              "typeString": "int_const 0"
+                            },
+                            "value": "0"
+                          },
+                          "src": "207:30:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "&&",
+                        "rightExpression": {
+                          "commonType": {
+                            "typeIdentifier": "t_uint8",
+                            "typeString": "uint8"
+                          },
+                          "id": 345,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "leftExpression": {
+                            "expression": {
+                              "expression": {
+                                "id": 341,
+                                "name": "_stakeholders",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 332,
+                                "src": "241:13:1",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$_StakeholderList_$576_memory_ptr",
+                                  "typeString": "struct StakeholderList memory"
+                                }
+                              },
+                              "id": 342,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "farmer",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 567,
+                              "src": "241:20:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_struct$_Stakeholder_$563_memory_ptr",
+                                "typeString": "struct Stakeholder memory"
+                              }
+                            },
+                            "id": 343,
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "memberName": "share",
+                            "nodeType": "MemberAccess",
+                            "referencedDeclaration": 562,
+                            "src": "241:26:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint8",
+                              "typeString": "uint8"
+                            }
+                          },
+                          "nodeType": "BinaryOperation",
+                          "operator": "<=",
+                          "rightExpression": {
+                            "hexValue": "313030",
+                            "id": 344,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": true,
+                            "kind": "number",
+                            "lValueRequested": false,
+                            "nodeType": "Literal",
+                            "src": "271:3:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_rational_100_by_1",
+                              "typeString": "int_const 100"
+                            },
+                            "value": "100"
+                          },
+                          "src": "241:33:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          }
+                        },
+                        "src": "207:67:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      },
+                      {
+                        "hexValue": "4661726d6572207368617265206d75737420626520686967686572207468616e20302520616e642063616e277420626520686967686572207468616e2031303025",
+                        "id": 347,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "string",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "276:67:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_stringliteral_ba1b4f976d814c503c748b3707fb83ebd89cb2cf832cffbc25f26d01386dc256",
+                          "typeString": "literal_string \"Farmer share must be higher than 0% and can't be higher than 100%\""
+                        },
+                        "value": "Farmer share must be higher than 0% and can't be higher than 100%"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
+                        {
+                          "typeIdentifier": "t_stringliteral_ba1b4f976d814c503c748b3707fb83ebd89cb2cf832cffbc25f26d01386dc256",
+                          "typeString": "literal_string \"Farmer share must be higher than 0% and can't be higher than 100%\""
+                        }
+                      ],
+                      "id": 335,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        4294967278,
+                        4294967278
+                      ],
+                      "referencedDeclaration": 4294967278,
+                      "src": "199:7:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+                        "typeString": "function (bool,string memory) pure"
+                      }
+                    },
+                    "id": 348,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "199:145:1",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 349,
+                  "nodeType": "ExpressionStatement",
+                  "src": "199:145:1"
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "commonType": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
+                        "id": 361,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "commonType": {
+                            "typeIdentifier": "t_uint8",
+                            "typeString": "uint8"
+                          },
+                          "id": 355,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "leftExpression": {
+                            "expression": {
+                              "expression": {
+                                "id": 351,
+                                "name": "_stakeholders",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 332,
+                                "src": "358:13:1",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$_StakeholderList_$576_memory_ptr",
+                                  "typeString": "struct StakeholderList memory"
+                                }
+                              },
+                              "id": 352,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "butcher",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 571,
+                              "src": "358:21:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_struct$_Stakeholder_$563_memory_ptr",
+                                "typeString": "struct Stakeholder memory"
+                              }
+                            },
+                            "id": 353,
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "memberName": "share",
+                            "nodeType": "MemberAccess",
+                            "referencedDeclaration": 562,
+                            "src": "358:27:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint8",
+                              "typeString": "uint8"
+                            }
+                          },
+                          "nodeType": "BinaryOperation",
+                          "operator": ">",
+                          "rightExpression": {
+                            "hexValue": "30",
+                            "id": 354,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": true,
+                            "kind": "number",
+                            "lValueRequested": false,
+                            "nodeType": "Literal",
+                            "src": "388:1:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_rational_0_by_1",
+                              "typeString": "int_const 0"
+                            },
+                            "value": "0"
+                          },
+                          "src": "358:31:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "&&",
+                        "rightExpression": {
+                          "commonType": {
+                            "typeIdentifier": "t_uint8",
+                            "typeString": "uint8"
+                          },
+                          "id": 360,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "leftExpression": {
+                            "expression": {
+                              "expression": {
+                                "id": 356,
+                                "name": "_stakeholders",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 332,
+                                "src": "393:13:1",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$_StakeholderList_$576_memory_ptr",
+                                  "typeString": "struct StakeholderList memory"
+                                }
+                              },
+                              "id": 357,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "butcher",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 571,
+                              "src": "393:21:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_struct$_Stakeholder_$563_memory_ptr",
+                                "typeString": "struct Stakeholder memory"
+                              }
+                            },
+                            "id": 358,
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "memberName": "share",
+                            "nodeType": "MemberAccess",
+                            "referencedDeclaration": 562,
+                            "src": "393:27:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint8",
+                              "typeString": "uint8"
+                            }
+                          },
+                          "nodeType": "BinaryOperation",
+                          "operator": "<=",
+                          "rightExpression": {
+                            "hexValue": "313030",
+                            "id": 359,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": true,
+                            "kind": "number",
+                            "lValueRequested": false,
+                            "nodeType": "Literal",
+                            "src": "424:3:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_rational_100_by_1",
+                              "typeString": "int_const 100"
+                            },
+                            "value": "100"
+                          },
+                          "src": "393:34:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          }
+                        },
+                        "src": "358:69:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      },
+                      {
+                        "hexValue": "42757463686572207368617265206d75737420626520686967686572207468616e20302520616e642063616e277420626520686967686572207468616e2031303025",
+                        "id": 362,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "string",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "429:68:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_stringliteral_42cee8643a1e693b47ab347e8c1d21ba3e4f23be5c6b245628ff14d0cebda297",
+                          "typeString": "literal_string \"Butcher share must be higher than 0% and can't be higher than 100%\""
+                        },
+                        "value": "Butcher share must be higher than 0% and can't be higher than 100%"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
+                        {
+                          "typeIdentifier": "t_stringliteral_42cee8643a1e693b47ab347e8c1d21ba3e4f23be5c6b245628ff14d0cebda297",
+                          "typeString": "literal_string \"Butcher share must be higher than 0% and can't be higher than 100%\""
+                        }
+                      ],
+                      "id": 350,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        4294967278,
+                        4294967278
+                      ],
+                      "referencedDeclaration": 4294967278,
+                      "src": "350:7:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+                        "typeString": "function (bool,string memory) pure"
+                      }
+                    },
+                    "id": 363,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "350:148:1",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 364,
+                  "nodeType": "ExpressionStatement",
+                  "src": "350:148:1"
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "commonType": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
+                        "id": 376,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "commonType": {
+                            "typeIdentifier": "t_uint8",
+                            "typeString": "uint8"
+                          },
+                          "id": 370,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "leftExpression": {
+                            "expression": {
+                              "expression": {
+                                "id": 366,
+                                "name": "_stakeholders",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 332,
+                                "src": "512:13:1",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$_StakeholderList_$576_memory_ptr",
+                                  "typeString": "struct StakeholderList memory"
+                                }
+                              },
+                              "id": 367,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "delivery",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 575,
+                              "src": "512:22:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_struct$_Stakeholder_$563_memory_ptr",
+                                "typeString": "struct Stakeholder memory"
+                              }
+                            },
+                            "id": 368,
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "memberName": "share",
+                            "nodeType": "MemberAccess",
+                            "referencedDeclaration": 562,
+                            "src": "512:28:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint8",
+                              "typeString": "uint8"
+                            }
+                          },
+                          "nodeType": "BinaryOperation",
+                          "operator": ">",
+                          "rightExpression": {
+                            "hexValue": "30",
+                            "id": 369,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": true,
+                            "kind": "number",
+                            "lValueRequested": false,
+                            "nodeType": "Literal",
+                            "src": "543:1:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_rational_0_by_1",
+                              "typeString": "int_const 0"
+                            },
+                            "value": "0"
+                          },
+                          "src": "512:32:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "&&",
+                        "rightExpression": {
+                          "commonType": {
+                            "typeIdentifier": "t_uint8",
+                            "typeString": "uint8"
+                          },
+                          "id": 375,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "leftExpression": {
+                            "expression": {
+                              "expression": {
+                                "id": 371,
+                                "name": "_stakeholders",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 332,
+                                "src": "548:13:1",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_struct$_StakeholderList_$576_memory_ptr",
+                                  "typeString": "struct StakeholderList memory"
+                                }
+                              },
+                              "id": 372,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "memberName": "delivery",
+                              "nodeType": "MemberAccess",
+                              "referencedDeclaration": 575,
+                              "src": "548:22:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_struct$_Stakeholder_$563_memory_ptr",
+                                "typeString": "struct Stakeholder memory"
+                              }
+                            },
+                            "id": 373,
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "memberName": "share",
+                            "nodeType": "MemberAccess",
+                            "referencedDeclaration": 562,
+                            "src": "548:28:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint8",
+                              "typeString": "uint8"
+                            }
+                          },
+                          "nodeType": "BinaryOperation",
+                          "operator": "<=",
+                          "rightExpression": {
+                            "hexValue": "313030",
+                            "id": 374,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": true,
+                            "kind": "number",
+                            "lValueRequested": false,
+                            "nodeType": "Literal",
+                            "src": "580:3:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_rational_100_by_1",
+                              "typeString": "int_const 100"
+                            },
+                            "value": "100"
+                          },
+                          "src": "548:35:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          }
+                        },
+                        "src": "512:71:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      },
+                      {
+                        "hexValue": "44656c69766572792053657276696365207368617265206d75737420626520686967686572207468616e20302520616e642063616e277420626520686967686572207468616e2031303025",
+                        "id": 377,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "string",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "585:77:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_stringliteral_5dd1ca1f8bf53f6b987da92c3599c221461058a714d04c9a892e3c20d76d57ac",
+                          "typeString": "literal_string \"Delivery Service share must be higher than 0% and can't be higher than 100%\""
+                        },
+                        "value": "Delivery Service share must be higher than 0% and can't be higher than 100%"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
+                        {
+                          "typeIdentifier": "t_stringliteral_5dd1ca1f8bf53f6b987da92c3599c221461058a714d04c9a892e3c20d76d57ac",
+                          "typeString": "literal_string \"Delivery Service share must be higher than 0% and can't be higher than 100%\""
+                        }
+                      ],
+                      "id": 365,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        4294967278,
+                        4294967278
+                      ],
+                      "referencedDeclaration": 4294967278,
+                      "src": "504:7:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+                        "typeString": "function (bool,string memory) pure"
+                      }
+                    },
+                    "id": 378,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "504:159:1",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 379,
+                  "nodeType": "ExpressionStatement",
+                  "src": "504:159:1"
+                },
+                {
+                  "assignments": [
+                    381
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 381,
+                      "mutability": "mutable",
+                      "name": "totalShare",
+                      "nameLocation": "675:10:1",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 401,
+                      "src": "669:16:1",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint8",
+                        "typeString": "uint8"
+                      },
+                      "typeName": {
+                        "id": 380,
+                        "name": "uint8",
+                        "nodeType": "ElementaryTypeName",
+                        "src": "669:5:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint8",
+                          "typeString": "uint8"
+                        }
+                      },
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 393,
+                  "initialValue": {
+                    "commonType": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    },
+                    "id": 392,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "commonType": {
+                        "typeIdentifier": "t_uint8",
+                        "typeString": "uint8"
+                      },
+                      "id": 388,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "leftExpression": {
+                        "expression": {
+                          "expression": {
+                            "id": 382,
+                            "name": "_stakeholders",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 332,
+                            "src": "688:13:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_struct$_StakeholderList_$576_memory_ptr",
+                              "typeString": "struct StakeholderList memory"
+                            }
+                          },
+                          "id": 383,
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "farmer",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": 567,
+                          "src": "688:20:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Stakeholder_$563_memory_ptr",
+                            "typeString": "struct Stakeholder memory"
+                          }
+                        },
+                        "id": 384,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "share",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 562,
+                        "src": "688:26:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint8",
+                          "typeString": "uint8"
+                        }
+                      },
+                      "nodeType": "BinaryOperation",
+                      "operator": "+",
+                      "rightExpression": {
+                        "expression": {
+                          "expression": {
+                            "id": 385,
+                            "name": "_stakeholders",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 332,
+                            "src": "717:13:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_struct$_StakeholderList_$576_memory_ptr",
+                              "typeString": "struct StakeholderList memory"
+                            }
+                          },
+                          "id": 386,
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "butcher",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": 571,
+                          "src": "717:21:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Stakeholder_$563_memory_ptr",
+                            "typeString": "struct Stakeholder memory"
+                          }
+                        },
+                        "id": 387,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "share",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 562,
+                        "src": "717:27:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint8",
+                          "typeString": "uint8"
+                        }
+                      },
+                      "src": "688:56:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint8",
+                        "typeString": "uint8"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "+",
+                    "rightExpression": {
+                      "expression": {
+                        "expression": {
+                          "id": 389,
+                          "name": "_stakeholders",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 332,
+                          "src": "747:13:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_StakeholderList_$576_memory_ptr",
+                            "typeString": "struct StakeholderList memory"
+                          }
+                        },
+                        "id": 390,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "delivery",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 575,
+                        "src": "747:22:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Stakeholder_$563_memory_ptr",
+                          "typeString": "struct Stakeholder memory"
+                        }
+                      },
+                      "id": 391,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "share",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 562,
+                      "src": "747:28:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint8",
+                        "typeString": "uint8"
+                      }
+                    },
+                    "src": "688:87:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "669:106:1"
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "commonType": {
+                          "typeIdentifier": "t_uint8",
+                          "typeString": "uint8"
+                        },
+                        "id": 397,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "id": 395,
+                          "name": "totalShare",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 381,
+                          "src": "789:10:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint8",
+                            "typeString": "uint8"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "==",
+                        "rightExpression": {
+                          "hexValue": "313030",
+                          "id": 396,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "803:3:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_100_by_1",
+                            "typeString": "int_const 100"
+                          },
+                          "value": "100"
+                        },
+                        "src": "789:17:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      },
+                      {
+                        "hexValue": "54686520746f74616c207368617265206f6620616c6c207374616b65686f6c64657273206d75737420626520657175616c20746f2031303025",
+                        "id": 398,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "string",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "808:59:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_stringliteral_5c65ee02820508ba61a3848f4bd030a70d27543ffbfde810763842997556d82d",
+                          "typeString": "literal_string \"The total share of all stakeholders must be equal to 100%\""
+                        },
+                        "value": "The total share of all stakeholders must be equal to 100%"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
+                        {
+                          "typeIdentifier": "t_stringliteral_5c65ee02820508ba61a3848f4bd030a70d27543ffbfde810763842997556d82d",
+                          "typeString": "literal_string \"The total share of all stakeholders must be equal to 100%\""
+                        }
+                      ],
+                      "id": 394,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        4294967278,
+                        4294967278
+                      ],
+                      "referencedDeclaration": 4294967278,
+                      "src": "781:7:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+                        "typeString": "function (bool,string memory) pure"
+                      }
+                    },
+                    "id": 399,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "781:87:1",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 400,
+                  "nodeType": "ExpressionStatement",
+                  "src": "781:87:1"
+                }
+              ]
+            },
+            "id": 402,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "validateStakeholders",
+            "nameLocation": "120:20:1",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 333,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 332,
+                  "mutability": "mutable",
+                  "name": "_stakeholders",
+                  "nameLocation": "164:13:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 402,
+                  "src": "141:36:1",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_StakeholderList_$576_memory_ptr",
+                    "typeString": "struct StakeholderList"
+                  },
+                  "typeName": {
+                    "id": 331,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 330,
+                      "name": "StakeholderList",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 576,
+                      "src": "141:15:1"
+                    },
+                    "referencedDeclaration": 576,
+                    "src": "141:15:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_StakeholderList_$576_storage_ptr",
+                      "typeString": "struct StakeholderList"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "140:38:1"
+            },
+            "returnParameters": {
+              "id": 334,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "193:0:1"
+            },
+            "scope": 478,
+            "src": "111:762:1",
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 476,
+              "nodeType": "Block",
+              "src": "940:598:1",
+              "statements": [
+                {
+                  "assignments": [
+                    410
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 410,
+                      "mutability": "mutable",
+                      "name": "numberOfBoxes",
+                      "nameLocation": "954:13:1",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 476,
+                      "src": "946:21:1",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      },
+                      "typeName": {
+                        "id": 409,
+                        "name": "uint256",
+                        "nodeType": "ElementaryTypeName",
+                        "src": "946:7:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 412,
+                  "initialValue": {
+                    "hexValue": "30",
+                    "id": 411,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": true,
+                    "kind": "number",
+                    "lValueRequested": false,
+                    "nodeType": "Literal",
+                    "src": "970:1:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_rational_0_by_1",
+                      "typeString": "int_const 0"
+                    },
+                    "value": "0"
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "946:25:1"
+                },
+                {
+                  "body": {
+                    "id": 467,
+                    "nodeType": "Block",
+                    "src": "1033:437:1",
+                    "statements": [
+                      {
+                        "assignments": [
+                          426
+                        ],
+                        "declarations": [
+                          {
+                            "constant": false,
+                            "id": 426,
+                            "mutability": "mutable",
+                            "name": "offer",
+                            "nameLocation": "1057:5:1",
+                            "nodeType": "VariableDeclaration",
+                            "scope": 467,
+                            "src": "1041:21:1",
+                            "stateVariable": false,
+                            "storageLocation": "memory",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_struct$_BoxOffer_$504_memory_ptr",
+                              "typeString": "struct BoxOffer"
+                            },
+                            "typeName": {
+                              "id": 425,
+                              "nodeType": "UserDefinedTypeName",
+                              "pathNode": {
+                                "id": 424,
+                                "name": "BoxOffer",
+                                "nodeType": "IdentifierPath",
+                                "referencedDeclaration": 504,
+                                "src": "1041:8:1"
+                              },
+                              "referencedDeclaration": 504,
+                              "src": "1041:8:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_struct$_BoxOffer_$504_storage_ptr",
+                                "typeString": "struct BoxOffer"
+                              }
+                            },
+                            "visibility": "internal"
+                          }
+                        ],
+                        "id": 430,
+                        "initialValue": {
+                          "baseExpression": {
+                            "id": 427,
+                            "name": "_boxes",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 406,
+                            "src": "1065:6:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_array$_t_struct$_BoxOffer_$504_memory_ptr_$dyn_memory_ptr",
+                              "typeString": "struct BoxOffer memory[] memory"
+                            }
+                          },
+                          "id": 429,
+                          "indexExpression": {
+                            "id": 428,
+                            "name": "index",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 414,
+                            "src": "1072:5:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          },
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "nodeType": "IndexAccess",
+                          "src": "1065:13:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_BoxOffer_$504_memory_ptr",
+                            "typeString": "struct BoxOffer memory"
+                          }
+                        },
+                        "nodeType": "VariableDeclarationStatement",
+                        "src": "1041:37:1"
+                      },
+                      {
+                        "expression": {
+                          "arguments": [
+                            {
+                              "commonType": {
+                                "typeIdentifier": "t_uint32",
+                                "typeString": "uint32"
+                              },
+                              "id": 435,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "leftExpression": {
+                                "expression": {
+                                  "id": 432,
+                                  "name": "offer",
+                                  "nodeType": "Identifier",
+                                  "overloadedDeclarations": [],
+                                  "referencedDeclaration": 426,
+                                  "src": "1094:5:1",
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_struct$_BoxOffer_$504_memory_ptr",
+                                    "typeString": "struct BoxOffer memory"
+                                  }
+                                },
+                                "id": 433,
+                                "isConstant": false,
+                                "isLValue": true,
+                                "isPure": false,
+                                "lValueRequested": false,
+                                "memberName": "total",
+                                "nodeType": "MemberAccess",
+                                "referencedDeclaration": 500,
+                                "src": "1094:11:1",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_uint32",
+                                  "typeString": "uint32"
+                                }
+                              },
+                              "nodeType": "BinaryOperation",
+                              "operator": ">",
+                              "rightExpression": {
+                                "hexValue": "30",
+                                "id": 434,
+                                "isConstant": false,
+                                "isLValue": false,
+                                "isPure": true,
+                                "kind": "number",
+                                "lValueRequested": false,
+                                "nodeType": "Literal",
+                                "src": "1108:1:1",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_rational_0_by_1",
+                                  "typeString": "int_const 0"
+                                },
+                                "value": "0"
+                              },
+                              "src": "1094:15:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_bool",
+                                "typeString": "bool"
+                              }
+                            },
+                            {
+                              "hexValue": "5468657265206d757374206265206174206c65617374206f6e6520626f7820746f2073656c6c",
+                              "id": 436,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "kind": "string",
+                              "lValueRequested": false,
+                              "nodeType": "Literal",
+                              "src": "1111:40:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_stringliteral_3aa22e42c3708ed98bc19176c1a5e71b1c2e8068bf5656ef4ee746364e827bd0",
+                                "typeString": "literal_string \"There must be at least one box to sell\""
+                              },
+                              "value": "There must be at least one box to sell"
+                            }
+                          ],
+                          "expression": {
+                            "argumentTypes": [
+                              {
+                                "typeIdentifier": "t_bool",
+                                "typeString": "bool"
+                              },
+                              {
+                                "typeIdentifier": "t_stringliteral_3aa22e42c3708ed98bc19176c1a5e71b1c2e8068bf5656ef4ee746364e827bd0",
+                                "typeString": "literal_string \"There must be at least one box to sell\""
+                              }
+                            ],
+                            "id": 431,
+                            "name": "require",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [
+                              4294967278,
+                              4294967278
+                            ],
+                            "referencedDeclaration": 4294967278,
+                            "src": "1086:7:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+                              "typeString": "function (bool,string memory) pure"
+                            }
+                          },
+                          "id": 437,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "kind": "functionCall",
+                          "lValueRequested": false,
+                          "names": [],
+                          "nodeType": "FunctionCall",
+                          "src": "1086:66:1",
+                          "tryCall": false,
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_tuple$__$",
+                            "typeString": "tuple()"
+                          }
+                        },
+                        "id": 438,
+                        "nodeType": "ExpressionStatement",
+                        "src": "1086:66:1"
+                      },
+                      {
+                        "expression": {
+                          "arguments": [
+                            {
+                              "commonType": {
+                                "typeIdentifier": "t_uint32",
+                                "typeString": "uint32"
+                              },
+                              "id": 444,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "leftExpression": {
+                                "expression": {
+                                  "id": 440,
+                                  "name": "offer",
+                                  "nodeType": "Identifier",
+                                  "overloadedDeclarations": [],
+                                  "referencedDeclaration": 426,
+                                  "src": "1168:5:1",
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_struct$_BoxOffer_$504_memory_ptr",
+                                    "typeString": "struct BoxOffer memory"
+                                  }
+                                },
+                                "id": 441,
+                                "isConstant": false,
+                                "isLValue": true,
+                                "isPure": false,
+                                "lValueRequested": false,
+                                "memberName": "total",
+                                "nodeType": "MemberAccess",
+                                "referencedDeclaration": 500,
+                                "src": "1168:11:1",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_uint32",
+                                  "typeString": "uint32"
+                                }
+                              },
+                              "nodeType": "BinaryOperation",
+                              "operator": "==",
+                              "rightExpression": {
+                                "expression": {
+                                  "id": 442,
+                                  "name": "offer",
+                                  "nodeType": "Identifier",
+                                  "overloadedDeclarations": [],
+                                  "referencedDeclaration": 426,
+                                  "src": "1183:5:1",
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_struct$_BoxOffer_$504_memory_ptr",
+                                    "typeString": "struct BoxOffer memory"
+                                  }
+                                },
+                                "id": 443,
+                                "isConstant": false,
+                                "isLValue": true,
+                                "isPure": false,
+                                "lValueRequested": false,
+                                "memberName": "available",
+                                "nodeType": "MemberAccess",
+                                "referencedDeclaration": 503,
+                                "src": "1183:15:1",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_uint32",
+                                  "typeString": "uint32"
+                                }
+                              },
+                              "src": "1168:30:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_bool",
+                                "typeString": "bool"
+                              }
+                            },
+                            {
+                              "hexValue": "496e697469616c6c7920746f74616c206e756d626572206f6620626f78657320616e6420617661696c61626c65206d75737420626520657175616c",
+                              "id": 445,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "kind": "string",
+                              "lValueRequested": false,
+                              "nodeType": "Literal",
+                              "src": "1200:61:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_stringliteral_258ec0c31eddd5d1875fbf92038c8092b10e4cf40557a6347823a34d7de57db6",
+                                "typeString": "literal_string \"Initially total number of boxes and available must be equal\""
+                              },
+                              "value": "Initially total number of boxes and available must be equal"
+                            }
+                          ],
+                          "expression": {
+                            "argumentTypes": [
+                              {
+                                "typeIdentifier": "t_bool",
+                                "typeString": "bool"
+                              },
+                              {
+                                "typeIdentifier": "t_stringliteral_258ec0c31eddd5d1875fbf92038c8092b10e4cf40557a6347823a34d7de57db6",
+                                "typeString": "literal_string \"Initially total number of boxes and available must be equal\""
+                              }
+                            ],
+                            "id": 439,
+                            "name": "require",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [
+                              4294967278,
+                              4294967278
+                            ],
+                            "referencedDeclaration": 4294967278,
+                            "src": "1160:7:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+                              "typeString": "function (bool,string memory) pure"
+                            }
+                          },
+                          "id": 446,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "kind": "functionCall",
+                          "lValueRequested": false,
+                          "names": [],
+                          "nodeType": "FunctionCall",
+                          "src": "1160:102:1",
+                          "tryCall": false,
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_tuple$__$",
+                            "typeString": "tuple()"
+                          }
+                        },
+                        "id": 447,
+                        "nodeType": "ExpressionStatement",
+                        "src": "1160:102:1"
+                      },
+                      {
+                        "expression": {
+                          "id": 451,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "leftHandSide": {
+                            "id": 448,
+                            "name": "numberOfBoxes",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 410,
+                            "src": "1270:13:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          },
+                          "nodeType": "Assignment",
+                          "operator": "+=",
+                          "rightHandSide": {
+                            "expression": {
+                              "id": 449,
+                              "name": "offer",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 426,
+                              "src": "1287:5:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_struct$_BoxOffer_$504_memory_ptr",
+                                "typeString": "struct BoxOffer memory"
+                              }
+                            },
+                            "id": 450,
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "memberName": "total",
+                            "nodeType": "MemberAccess",
+                            "referencedDeclaration": 500,
+                            "src": "1287:11:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint32",
+                              "typeString": "uint32"
+                            }
+                          },
+                          "src": "1270:28:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "id": 452,
+                        "nodeType": "ExpressionStatement",
+                        "src": "1270:28:1"
+                      },
+                      {
+                        "assignments": [
+                          455
+                        ],
+                        "declarations": [
+                          {
+                            "constant": false,
+                            "id": 455,
+                            "mutability": "mutable",
+                            "name": "box",
+                            "nameLocation": "1318:3:1",
+                            "nodeType": "VariableDeclaration",
+                            "scope": 467,
+                            "src": "1307:14:1",
+                            "stateVariable": false,
+                            "storageLocation": "memory",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_struct$_Box_$490_memory_ptr",
+                              "typeString": "struct Box"
+                            },
+                            "typeName": {
+                              "id": 454,
+                              "nodeType": "UserDefinedTypeName",
+                              "pathNode": {
+                                "id": 453,
+                                "name": "Box",
+                                "nodeType": "IdentifierPath",
+                                "referencedDeclaration": 490,
+                                "src": "1307:3:1"
+                              },
+                              "referencedDeclaration": 490,
+                              "src": "1307:3:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_struct$_Box_$490_storage_ptr",
+                                "typeString": "struct Box"
+                              }
+                            },
+                            "visibility": "internal"
+                          }
+                        ],
+                        "id": 458,
+                        "initialValue": {
+                          "expression": {
+                            "id": 456,
+                            "name": "offer",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 426,
+                            "src": "1324:5:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_struct$_BoxOffer_$504_memory_ptr",
+                              "typeString": "struct BoxOffer memory"
+                            }
+                          },
+                          "id": 457,
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "box",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": 497,
+                          "src": "1324:9:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Box_$490_memory_ptr",
+                            "typeString": "struct Box memory"
+                          }
+                        },
+                        "nodeType": "VariableDeclarationStatement",
+                        "src": "1307:26:1"
+                      },
+                      {
+                        "expression": {
+                          "arguments": [
+                            {
+                              "commonType": {
+                                "typeIdentifier": "t_uint256",
+                                "typeString": "uint256"
+                              },
+                              "id": 463,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "leftExpression": {
+                                "expression": {
+                                  "id": 460,
+                                  "name": "box",
+                                  "nodeType": "Identifier",
+                                  "overloadedDeclarations": [],
+                                  "referencedDeclaration": 455,
+                                  "src": "1392:3:1",
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_struct$_Box_$490_memory_ptr",
+                                    "typeString": "struct Box memory"
+                                  }
+                                },
+                                "id": 461,
+                                "isConstant": false,
+                                "isLValue": true,
+                                "isPure": false,
+                                "lValueRequested": false,
+                                "memberName": "price",
+                                "nodeType": "MemberAccess",
+                                "referencedDeclaration": 489,
+                                "src": "1392:9:1",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_uint256",
+                                  "typeString": "uint256"
+                                }
+                              },
+                              "nodeType": "BinaryOperation",
+                              "operator": ">",
+                              "rightExpression": {
+                                "hexValue": "30",
+                                "id": 462,
+                                "isConstant": false,
+                                "isLValue": false,
+                                "isPure": true,
+                                "kind": "number",
+                                "lValueRequested": false,
+                                "nodeType": "Literal",
+                                "src": "1404:1:1",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_rational_0_by_1",
+                                  "typeString": "int_const 0"
+                                },
+                                "value": "0"
+                              },
+                              "src": "1392:13:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_bool",
+                                "typeString": "bool"
+                              }
+                            },
+                            {
+                              "hexValue": "4120626f78207265717569726573206120707269636520686967686572207468616e2030",
+                              "id": 464,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "kind": "string",
+                              "lValueRequested": false,
+                              "nodeType": "Literal",
+                              "src": "1417:38:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_stringliteral_eb9afbcbe55fb00ca3626dc2f8fd911eb19ee0a0efec0427f79f29511d4e6e61",
+                                "typeString": "literal_string \"A box requires a price higher than 0\""
+                              },
+                              "value": "A box requires a price higher than 0"
+                            }
+                          ],
+                          "expression": {
+                            "argumentTypes": [
+                              {
+                                "typeIdentifier": "t_bool",
+                                "typeString": "bool"
+                              },
+                              {
+                                "typeIdentifier": "t_stringliteral_eb9afbcbe55fb00ca3626dc2f8fd911eb19ee0a0efec0427f79f29511d4e6e61",
+                                "typeString": "literal_string \"A box requires a price higher than 0\""
+                              }
+                            ],
+                            "id": 459,
+                            "name": "require",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [
+                              4294967278,
+                              4294967278
+                            ],
+                            "referencedDeclaration": 4294967278,
+                            "src": "1373:7:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+                              "typeString": "function (bool,string memory) pure"
+                            }
+                          },
+                          "id": 465,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "kind": "functionCall",
+                          "lValueRequested": false,
+                          "names": [],
+                          "nodeType": "FunctionCall",
+                          "src": "1373:90:1",
+                          "tryCall": false,
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_tuple$__$",
+                            "typeString": "tuple()"
+                          }
+                        },
+                        "id": 466,
+                        "nodeType": "ExpressionStatement",
+                        "src": "1373:90:1"
+                      }
+                    ]
+                  },
+                  "condition": {
+                    "commonType": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    },
+                    "id": 420,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "id": 417,
+                      "name": "index",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 414,
+                      "src": "1001:5:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "<",
+                    "rightExpression": {
+                      "expression": {
+                        "id": 418,
+                        "name": "_boxes",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 406,
+                        "src": "1009:6:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_struct$_BoxOffer_$504_memory_ptr_$dyn_memory_ptr",
+                          "typeString": "struct BoxOffer memory[] memory"
+                        }
+                      },
+                      "id": 419,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "length",
+                      "nodeType": "MemberAccess",
+                      "src": "1009:13:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "1001:21:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "id": 468,
+                  "initializationExpression": {
+                    "assignments": [
+                      414
+                    ],
+                    "declarations": [
+                      {
+                        "constant": false,
+                        "id": 414,
+                        "mutability": "mutable",
+                        "name": "index",
+                        "nameLocation": "990:5:1",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 468,
+                        "src": "982:13:1",
+                        "stateVariable": false,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        "typeName": {
+                          "id": 413,
+                          "name": "uint256",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "982:7:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "visibility": "internal"
+                      }
+                    ],
+                    "id": 416,
+                    "initialValue": {
+                      "hexValue": "30",
+                      "id": 415,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "number",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "998:1:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_rational_0_by_1",
+                        "typeString": "int_const 0"
+                      },
+                      "value": "0"
+                    },
+                    "nodeType": "VariableDeclarationStatement",
+                    "src": "982:17:1"
+                  },
+                  "loopExpression": {
+                    "expression": {
+                      "id": 422,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "nodeType": "UnaryOperation",
+                      "operator": "++",
+                      "prefix": false,
+                      "src": "1024:7:1",
+                      "subExpression": {
+                        "id": 421,
+                        "name": "index",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 414,
+                        "src": "1024:5:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "id": 423,
+                    "nodeType": "ExpressionStatement",
+                    "src": "1024:7:1"
+                  },
+                  "nodeType": "ForStatement",
+                  "src": "977:493:1"
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "commonType": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        "id": 472,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "id": 470,
+                          "name": "numberOfBoxes",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 410,
+                          "src": "1483:13:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": ">",
+                        "rightExpression": {
+                          "hexValue": "30",
+                          "id": 471,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1499:1:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_0_by_1",
+                            "typeString": "int_const 0"
+                          },
+                          "value": "0"
+                        },
+                        "src": "1483:17:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      },
+                      {
+                        "hexValue": "4174206c65617374206f6e6520626f78206973207265717569726564",
+                        "id": 473,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "string",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "1502:30:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_stringliteral_8f70c6367b726b19e9e0417413249bdccd5dfd10f8679412c54c71d89c774303",
+                          "typeString": "literal_string \"At least one box is required\""
+                        },
+                        "value": "At least one box is required"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
+                        {
+                          "typeIdentifier": "t_stringliteral_8f70c6367b726b19e9e0417413249bdccd5dfd10f8679412c54c71d89c774303",
+                          "typeString": "literal_string \"At least one box is required\""
+                        }
+                      ],
+                      "id": 469,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        4294967278,
+                        4294967278
+                      ],
+                      "referencedDeclaration": 4294967278,
+                      "src": "1475:7:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+                        "typeString": "function (bool,string memory) pure"
+                      }
+                    },
+                    "id": 474,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1475:58:1",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 475,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1475:58:1"
+                }
+              ]
+            },
+            "id": 477,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "validateBoxes",
+            "nameLocation": "886:13:1",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 407,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 406,
+                  "mutability": "mutable",
+                  "name": "_boxes",
+                  "nameLocation": "918:6:1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 477,
+                  "src": "900:24:1",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_struct$_BoxOffer_$504_memory_ptr_$dyn_memory_ptr",
+                    "typeString": "struct BoxOffer[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 404,
+                      "nodeType": "UserDefinedTypeName",
+                      "pathNode": {
+                        "id": 403,
+                        "name": "BoxOffer",
+                        "nodeType": "IdentifierPath",
+                        "referencedDeclaration": 504,
+                        "src": "900:8:1"
+                      },
+                      "referencedDeclaration": 504,
+                      "src": "900:8:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_BoxOffer_$504_storage_ptr",
+                        "typeString": "struct BoxOffer"
+                      }
+                    },
+                    "id": 405,
+                    "nodeType": "ArrayTypeName",
+                    "src": "900:10:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_struct$_BoxOffer_$504_storage_$dyn_storage_ptr",
+                      "typeString": "struct BoxOffer[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "899:26:1"
+            },
+            "returnParameters": {
+              "id": 408,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "940:0:1"
+            },
+            "scope": 478,
+            "src": "877:661:1",
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "internal"
+          }
+        ],
+        "scope": 479,
+        "src": "82:1459:1",
+        "usedErrors": []
+      }
+    ],
+    "src": "33:1509:1"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.13+commit.abaa5c0e.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.14",
+  "updatedAt": "2023-08-05T09:42:55.471Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}
