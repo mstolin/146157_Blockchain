@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CrowdfundingService } from '../service/crowdfunding.service';
-import { BoxSellRefResp } from '../models/responseModels';
+import { CrowdfundingService } from '../../service/crowdfunding.service';
+import { BoxSellRefResp } from '../../models/responseModels';
 import { Store } from '@ngrx/store';
-import { selectWallet } from '../state/wallet.selectors';
+import { selectWallet } from '../../state/wallet.selectors';
 
 @Component({
   selector: 'app-box-detail',
