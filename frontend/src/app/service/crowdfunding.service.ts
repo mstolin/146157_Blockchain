@@ -18,7 +18,7 @@ import Animal from '../models/animal';
 })
 export class CrowdfundingService extends ContractService {
 
-  private readonly _contractAddress: string = '0x53F6419b0E262d7e25b14e319Cff819C0Bb5E5FC';
+  private readonly _contractAddress: string = '0x89449DF67aca2242A1DDd8832Fea5480553161b5';
 
   constructor() {
     super();
@@ -41,9 +41,9 @@ export class CrowdfundingService extends ContractService {
         publicKey: campaign.meta.ownerPublicKey,
       },
       {
-        farmer: new Stakeholder(campaign.farmer.owner, campaign.farmer.share),
-        butcher: new Stakeholder(campaign.butcher.owner, campaign.butcher.share),
-        delivery: new Stakeholder(campaign.delivery.owner, campaign.delivery.share)
+        farmer: new Stakeholder(campaign.stakeholders.farmer.owner, campaign.stakeholders.farmer.share),
+        butcher: new Stakeholder(campaign.stakeholders.butcher.owner, campaign.stakeholders.butcher.share),
+        delivery: new Stakeholder(campaign.stakeholders.delivery.owner, campaign.stakeholders.delivery.share)
       },
       new Animal(
         campaign.animal.earTag,

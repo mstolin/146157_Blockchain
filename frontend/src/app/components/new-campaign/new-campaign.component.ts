@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 
 import { selectWallet } from '../../state/wallet.selectors';
 import { CrowdfundingService } from 'src/app/service/crowdfunding.service';
-import { BoxOfferReq, StakeholderReq } from 'src/app/models/requestModels';
+import { BoxOfferReq, CampaignAnimalReq, CampaignOwnerReq, StakeholderReq } from 'src/app/models/requestModels';
 import { WalletService } from 'src/app/service/wallet.service';
 
 @Component({
@@ -18,8 +18,10 @@ export class NewCampaignComponent {
   numberOfBoxes = 1;
   title?: string;
   description?: string;
-  owner?: string;
   duration?: number;
+  owner?: string;
+
+  animal: CampaignAnimalReq = { earTag: '', name: '', farm: '', age: 2 };
 
   farmer: StakeholderReq = { owner: '', share: 40 };
   butcher: StakeholderReq = { owner: '', share: 30 };
@@ -46,12 +48,17 @@ export class NewCampaignComponent {
       const campaign = {
         title: this.title,
         description: this.description,
-        owner: this.owner,
-        ownerPublicKey: publicKey,
+        owner: {
+          owner: this.owner,
+          ownerPublicKey: publicKey
+        },
         duration: this.duration * 86400,
-        farmer: this.farmer,
-        butcher: this.butcher,
-        delivery: this.delivery,
+        stakeholders: {
+          butcher: this.butcher,
+          delivery: this.delivery,
+          farmer: this.farmer,
+        },
+        animal: this.animal
       };
       const boxes = this.getBoxes();
 
