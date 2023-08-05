@@ -1,46 +1,55 @@
+import Animal from "./animal";
 import Stakeholder from "./stakeholder";
+
+type Stakeholders = {
+  farmer: Stakeholder;
+  butcher: Stakeholder;
+  delivery: Stakeholder;
+};
+
+type Owner = {
+  address: string;
+  publicKey: string;
+}
 
 export default class Campaign {
 
   private readonly _id: number;
   private readonly _title: string;
   private readonly _description: string;
-  private readonly _owner: string;
-  private readonly _ownerPublicKey: string;
   private readonly _deadline: Date;
   private readonly _collectedAmount: number;
-  private readonly _boxesLeft: number;
+  private readonly _totalBoxes: number;
+  private readonly _boxesSold: number;
   private readonly _isStopped: boolean;
-  private readonly _farmer: Stakeholder;
-  private readonly _butcher: Stakeholder;
-  private readonly _delivery: Stakeholder;
+  private readonly _owner: Owner;
+  private readonly _stakeholders: Stakeholders;
+  private readonly _animal: Animal;
 
   constructor(
     id: number,
     title: string,
     description: string,
-    owner: string,
-    ownerPublicKey: string,
     deadline: Date,
     collectedAmount: number,
-    boxesLeft: number,
+    totalBoxes: number,
+    boxesSold: number,
     isStopped: boolean,
-    farmer: Stakeholder,
-    butcher: Stakeholder,
-    delivery: Stakeholder
+    owner: Owner,
+    stakeholders: Stakeholders,
+    animal: Animal
   ) {
     this._id = id;
     this._title = title;
     this._description = description;
     this._owner = owner;
-    this._ownerPublicKey = ownerPublicKey;
     this._deadline = deadline;
     this._collectedAmount = collectedAmount;
-    this._boxesLeft = boxesLeft;
+    this._totalBoxes = totalBoxes;
+    this._boxesSold = boxesSold;
     this._isStopped = isStopped;
-    this._farmer = farmer;
-    this._butcher = butcher;
-    this._delivery = delivery;
+    this._stakeholders = stakeholders;
+    this._animal = animal;
   }
 
   get id() {
@@ -59,10 +68,6 @@ export default class Campaign {
     return this._owner;
   }
 
-  get ownerPublicKey() {
-    return this._ownerPublicKey;
-  }
-
   get deadline() {
     return this._deadline;
   }
@@ -71,24 +76,24 @@ export default class Campaign {
     return this._collectedAmount;
   }
 
-  get boxesLeft() {
-    return this._boxesLeft;
+  get totalBoxes() {
+    return this._totalBoxes;
+  }
+
+  get boxesSold() {
+    return this._boxesSold;
   }
 
   get isStopped() {
     return this._isStopped;
   }
 
-  get farmer() {
-    return this._farmer;
+  get stakeholders() {
+    return this._stakeholders;
   }
 
-  get butcher() {
-    return this._butcher;
-  }
-
-  get delivery() {
-    return this._delivery;
+  get animal() {
+    return this._animal;
   }
 
 }

@@ -11,6 +11,7 @@ import { BoxOfferResp, BoxSellRefResp, CampaignRefResp } from '../models/respons
 import ContractService from './contract.service';
 import Stakeholder from '../models/stakeholder';
 import Box from '../models/box';
+import Animal from '../models/animal';
 
 @Injectable({
   providedIn: 'root'
@@ -28,17 +29,28 @@ export class CrowdfundingService extends ContractService {
     const deadline = new Date(Number(campaign.deadline) * 1000);
     return new Campaign(
       ref.id,
-      campaign.title,
-      campaign.description,
-      campaign.owner,
-      campaign.ownerPublicKey,
+      campaign.meta.title,
+      campaign.meta.description,
       deadline,
-      Number(campaign.collectedAmount),
-      Number(campaign.boxesLeft),
+      Number(campaign.meta.collectedAmount),
+      Number(campaign.meta.totalBoxes),
+      Number(campaign.meta.boxesSold),
       campaign.isStopped,
-      new Stakeholder(campaign.farmer.owner, campaign.farmer.share),
-      new Stakeholder(campaign.butcher.owner, campaign.butcher.share),
-      new Stakeholder(campaign.delivery.owner, campaign.delivery.share)
+      {
+        address: campaign.meta.owner,
+        publicKey: campaign.meta.ownerPublicKey,
+      },
+      {
+        farmer: new Stakeholder(campaign.farmer.owner, campaign.farmer.share),
+        butcher: new Stakeholder(campaign.butcher.owner, campaign.butcher.share),
+        delivery: new Stakeholder(campaign.delivery.owner, campaign.delivery.share)
+      },
+      new Animal(
+        campaign.animal.earTag,
+        campaign.animal.name,
+        campaign.animal.farm,
+        campaign.animal.age
+      )
     );
   }
 
@@ -60,14 +72,12 @@ export class CrowdfundingService extends ContractService {
         try {
           await contract
             .methods.createCampaign(
-              campaign.owner,
-              campaign.ownerPublicKey,
               campaign.title,
               campaign.description,
               campaign.duration,
-              campaign.farmer,
-              campaign.butcher,
-              campaign.delivery,
+              campaign.owner,
+              campaign.stakeholders,
+              campaign.animal,
               boxes
             )
             .send({ 'from': this.selectedAddress });

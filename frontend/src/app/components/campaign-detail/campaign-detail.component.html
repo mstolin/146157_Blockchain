@@ -4,14 +4,14 @@
   </div>
 
   <div class="row">
-    <p>By <strong>{{ campaign.owner }}</strong></p>
+    <p>By <strong>{{ campaign.owner.address }}</strong></p>
   </div>
 
   <div class="row">
     <p>
       Collected: <strong>{{ collectedEther }} ETH</strong> ·
       Created: <strong>01.01.2020</strong> ·
-      Deadline: <strong>01.01.2020</strong>
+      Deadline: <strong>{{ campaign.deadline }}</strong>
     </p>
   </div>
 
@@ -24,11 +24,11 @@
     <div class="card-body">
       <dl>
         <dt class="col-sm-2">Farmer:</dt>
-        <dd class="col-sm-10">Earnings: {{ campaign.farmer.share }}% · {{ campaign.farmer.owner }}</dd>
+        <dd class="col-sm-10">Earnings: {{ campaign.stakeholders.farmer }}% · {{ campaign.stakeholders.farmer.owner }}</dd>
         <dt class="col-sm-2">Butcher:</dt>
-        <dd class="col-sm-10">Earnings: {{ campaign.butcher.share }}% · {{ campaign.butcher.owner }}</dd>
+        <dd class="col-sm-10">Earnings: {{ campaign.stakeholders.butcher.share }}% · {{ campaign.stakeholders.butcher.owner }}</dd>
         <dt class="col-sm-2">Delivery-Service:</dt>
-        <dd class="col-sm-10">Earnings: {{ campaign.delivery.share }}% · {{ campaign.delivery.owner }}</dd>
+        <dd class="col-sm-10">Earnings: {{ campaign.stakeholders.delivery.share }}% · {{ campaign.stakeholders.delivery.owner }}</dd>
       </dl>
     </div>
   </div>
