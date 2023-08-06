@@ -8,7 +8,7 @@ contract Crowdfunding {
     mapping(uint256 => Campaign) public campaigns;
     // Boxes of each campaign
     mapping(uint256 => mapping(uint256 => Box)) boxes;
-    // Sold boxes of each campaign (campginId => sellId => BoxSellRef)
+    // Sold boxes of each campaign (campignId => sellId => BoxSellRef)
     mapping(uint256 => mapping(uint256 => BoxSellRef)) soldBoxes;
 
     uint256 public numberOfCampaigns = 0;
