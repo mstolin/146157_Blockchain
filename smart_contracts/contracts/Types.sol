@@ -2,20 +2,15 @@
 pragma solidity ^0.8.13;
 
 struct Box {
+  /// Id of the Box
+  uint256 id;
   /// Title of a box
   string title;
   /// Description of a box
   string description;
   /// The price of this box in wei
   uint256 price;
-}
-
-struct BoxOffer {
-  /// Id of the Offer
-  uint256 id;
-  /// The box to sell
-  Box box;
-  /// Total number of boxes
+  /// Overall total number of boxes
   uint32 total;
   /// Number of available boxes
   uint32 available;
@@ -24,10 +19,12 @@ struct BoxOffer {
 struct BoxSellRef {
   /// The id of the specific sell
   uint256 id;
-  /// The box
-  Box box;
+  /// ID of the box
+  uint256 boxId;
   /// Address of the owner
   address owner;
+  /// Date of soll
+  uint256 boughtAt;
   /// Physical address of the box owner
   string physAddress;
 }
@@ -41,10 +38,14 @@ struct CampaignMeta {
   uint256 collectedAmount;
   /// The deadline of this campaign
   uint256 deadline;
+  /// Creation date
+  uint256 createdAt;
   /// Total number of boxes
   uint256 totalBoxes;
   /// Number of sold boxes
   uint256 boxesSold;
+  /// Number of box types
+  uint256 totalBoxTypes;
   /// Is it already stopped
   bool isStopped;
 }
@@ -84,15 +85,9 @@ struct StakeholderList {
 }
 
 struct Campaign {
+  uint256 id;
   CampaignMeta meta;
   CampaignOwner owner;
   CampaignAnimalData animal;
   StakeholderList stakeholders;
-}
-
-struct CampaignRef {
-  /// Campaign id
-  uint256 id;
-  /// reference to the campaign
-  Campaign campaign;
 }
