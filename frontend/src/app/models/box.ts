@@ -1,3 +1,6 @@
+import { title } from "process";
+import { BoxResp } from "./responseModels";
+
 export default class Box {
   private readonly _id: number;
   private readonly _title: string;
@@ -13,6 +16,10 @@ export default class Box {
     this._price = price;
     this._total = total;
     this._available = available;
+  }
+
+  static fromResponse(resp: BoxResp): Box {
+    return new Box(resp.id, resp.title, resp.description, resp.price, resp.total, resp.available);
   }
 
   get id() {

@@ -1,4 +1,7 @@
 import Animal from "./animal";
+import CampaignInfo from "./campaignInfo";
+import CampaignMeta from "./campaignMeta";
+import { CampaignResp } from "./responseModels";
 import Stakeholder from "./stakeholder";
 
 type Stakeholders = {
@@ -15,77 +18,60 @@ type Owner = {
 export default class Campaign {
 
   private readonly _id: number;
-  private readonly _title: string;
-  private readonly _description: string;
-  private readonly _deadline: Date;
-  private readonly _collectedAmount: number;
-  private readonly _totalBoxes: number;
-  private readonly _boxesSold: number;
-  private readonly _isStopped: boolean;
+  private readonly _info: CampaignInfo;
+  private readonly _meta: CampaignMeta;
   private readonly _owner: Owner;
   private readonly _stakeholders: Stakeholders;
   private readonly _animal: Animal;
 
   constructor(
     id: number,
-    title: string,
-    description: string,
-    deadline: Date,
-    collectedAmount: number,
-    totalBoxes: number,
-    boxesSold: number,
-    isStopped: boolean,
+    info: CampaignInfo,
+    meta: CampaignMeta,
     owner: Owner,
     stakeholders: Stakeholders,
     animal: Animal
   ) {
     this._id = id;
-    this._title = title;
-    this._description = description;
+    this._info = info
     this._owner = owner;
-    this._deadline = deadline;
-    this._collectedAmount = collectedAmount;
-    this._totalBoxes = totalBoxes;
-    this._boxesSold = boxesSold;
-    this._isStopped = isStopped;
+    this._meta = meta;
     this._stakeholders = stakeholders;
     this._animal = animal;
+  }
+
+  static fromResponse(resp: CampaignResp): Campaign {
+    return new Campaign(
+      resp.id,
+      CampaignInfo.fromResponse(resp.info),
+      CampaignMeta.fromResponse(resp.meta),
+      {
+        address: resp.owner.owner,
+        publicKey: resp.owner.ownerPublicKey,
+      },
+      {
+        farmer: Stakeholder.fromResponse(resp.stakeholders.farmer),
+        butcher: Stakeholder.fromResponse(resp.stakeholders.butcher),
+        delivery: Stakeholder.fromResponse(resp.stakeholders.delivery)
+      },
+      Animal.fromResponse(resp.animal)
+    );
   }
 
   get id() {
     return this._id;
   }
 
-  get title() {
-    return this._title;
+  get info() {
+    return this._info;
   }
 
-  get description() {
-    return this._description;
+  get meta() {
+    return this._meta;
   }
 
   get owner() {
     return this._owner;
-  }
-
-  get deadline() {
-    return this._deadline;
-  }
-
-  get collectedAmount() {
-    return this._collectedAmount;
-  }
-
-  get totalBoxes() {
-    return this._totalBoxes;
-  }
-
-  get boxesSold() {
-    return this._boxesSold;
-  }
-
-  get isStopped() {
-    return this._isStopped;
   }
 
   get stakeholders() {

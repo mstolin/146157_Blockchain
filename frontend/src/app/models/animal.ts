@@ -1,3 +1,5 @@
+import { CampaignAnimalResp } from "./responseModels";
+
 export default class Animal {
   private readonly _earTag: string;
   private readonly _name: string;
@@ -9,6 +11,10 @@ export default class Animal {
     this._name = name;
     this._farm = farm;
     this._age = age;
+  }
+
+  static fromResponse(resp: CampaignAnimalResp): Animal {
+    return new Animal(resp.earTag, resp.name, resp.farm, resp.age);
   }
 
   get earTag() {

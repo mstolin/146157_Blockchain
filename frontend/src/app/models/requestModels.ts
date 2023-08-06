@@ -24,15 +24,13 @@ export type StakeholderListReq = {
 export type StakeholderReq = {
   owner: string;
   share: number;
+  info: string;
 };
 export type BoxReq = {
+  id: number;
   title: string;
   description: string;
   price: string;
-};
-export type BoxOfferReq = {
-  id: number;
   total: number;
   available: number;
-  box: BoxReq
 };
