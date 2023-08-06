@@ -90,10 +90,16 @@ struct StakeholderList {
 }
 
 struct Campaign {
+  /// The campaign ID
   uint256 id;
+  /// Info about the campaign
   CampaignInfo info;
+  /// Campaign meta info
   CampaignMeta meta;
+  /// Info about the campaign owner
   CampaignOwner owner;
+  /// Info about the animal
   CampaignAnimalData animal;
+  /// Stakeholders involved in the process
   StakeholderList stakeholders;
 }

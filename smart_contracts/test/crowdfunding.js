@@ -101,10 +101,12 @@ contract('Crowdfunding', (accounts) => {
     assert.equal(campaignResp.stakeholders.farmer.owner, campaign.stakeholders.farmer.owner);
     assert.equal(campaignResp.stakeholders.farmer.share, campaign.stakeholders.farmer.share);
     assert.equal(campaignResp.stakeholders.farmer.info, campaign.stakeholders.farmer.info);
-    assert.equal(campaignResp.stakeholders.butcher.owner, BUTCHER_ADDR);
-    assert.equal(campaignResp.stakeholders.butcher.share, 30);
-    assert.equal(campaignResp.stakeholders.delivery.owner, DELIVERY_ADDR);
-    assert.equal(campaignResp.stakeholders.delivery.share, 30);
+    assert.equal(campaignResp.stakeholders.butcher.owner, campaign.stakeholders.butcher.owner);
+    assert.equal(campaignResp.stakeholders.butcher.share, campaign.stakeholders.butcher.share);
+    assert.equal(campaignResp.stakeholders.butcher.info, campaign.stakeholders.butcher.info);
+    assert.equal(campaignResp.stakeholders.delivery.owner, campaign.stakeholders.delivery.owner);
+    assert.equal(campaignResp.stakeholders.delivery.share, campaign.stakeholders.delivery.share);
+    assert.equal(campaignResp.stakeholders.delivery.info, campaign.stakeholders.delivery.info);
     assert.equal(campaignResp.animal.earTag, campaign.animal.earTag);
     assert.equal(campaignResp.animal.name, campaign.animal.name);
     assert.equal(campaignResp.animal.farm, campaign.animal.farm);
