@@ -42,15 +42,18 @@ function generateCampaign(id, boxesTotal, owner) {
     'stakeholders': {
       'farmer': {
         'owner': FARMER_ADDR,
-        'share': 40
+        'share': 40,
+        'info': 'some info'
       },
       'butcher': {
         'owner': BUTCHER_ADDR,
-        'share': 30
+        'share': 30,
+        'info': 'some info'
       },
       'delivery': {
         'owner': DELIVERY_ADDR,
-        'share': 30
+        'share': 30,
+        'info': 'some info'
       }
     },
     'boxes': generateBoxes(boxesTotal),
@@ -95,8 +98,9 @@ contract('Crowdfunding', (accounts) => {
     assert.equal(campaignResp.meta.totalBoxTypes, boxesTotal.length);
     assert.isAtMost(Number(campaignResp.meta.createdAt), (new Date()).getTime() / 1000);
     assert.isFalse(campaignResp.meta.isStopped);
-    assert.equal(campaignResp.stakeholders.farmer.owner, FARMER_ADDR);
-    assert.equal(campaignResp.stakeholders.farmer.share, 40);
+    assert.equal(campaignResp.stakeholders.farmer.owner, campaign.stakeholders.farmer.owner);
+    assert.equal(campaignResp.stakeholders.farmer.share, campaign.stakeholders.farmer.share);
+    assert.equal(campaignResp.stakeholders.farmer.info, campaign.stakeholders.farmer.info);
     assert.equal(campaignResp.stakeholders.butcher.owner, BUTCHER_ADDR);
     assert.equal(campaignResp.stakeholders.butcher.share, 30);
     assert.equal(campaignResp.stakeholders.delivery.owner, DELIVERY_ADDR);

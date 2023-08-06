@@ -76,6 +76,8 @@ struct Stakeholder {
   address payable owner;
   /// Share in %
   uint8 share;
+  // Can include name, address, website
+  string info;
 }
 
 struct StakeholderList {
