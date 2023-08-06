@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import Box from 'src/app/models/box';
+import BoxSellRef from 'src/app/models/boxSellRef';
 import Campaign from 'src/app/models/campaign';
-import { BoxSellRefResp } from 'src/app/models/responseModels';
 import { CrowdfundingService } from 'src/app/service/crowdfunding.service';
 import { utils } from 'web3';
 
@@ -16,14 +16,14 @@ export class CampaignDetailComponent implements OnInit {
   campaign!: Campaign;
   collectedEther!: string;
   availableBoxes: Box[] = [];
-  soldBoxes: BoxSellRefResp[] = [];
+  soldBoxes: BoxSellRef[] = [];
 
   constructor(private route: ActivatedRoute, private crowdfundingService: CrowdfundingService) { }
 
   private loadData(campaignId: number) {
     this.crowdfundingService.getCampaign(campaignId).then(campaign => {
       this.campaign = campaign;
-      this.collectedEther = utils.fromWei(campaign.collectedAmount, 'ether');
+      this.collectedEther = utils.fromWei(campaign.meta.collectedAmount, 'ether');
     }).catch(err => {
       console.log(err);
     });

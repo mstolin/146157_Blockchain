@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 
 import { selectWallet } from '../../state/wallet.selectors';
 import { CrowdfundingService } from 'src/app/service/crowdfunding.service';
-import { BoxOfferReq, CampaignAnimalReq, CampaignOwnerReq, StakeholderReq } from 'src/app/models/requestModels';
+import { BoxReq, CampaignAnimalReq, CreateCampaignReq, StakeholderReq } from 'src/app/models/requestModels';
 import { WalletService } from 'src/app/service/wallet.service';
 
 @Component({
@@ -23,13 +23,13 @@ export class NewCampaignComponent {
 
   animal: CampaignAnimalReq = { earTag: '', name: '', farm: '', age: 2 };
 
-  farmer: StakeholderReq = { owner: '', share: 40 };
-  butcher: StakeholderReq = { owner: '', share: 30 };
-  delivery: StakeholderReq = { owner: '', share: 30 };
+  farmer: StakeholderReq = { owner: '', share: 40, info: '' };
+  butcher: StakeholderReq = { owner: '', share: 30, info: '' };
+  delivery: StakeholderReq = { owner: '', share: 30, info: '' };
 
-  firstBox: BoxOfferReq = { id: 0, total: 1, available: 1, box: { title: 'Box #1', description: 'Nice Box #1', price: '11964130000000000' } };
-  secondBox: BoxOfferReq = { id: 1, total: 1, available: 1, box: { title: 'Box #2', description: 'Nice Box #1', price: '11964130000000000' } };
-  thirdBox: BoxOfferReq = { id: 2, total: 1, available: 1, box: { title: 'Box #3', description: 'Nice Box #1', price: '11964130000000000' } };
+  firstBox: BoxReq = { id: 0, total: 1, available: 1, title: 'Box #1', description: 'Nice Box #1', price: '11964130000000000' };
+  secondBox: BoxReq = { id: 1, total: 1, available: 1, title: 'Box #2', description: 'Nice Box #1', price: '11964130000000000' };
+  thirdBox: BoxReq = { id: 2, total: 1, available: 1, title: 'Box #3', description: 'Nice Box #1', price: '11964130000000000' };
 
   constructor(private store: Store, private crowdfundingService: CrowdfundingService, private walletService: WalletService) {
     this.wallet$.subscribe(wallet => {
@@ -39,13 +39,13 @@ export class NewCampaignComponent {
     });
   }
 
-  private getBoxes(): BoxOfferReq[] {
+  private getBoxes(): BoxReq[] {
     return [this.firstBox, this.secondBox, this.thirdBox];
   }
 
   private createNewCampaign(publicKey: string) {
     if (this.title && this.description && this.owner && this.duration && this.farmer && this.butcher && this.delivery) {
-      const campaign = {
+      const campaign: CreateCampaignReq = {
         title: this.title,
         description: this.description,
         owner: {
@@ -61,6 +61,9 @@ export class NewCampaignComponent {
         animal: this.animal
       };
       const boxes = this.getBoxes();
+
+      console.log(campaign);
+      console.log(publicKey);
 
       this.crowdfundingService.createCampaign(campaign, boxes).then(() => {
         console.log("OKIDOKI");
