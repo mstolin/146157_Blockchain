@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: AGPL
 pragma solidity ^0.8.13;
 
-import "./CrowdfundingLib.sol";
 import "./Types.sol";
 
 contract Crowdfunding {
@@ -56,11 +55,11 @@ contract Crowdfunding {
 
         Campaign storage campaign = campaigns[numberOfCampaigns];
         campaign.owner = _campaignOwner;
-        campaign.meta.title = _title;
-        campaign.meta.description = _description;
+        campaign.info.title = _title;
+        campaign.info.description = _description;
+        campaign.info.deadline = deadline;
         campaign.meta.createdAt = block.timestamp;
         campaign.meta.collectedAmount = 0;
-        campaign.meta.deadline = deadline;
         campaign.meta.isStopped = false;
         campaign.meta.totalBoxes = totalNumOfBoxes;
         campaign.meta.boxesSold = 0;
@@ -131,7 +130,7 @@ contract Crowdfunding {
         Campaign storage campaign = campaigns[_campaignId];
         require(!campaign.meta.isStopped, "Campaign already stopped");
         require(
-            campaign.meta.deadline > block.timestamp,
+            campaign.info.deadline > block.timestamp,
             "This campaign is over"
         );
         require(
@@ -157,7 +156,7 @@ contract Crowdfunding {
         // check if this is an ongoing campaign
         require(!campaign.meta.isStopped, "This campaign has stopped");
         require(
-            campaign.meta.deadline > block.timestamp,
+            campaign.info.deadline > block.timestamp,
             "This campaign is already over"
         );
 

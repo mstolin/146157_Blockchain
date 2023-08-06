@@ -29,15 +29,18 @@ struct BoxSellRef {
   string physAddress;
 }
 
-struct CampaignMeta {
+struct CampaignInfo {
   /// The campaigns title
   string title;
   /// The campaigns description
   string description;
-  /// Total amount collected in eth
-  uint256 collectedAmount;
   /// The deadline of this campaign
   uint256 deadline;
+}
+
+struct CampaignMeta {
+  /// Total amount collected in eth
+  uint256 collectedAmount;
   /// Creation date
   uint256 createdAt;
   /// Total number of boxes
@@ -86,6 +89,7 @@ struct StakeholderList {
 
 struct Campaign {
   uint256 id;
+  CampaignInfo info;
   CampaignMeta meta;
   CampaignOwner owner;
   CampaignAnimalData animal;

@@ -28,7 +28,7 @@ function generateCampaign(id, boxesTotal, owner) {
       'owner': owner,
       'ownerPublicKey': RANDOM_SECRET,
     },
-    'meta': {
+    'info': {
       'title': `Campaign #${id + 1}`,
       'description': `Campaign #${id + 1} is a very nice one`,
       'duration': 3628800,
@@ -61,9 +61,9 @@ contract('Crowdfunding', (accounts) => {
   async function createCampaign(contract, campaign, from) {
     await contract
       .createCampaign(
-        campaign.meta.title,
-        campaign.meta.description,
-        campaign.meta.duration,
+        campaign.info.title,
+        campaign.info.description,
+        campaign.info.duration,
         campaign.owner,
         campaign.stakeholders,
         campaign.animal,
@@ -86,13 +86,14 @@ contract('Crowdfunding', (accounts) => {
     assert.equal(campaignResp.id, campaignId);
     assert.equal(campaignResp.owner.owner, campaign.owner.owner);
     assert.equal(campaignResp.owner.ownerPublicKey, RANDOM_SECRET);
-    assert.equal(campaignResp.meta.title, campaign.meta.title);
-    assert.equal(campaignResp.meta.description, campaign.meta.description);
+    assert.equal(campaignResp.info.title, campaign.info.title);
+    assert.equal(campaignResp.info.description, campaign.info.description);
+    assert.isAtLeast(Number(campaignResp.info.deadline), (new Date()).getTime() / 1000);
     assert.equal(campaignResp.meta.collectedAmount, 0);
     assert.equal(campaignResp.meta.totalBoxes, 12);
     assert.equal(campaignResp.meta.boxesSold, 0)
     assert.equal(campaignResp.meta.totalBoxTypes, boxesTotal.length);
-    assert.isAbove(Number(campaignResp.meta.deadline), (new Date()).getTime() / 1000);
+    assert.isAtMost(Number(campaignResp.meta.createdAt), (new Date()).getTime() / 1000);
     assert.isFalse(campaignResp.meta.isStopped);
     assert.equal(campaignResp.stakeholders.farmer.owner, FARMER_ADDR);
     assert.equal(campaignResp.stakeholders.farmer.share, 40);
@@ -181,6 +182,7 @@ contract('Crowdfunding', (accounts) => {
     assert.equal(soldBoxes[0].boxId, 0);
     assert.equal(soldBoxes[0].owner, owner);
     assert.equal(soldBoxes[0].physAddress, someAddr);
+    assert.isAtMost(Number(soldBoxes[0].boughtAt), (new Date()).getTime() / 1000);
 
     let campaigns = await contract.getCampaigns.call();
     let campaignResp = campaigns[campaignId];
@@ -215,6 +217,7 @@ contract('Crowdfunding', (accounts) => {
       assert.equal(soldBoxes[index].boxId, index == 0 ? 0 : 1);
       assert.equal(soldBoxes[index].owner, owner);
       assert.equal(soldBoxes[index].physAddress, someAddr);
+      assert.isAtMost(Number(soldBoxes[index].boughtAt), (new Date()).getTime() / 1000);
     }
   });
 
