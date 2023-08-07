@@ -14,7 +14,6 @@ export class AppComponent {
 
   links: { title: string, link: string }[] = [
     { 'title': 'Home', 'link': '' },
-    { 'title': 'All Campaigns', 'link': 'all-campaigns' },
     { 'title': 'New Campaign', 'link': 'new-campaign' },
   ];
 

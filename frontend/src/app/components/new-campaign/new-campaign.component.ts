@@ -40,7 +40,10 @@ export class NewCampaignComponent {
   }
 
   private getBoxes(): BoxReq[] {
-    return [this.firstBox, this.secondBox, this.thirdBox];
+    return [this.firstBox, this.secondBox, this.thirdBox].map(box => {
+      box.available = box.total
+      return box;
+    });
   }
 
   private createNewCampaign(publicKey: string) {
@@ -61,9 +64,6 @@ export class NewCampaignComponent {
         animal: this.animal
       };
       const boxes = this.getBoxes();
-
-      console.log(campaign);
-      console.log(publicKey);
 
       this.crowdfundingService.createCampaign(campaign, boxes).then(() => {
         console.log("OKIDOKI");

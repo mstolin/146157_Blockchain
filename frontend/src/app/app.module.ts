@@ -8,7 +8,6 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CampaignThumbnailComponent } from './components/campaign-thumbnail/campaign-thumbnail.component';
-import { HomeComponent } from './components/home/home.component';
 import { AllCampaignsComponent } from './components/all-campaigns/all-campaigns.component';
 import { NewCampaignComponent } from './components/new-campaign/new-campaign.component';
 
@@ -20,13 +19,14 @@ import { BoxInputComponent } from './components/box-input/box-input.component';
 import { BuyBoxComponent } from './components/buy-box/buy-box.component';
 import { BoxDetailComponent } from './components/box-detail/box-detail.component';
 import { StakeholderDetailComponent } from './components/stakeholder-detail/stakeholder-detail.component';
+import { BoxThumbnailComponent } from './components/box-thumbnail/box-thumbnail.component';
+import { SoldBoxThumbnailComponent } from './components/sold-box-thumbnail/sold-box-thumbnail.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     CampaignThumbnailComponent,
-    HomeComponent,
     AllCampaignsComponent,
     NewCampaignComponent,
     AccountSelectorComponent,
@@ -35,7 +35,9 @@ import { StakeholderDetailComponent } from './components/stakeholder-detail/stak
     BoxInputComponent,
     BuyBoxComponent,
     BoxDetailComponent,
-    StakeholderDetailComponent
+    StakeholderDetailComponent,
+    BoxThumbnailComponent,
+    SoldBoxThumbnailComponent
   ],
   imports: [
     BrowserModule,
