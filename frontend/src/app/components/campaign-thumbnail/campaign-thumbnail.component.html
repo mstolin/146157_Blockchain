@@ -1,9 +1,10 @@
 <div class="col">
   <div class="card">
+    <img class="card-img-top" src="{{ getBlockieFromId(campaign.id) }}" alt="{{ campaign.id }}">
     <div class="card-body">
-      <h5 class="card-title">{{ campaign.title }}</h5>
-      <h6 class="card-subtitle mb-2 text-body-secondary">{{ campaign.boxesLeft }} Boxes available</h6>
-      <p class="card-text">{{ campaign.description }}</p>
+      <h5 class="card-title">{{ campaign.info.title }}</h5>
+      <h6 class="card-subtitle mb-2 text-body-secondary">{{ campaign.meta.totalBoxes - campaign.meta.boxesSold }} Boxes available</h6>
+      <p class="card-text">{{ campaign.info.description }}</p>
       <a [routerLink]="['/campaign', campaign.id]" class="btn btn-primary">More</a>
     </div>
   </div>

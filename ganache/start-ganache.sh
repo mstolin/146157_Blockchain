@@ -1,6 +1,6 @@
 #!/bin/bash
 
 port="${1:-8545}"
-mnemonic="view spoon hybrid small bridge quit any token either tuition net witness"
+mnemonic="oyster step broccoli sing resource monster regret pet alien lizard give sort"
 
 ganache -p "${port}" -m "${mnemonic}" --db $(pwd)/debug/

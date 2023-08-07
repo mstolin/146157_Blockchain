@@ -1,53 +1,101 @@
 <div class="container">
   <div class="row">
-    <h1>{{ campaign.title }}</h1>
+    <h1>{{ campaign.info.title }}</h1>
   </div>
 
-  <div class="row">
-    <p>By <strong>{{ campaign.owner }}</strong></p>
-  </div>
-
-  <div class="row">
-    <p>
-      Collected: <strong>{{ collectedEther }} ETH</strong> ·
-      Created: <strong>01.01.2020</strong> ·
-      Deadline: <strong>01.01.2020</strong>
-    </p>
-  </div>
-
-  <div class="row">
-    <p>{{ campaign.description }}</p>
-  </div>
-
-  <div class="card">
-    <h5 class="card-header">Stakeholder</h5>
-    <div class="card-body">
-      <dl>
-        <dt class="col-sm-2">Farmer:</dt>
-        <dd class="col-sm-10">Earnings: {{ campaign.farmer.share }}% · {{ campaign.farmer.owner }}</dd>
-        <dt class="col-sm-2">Butcher:</dt>
-        <dd class="col-sm-10">Earnings: {{ campaign.butcher.share }}% · {{ campaign.butcher.owner }}</dd>
-        <dt class="col-sm-2">Delivery-Service:</dt>
-        <dd class="col-sm-10">Earnings: {{ campaign.delivery.share }}% · {{ campaign.delivery.owner }}</dd>
-      </dl>
+  <div class="container">
+    <div class="row">
+      <p>By <strong>{{ campaign.owner.address }}</strong></p>
     </div>
-  </div>
-
-  <div class="card">
-    <h5 class="card-header">Supply Chain (TODO Only if status is completed)</h5>
-    <div class="card-body">
-      <dl>
-        <dt class="col-sm-2">Animal delivered to butcher:</dt>
-        <dd class="col-sm-10">Yes (at 24/06/2023)</dd>
-        <dt class="col-sm-2">Animal processed by butcher:</dt>
-        <dd class="col-sm-10">No</dd>
-        <dt class="col-sm-2">Boxes processed by butcher:</dt>
-        <dd class="col-sm-10">No</dd>
-      </dl>
+    <div class="row">
+      <p>
+        Collected: <strong>{{ collectedEther }} ETH</strong> ·
+        Created: <strong>{{ campaign.meta.createdAt | date: 'dd/MM/yyyy hh:mm' }}</strong> ·
+        Deadline: <strong>{{ campaign.info.deadline | date: 'dd/MM/yyyy hh:mm' }}</strong>
+      </p>
+    </div>
+    <div class="row">
+      <p>{{ campaign.info.description }}</p>
     </div>
   </div>
 
   <div>
+    <ul class="nav nav-underline">
+      <li class="nav-item">
+        <p class="nav-link active" aria-current="page" href="#">Animal</p>
+      </li>
+    </ul>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <div class="card-body">
+        <dl class="row card-text">
+          <dt class="col-sm-1">Ear Tag:</dt>
+          <dd class="col-sm-11">{{ campaign.animal.earTag }}</dd>
+          <dt class="col-sm-1">Farm:</dt>
+          <dd class="col-sm-11">{{ campaign.animal.farm }}</dd>
+          <dt class="col-sm-1">Age:</dt>
+          <dd class="col-sm-11">{{ campaign.animal.age }}</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <ul class="nav nav-underline">
+      <li class="nav-item">
+        <p class="nav-link active" aria-current="page" href="#">Stakeholder</p>
+      </li>
+    </ul>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <app-stakeholder-detail role="Farmer" [stakeholder]="campaign.stakeholders.farmer" />
+      </div>
+      <div class="col-md-4">
+        <app-stakeholder-detail role="Butcher" [stakeholder]="campaign.stakeholders.butcher" />
+      </div>
+      <div class="col-md-4">
+        <app-stakeholder-detail role="Delivery Service" [stakeholder]="campaign.stakeholders.delivery" />
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="campaign.meta.isStopped">
+    <ul class="nav nav-underline">
+      <li class="nav-item">
+        <p class="nav-link active" aria-current="page" href="#">Supply Chain</p>
+      </li>
+    </ul>
+  </div>
+
+  <div class="container" *ngIf="campaign.meta.isStopped">
+    <ol class="list-group list-group-numbered">
+      <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">Animal delivered to Butcher</div>
+          No
+        </div>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">Animal processed by Butcher</div>
+          No
+        </div>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">Boxes processed by butcher</div>
+          No
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <div *ngIf="!campaign.meta.isStopped">
     <ul class="nav nav-underline">
       <li class="nav-item">
         <p class="nav-link active" aria-current="page" href="#">Boxes</p>
@@ -55,17 +103,10 @@
     </ul>
   </div>
 
-  <div>
-    <div *ngFor="let box of availableBoxes" class="row">
-      <div class="col">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">{{ box.title }}</h5>
-            <h6 class="card-subtitle mb-2 text-body-secondary">{{ box.available }} of {{ box.total }} Boxes left</h6>
-            <p class="card-text">{{ box.description }}</p>
-            <a [routerLink]="['buy', box.id]" class="btn btn-primary">Buy for {{ box.price }} WEI</a>
-          </div>
-        </div>
+  <div class="container" *ngIf="!campaign.meta.isStopped">
+    <div class="row">
+      <div class="col-md-6" *ngFor="let box of availableBoxes">
+        <app-box-thumbnail [box]="box" />
       </div>
     </div>
   </div>
@@ -78,18 +119,19 @@
     </ul>
   </div>
 
-  <div>
-    <div *ngFor="let sellRef of soldBoxes" class="row">
-      <div class="col">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">{{ sellRef.box.title }}</h5>
-            <h6 class="card-subtitle mb-2 text-body-secondary">Owner: {{ sellRef.owner }}</h6>
-            <a [routerLink]="['box', sellRef.id]" class="btn btn-primary">See Status</a>
-          </div>
-        </div>
+  <div class="container" *ngIf="soldBoxes.length > 0; else noSoldBoxes">
+    <div class="row">
+      <div class="col-md-6" *ngFor="let sellRef of soldBoxes">
+        <app-sold-box-thumbnail [sellRef]="sellRef" />
       </div>
     </div>
   </div>
+  <ng-template #noSoldBoxes>
+    <div class="container">
+      <figure class="text-center">
+        No sold boxes yet :(
+      </figure>
+    </div>
+  </ng-template>
 
 </div>

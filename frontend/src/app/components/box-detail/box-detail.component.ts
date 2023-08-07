@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CrowdfundingService } from '../service/crowdfunding.service';
-import { BoxSellRefResp } from '../models/responseModels';
+import { CrowdfundingService } from '../../service/crowdfunding.service';
 import { Store } from '@ngrx/store';
-import { selectWallet } from '../state/wallet.selectors';
+import { selectWallet } from '../../state/wallet.selectors';
+import BoxSellRef from 'src/app/models/boxSellRef';
+import Box from 'src/app/models/box';
 
 @Component({
   selector: 'app-box-detail',
@@ -15,7 +16,8 @@ export class BoxDetailComponent implements OnInit {
   wallet$ = this.store.select(selectWallet);
 
   owner?: string;
-  sellRef!: BoxSellRefResp;
+  sellRef!: BoxSellRef;
+  box!: Box;
   privateKey?: string;
   address?: string;
 
@@ -29,7 +31,12 @@ export class BoxDetailComponent implements OnInit {
 
   private loadData(campaignId: number, boxId: number) {
     this.crowdfundingService.getSoldBox(campaignId, boxId)
-      .then(sellRef => this.sellRef = sellRef)
+      .then(sellRef => {
+        this.sellRef = sellRef;
+        this.crowdfundingService.getBox(campaignId, boxId)
+          .then(box => this.box = box)
+          .catch(err => console.log('ERR', err));
+      })
       .catch(err => console.log('ERR:', err));
   }
 

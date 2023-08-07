@@ -40,7 +40,7 @@ export class BuyBoxComponent implements OnInit {
     return new Promise(async (resolve, reject) => {
       try {
         const campaign = await this.crowdfundingService.getCampaign(campaignId);
-        const publicKey = campaign.ownerPublicKey;
+        const publicKey = campaign.owner.publicKey;
         const enc = encrypt({
           publicKey,
           data: Buffer.from(address, 'utf-8').toString('base64'),
