@@ -19,6 +19,7 @@ import { StakeholderInputComponent } from './components/stakeholder-input/stakeh
 import { BoxInputComponent } from './components/box-input/box-input.component';
 import { BuyBoxComponent } from './components/buy-box/buy-box.component';
 import { BoxDetailComponent } from './components/box-detail/box-detail.component';
+import { StakeholderDetailComponent } from './components/stakeholder-detail/stakeholder-detail.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { BoxDetailComponent } from './components/box-detail/box-detail.component
     StakeholderInputComponent,
     BoxInputComponent,
     BuyBoxComponent,
-    BoxDetailComponent
+    BoxDetailComponent,
+    StakeholderDetailComponent
   ],
   imports: [
     BrowserModule,

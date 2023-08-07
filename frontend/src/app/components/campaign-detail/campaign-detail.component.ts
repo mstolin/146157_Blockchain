@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import Box from 'src/app/models/box';
 import BoxSellRef from 'src/app/models/boxSellRef';
 import Campaign from 'src/app/models/campaign';
