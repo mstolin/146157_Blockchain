@@ -3,38 +3,58 @@
     <h1>{{ box.title }}</h1>
   </div>
 
-  <div class="row">
-    <p>{{ box.description }}</p>
-  </div>
-
-  <div class="row">
-    <p>
-      Sell ID: <strong>{{ sellRef.id }}</strong> ·
-      Owner: <strong>{{ sellRef.owner }}</strong> ·
-      Price: <strong>{{ box.price }} WEI</strong>
-    </p>
-  </div>
-
-  <div class="card">
-    <h5 class="card-header">Address</h5>
-    <div class="card-body">
-      <div *ngIf="address; else encryptAction">
-        <p>{{ address }}</p>
-      </div>
-      <ng-template #encryptAction>
-        <div class="row">
-          <p>{{ sellRef.physAddress }}</p>
-        </div>
-        <input [(ngModel)]="privateKey" type="text" class="form-control" placeholder="Private Key" />
-        <button class="btn btn-primary" (click)="decryptAddress()">Decrypt Address</button>
-      </ng-template>
+  <div class="container">
+    <div class="row">
+      <p>{{ box.description }}</p>
+    </div>
+    <div class="row">
+      <p>
+        Sell ID: <strong>{{ sellRef.id }}</strong> ·
+        Owner: <strong>{{ sellRef.owner }}</strong> ·
+        Price: <strong>{{ box.price }} WEI</strong> ·
+        Bought at: <strong>{{ sellRef.boughtAt | date: 'dd/MM/yyyy hh:mm' }}</strong>
+      </p>
     </div>
   </div>
 
-  <div class="card">
-    <h5 class="card-header">Delivery Status</h5>
-    <div class="card-body">
-      Not yet delivered
+  <div>
+    <ul class="nav nav-underline">
+      <li class="nav-item">
+        <p class="nav-link active" aria-current="page" href="#">Delivery Status</p>
+      </li>
+    </ul>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <div class="card-body">
+        Not yet delivered
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <ul class="nav nav-underline">
+      <li class="nav-item">
+        <p class="nav-link active" aria-current="page" href="#">Address</p>
+      </li>
+    </ul>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <div class="card-body">
+        <div *ngIf="address; else encryptAction">
+          <p>{{ address }}</p>
+        </div>
+        <ng-template #encryptAction>
+          <div class="row">
+            <p>{{ sellRef.physAddress }}</p>
+          </div>
+          <input [(ngModel)]="privateKey" type="text" class="form-control" placeholder="Private Key" />
+          <button class="btn btn-primary" (click)="decryptAddress()">Decrypt Address</button>
+        </ng-template>
+      </div>
     </div>
   </div>
 </div>

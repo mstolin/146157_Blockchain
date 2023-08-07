@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import Campaign from 'src/app/models/campaign';
+import makeBlockiesUrl from 'blockies-base64-svg'
 
 @Component({
   selector: 'app-campaign-thumbnail',
@@ -9,5 +10,9 @@ import Campaign from 'src/app/models/campaign';
 export class CampaignThumbnailComponent {
 
   @Input() campaign!: Campaign;
+
+  getBlockieFromId(id: number): string {
+    return makeBlockiesUrl(`${id}`);
+  }
 
 }

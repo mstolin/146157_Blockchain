@@ -64,21 +64,38 @@
     </div>
   </div>
 
-  <div class="card">
-    <h5 class="card-header">Supply Chain (TODO Only if status is completed)</h5>
-    <div class="card-body">
-      <dl>
-        <dt class="col-sm-2">Animal delivered to butcher:</dt>
-        <dd class="col-sm-10">Yes (at 24/06/2023)</dd>
-        <dt class="col-sm-2">Animal processed by butcher:</dt>
-        <dd class="col-sm-10">No</dd>
-        <dt class="col-sm-2">Boxes processed by butcher:</dt>
-        <dd class="col-sm-10">No</dd>
-      </dl>
-    </div>
+  <div *ngIf="campaign.meta.isStopped">
+    <ul class="nav nav-underline">
+      <li class="nav-item">
+        <p class="nav-link active" aria-current="page" href="#">Supply Chain</p>
+      </li>
+    </ul>
   </div>
 
-  <div>
+  <div class="container" *ngIf="campaign.meta.isStopped">
+    <ol class="list-group list-group-numbered">
+      <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">Animal delivered to Butcher</div>
+          No
+        </div>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">Animal processed by Butcher</div>
+          No
+        </div>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">Boxes processed by butcher</div>
+          No
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <div *ngIf="!campaign.meta.isStopped">
     <ul class="nav nav-underline">
       <li class="nav-item">
         <p class="nav-link active" aria-current="page" href="#">Boxes</p>
@@ -86,17 +103,10 @@
     </ul>
   </div>
 
-  <div>
-    <div *ngFor="let box of availableBoxes" class="row">
-      <div class="col">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">{{ box.title }}</h5>
-            <h6 class="card-subtitle mb-2 text-body-secondary">{{ box.available }} of {{ box.total }} Boxes left</h6>
-            <p class="card-text">{{ box.description }}</p>
-            <a [routerLink]="['buy', box.id]" class="btn btn-primary">Buy for {{ box.price }} WEI</a>
-          </div>
-        </div>
+  <div class="container" *ngIf="!campaign.meta.isStopped">
+    <div class="row">
+      <div class="col-md-6" *ngFor="let box of availableBoxes">
+        <app-box-thumbnail [box]="box" />
       </div>
     </div>
   </div>
@@ -109,18 +119,19 @@
     </ul>
   </div>
 
-  <div>
-    <div *ngFor="let sellRef of soldBoxes" class="row">
-      <div class="col">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">--</h5>
-            <h6 class="card-subtitle mb-2 text-body-secondary">Owner: {{ sellRef.owner }}</h6>
-            <a [routerLink]="['box', sellRef.id]" class="btn btn-primary">See Status</a>
-          </div>
-        </div>
+  <div class="container" *ngIf="soldBoxes.length > 0; else noSoldBoxes">
+    <div class="row">
+      <div class="col-md-6" *ngFor="let sellRef of soldBoxes">
+        <app-sold-box-thumbnail [sellRef]="sellRef" />
       </div>
     </div>
   </div>
+  <ng-template #noSoldBoxes>
+    <div class="container">
+      <figure class="text-center">
+        No sold boxes yet :(
+      </figure>
+    </div>
+  </ng-template>
 
 </div>
