@@ -17,7 +17,7 @@ export default class BoxSellRef {
   }
 
   static fromResponse(resp: BoxSellRefResp): BoxSellRef {
-    const boughtAt = new Date(resp.boughtAt / 1000);
+    const boughtAt = new Date(Number(resp.boughtAt) * 1000);
     return new BoxSellRef(resp.id, resp.boxId, resp.owner, boughtAt, resp.physAddress);
   }
 

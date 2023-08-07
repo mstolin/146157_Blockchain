@@ -19,7 +19,7 @@ export default class CampaignMeta {
   }
 
   static fromResponse(resp: CampaignMetaResp): CampaignMeta {
-    const createdAt = new Date(resp.createdAt / 1000);
+    const createdAt = new Date(Number(resp.createdAt) * 1000);
     return new CampaignMeta(resp.collectedAmount, createdAt, resp.totalBoxes, resp.boxesSold, resp.totalBoxTypes, resp.isStopped);
   }
 

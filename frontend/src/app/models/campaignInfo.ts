@@ -13,7 +13,7 @@ export default class CampaignInfo {
   }
 
   static fromResponse(resp: CampaignInfoResp): CampaignInfo {
-    const deadline = new Date(resp.deadline / 1000);
+    const deadline = new Date(Number(resp.deadline) * 1000);
     return new CampaignInfo(resp.title, resp.description, deadline);
   }
 
