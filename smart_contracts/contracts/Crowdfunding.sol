@@ -54,6 +54,7 @@ contract Crowdfunding {
         require(totalNumOfBoxes > 0, "There must be at least one box in total");
 
         Campaign storage campaign = campaigns[numberOfCampaigns];
+        campaign.id = numberOfCampaigns;
         campaign.owner = _campaignOwner;
         campaign.info.title = _title;
         campaign.info.description = _description;
