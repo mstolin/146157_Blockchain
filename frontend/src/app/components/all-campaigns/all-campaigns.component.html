@@ -1,3 +1,14 @@
-<div *ngFor="let campaign of campaigns" class="row">
-  <app-campaign-thumbnail [campaign]="campaign" />
+<div class="container">
+  <div class="row" *ngIf="campaigns.length > 0; else noCampaigns">
+    <div *ngFor="let campaign of campaigns" class="col-md-3">
+      <app-campaign-thumbnail [campaign]="campaign" />
+    </div>
+  </div>
+  <ng-template #noCampaigns>
+    <div class="row">
+      <figure class="text-center">
+        No campaigns yet :(
+      </figure>
+    </div>
+  </ng-template>
 </div>

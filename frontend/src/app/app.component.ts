@@ -3,7 +3,6 @@ import { Store } from '@ngrx/store';
 
 import { WalletActions } from './state/wallet.actions';
 import { selectWallet } from './state/wallet.selectors';
-import { WalletService } from './service/wallet.service';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +14,6 @@ export class AppComponent {
 
   links: { title: string, link: string }[] = [
     { 'title': 'Home', 'link': '' },
-    { 'title': 'All Campaigns', 'link': 'all-campaigns' },
     { 'title': 'New Campaign', 'link': 'new-campaign' },
   ];
 

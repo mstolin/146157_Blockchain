@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import Box from 'src/app/models/box';
+import BoxSellRef from 'src/app/models/boxSellRef';
 import Campaign from 'src/app/models/campaign';
-import { BoxSellRefResp } from 'src/app/models/responseModels';
 import { CrowdfundingService } from 'src/app/service/crowdfunding.service';
 import { utils } from 'web3';
 
@@ -13,32 +13,45 @@ import { utils } from 'web3';
 })
 export class CampaignDetailComponent implements OnInit {
 
-  campaignId!: number;
   campaign!: Campaign;
   collectedEther!: string;
   availableBoxes: Box[] = [];
-  soldBoxes: BoxSellRefResp[] = [];
+  soldBoxes: BoxSellRef[] = [];
 
   constructor(private route: ActivatedRoute, private crowdfundingService: CrowdfundingService) { }
 
-  ngOnInit(): void {
-    this.crowdfundingService.getCampaign(this.campaignId).then(campaign => {
+  private loadData(campaignId: number) {
+    this.crowdfundingService.getCampaign(campaignId).then(campaign => {
       this.campaign = campaign;
-      this.collectedEther = utils.fromWei(campaign.collectedAmount, 'ether');
+      this.collectedEther = utils.fromWei(campaign.meta.collectedAmount, 'ether');
     }).catch(err => {
       console.log(err);
     });
 
-    this.crowdfundingService.getAvailableBoxes(this.campaignId).then(boxes => {
+    this.crowdfundingService.getAvailableBoxes(campaignId).then(boxes => {
       this.availableBoxes = boxes;
     }).catch(err => {
       console.log(err);
     });
 
-    this.crowdfundingService.getSoldBoxes(this.campaignId).then(boxes => {
+    this.crowdfundingService.getSoldBoxes(campaignId).then(boxes => {
       this.soldBoxes = boxes;
     }).catch(err => {
       console.log(err);
+    });
+  }
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      const campaignIdParam = params.get('id');
+      if (campaignIdParam) {
+        try {
+          const campaignId = Number(campaignIdParam);
+          this.loadData(campaignId);
+        } catch(err) {
+          console.log(err);
+        }
+      }
     });
   }
 

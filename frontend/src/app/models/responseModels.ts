@@ -1,43 +1,64 @@
-export type CampaignRefResp = {
+export type CampaignResp = {
   id: number;
-  campaign: CampaignResp;
+  info: CampaignInfoResp;
+  meta: CampaignMetaResp;
+  stakeholders: CampaignStakeholderListResp;
+  owner: CampaignOwnerResp;
+  animal: CampaignAnimalResp;
 };
 
-export type StakeholderResp = {
-  owner: string;
-  share: number;
-}
-
-export type CampaignResp = {
+export type CampaignInfoResp = {
   title: string;
   description: string;
+  deadline: number;
+};
+
+export type CampaignOwnerResp = {
   owner: string;
   ownerPublicKey: string;
-  deadline: string;
-  collectedAmount: string;
-  boxesLeft: string;
-  isStopped: string;
+};
+
+export type CampaignAnimalResp = {
+  earTag: string;
+  name: string;
+  farm: string;
+  age: number;
+};
+
+export type CampaignMetaResp = {
+  collectedAmount: number;
+  totalBoxes: number;
+  boxesSold: number;
+  createdAt: number;
+  totalBoxTypes: number;
+  isStopped: boolean;
+};
+
+export type CampaignStakeholderListResp = {
   farmer: StakeholderResp;
   butcher: StakeholderResp;
   delivery: StakeholderResp;
 };
 
+export type StakeholderResp = {
+  owner: string;
+  share: number;
+  info: string;
+}
+
 export type BoxResp = {
+  id: number;
   title: string;
   description: string;
   price: number;
-};
-
-export type BoxOfferResp = {
-  id: number;
-  available: number;
   total: number;
-  box: BoxResp;
+  available: number;
 };
 
 export type BoxSellRefResp = {
   id: number;
+  boxId: number;
   owner: string;
   physAddress: string;
-  box: BoxResp;
+  boughtAt: number;
 }
