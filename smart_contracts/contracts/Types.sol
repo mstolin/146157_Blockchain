@@ -102,4 +102,38 @@ struct Campaign {
   CampaignAnimalData animal;
   /// Stakeholders involved in the process
   StakeholderList stakeholders;
+  /// Supply chain info
+  SupplyChainRef supplychain;
+}
+
+/**
+* ?? STRUCT FOR SUPPLY CHAIN ??
+*/
+struct SupplyChain {
+  uint256 campaignRef;
+  /// if the animal is ready and delivered to the butcher
+  bool isAnimalDelivered;
+  /// if the animal is ready to be processed in boxes
+  bool isAnimalProcessed;
+  /// if the boxes are ready for deliver to the delivery service
+  bool areBoxesPrepared;
+  /// if the boxes are distributed by the delivery service
+  bool areBoxesDistributed;
+  /// if the boxes are delivered to the customers
+  bool areBoxesDelivered;
+  /// total number of boxes
+  uint256 totalBoxes;
+  /// total number of prepared boxes
+  uint256 preparedBoxes;
+  /// total number of delivered boxes
+  uint256 deliveredBoxes;
+  /// total number of received boxes
+  uint256 receivedBoxes;
+  // Stakeholder involved in the process
+  StakeholderList stakeholders;
+}
+
+struct SupplyChainRef {
+  bool isStarted;
+  bool isCompleted;
 }

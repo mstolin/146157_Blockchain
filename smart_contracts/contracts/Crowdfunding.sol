@@ -2,6 +2,7 @@
 pragma solidity ^0.8.13;
 
 import "./Types.sol";
+import "./SupplyChains.sol";
 
 contract Crowdfunding {
     // all campaigns
@@ -12,6 +13,8 @@ contract Crowdfunding {
     mapping(uint256 => mapping(uint256 => BoxSellRef)) soldBoxes;
 
     uint256 public numberOfCampaigns = 0;
+
+    // SupplyChains supplychain = new SupplyChains();
 
     /**
      * Creates a new campaign
@@ -67,6 +70,8 @@ contract Crowdfunding {
         campaign.meta.totalBoxTypes = _boxes.length;
         campaign.animal = _animal;
         campaign.stakeholders = _stakeholders;
+        campaign.supplychain.isStarted = false;
+        campaign.supplychain.isCompleted = false;
 
         // increase total num of campaigns
         numberOfCampaigns++;
@@ -190,6 +195,8 @@ contract Crowdfunding {
             // Mark campaign as stopped
             campaign.meta.isStopped = true;
             // TODO Start Supply Chain
+            // supplychain.StartSupplyChain(campaign, getSoldBoxes(campaign.id));
+            // campaign.supplychain.isStarted = true;
         }
     }
 
@@ -206,6 +213,7 @@ contract Crowdfunding {
 
         // TODO Check if supply chain has been completed
         // e.g. require(campaign.supplyChain.isCompleted);
+        // require (campaign.supplychain.isCompleted, "The supply chain must be finished");
 
         // Generate shares
         uint256 farmerShare = campaign.meta.collectedAmount * campaign.stakeholders.farmer.share;
