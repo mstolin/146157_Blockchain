@@ -1,68 +1,70 @@
 const Crowdfunding = artifacts.require('Crowdfunding');
 const SupplyChains = artifacts.require('SupplyChains');
 
-const FARMER_ADDR = '0x4B2B359aa58431E975Bd93C223190228f0705bFF';
-const BUTCHER_ADDR = '0x319562f93692a4cb1DA6D37c041dA04D1d5a2Cd0';
-const DELIVERY_ADDR = '0x14a560B6aAc843227A426B49555cbb70D47eb9F5';
 const RANDOM_SECRET = 'RANDOM_SECRET';
 
-// Same tests of crowdfunding.js
-function generateBoxes(boxesTotal) {
-  let boxes = [];
-  for (let index = 0; index < boxesTotal.length; index++) {
-    const box = {
-      'id': index,
-      'available': boxesTotal[index],
-      'total': boxesTotal[index],
-      'title': `Box #${index}`,
-      'description': `Box #${index} is a very good one`,
-      'price': 2
-    };
-    boxes[index] = box;
-  }
-  return boxes;
-}
-
-function generateCampaign(id, boxesTotal, owner) {
-  return {
-    'id': id,
-    'owner' : {
-      'owner': owner,
-      'ownerPublicKey': RANDOM_SECRET,
-    },
-    'info': {
-      'title': `Campaign #${id + 1}`,
-      'description': `Campaign #${id + 1} is a very nice one`,
-      'duration': 3628800,
-    },
-    'animal': {
-      'earTag': 'DE12345',
-      'name': 'Erna',
-      'farm': 'Nice Farm',
-      'age': 2
-    },
-    'stakeholders': {
-      'farmer': {
-        'owner': FARMER_ADDR,
-        'share': 40,
-        'info': 'some info'
-      },
-      'butcher': {
-        'owner': BUTCHER_ADDR,
-        'share': 30,
-        'info': 'some info'
-      },
-      'delivery': {
-        'owner': DELIVERY_ADDR,
-        'share': 30,
-        'info': 'some info'
-      }
-    },
-    'boxes': generateBoxes(boxesTotal),
-  };
-}
 
 contract('SupplyChains', (accounts) => {
+  const FARMER_ADDR = accounts[7];
+  const BUTCHER_ADDR = accounts[8];
+  const DELIVERY_ADDR = accounts[9];
+
+  // Same tests of crowdfunding.js
+  function generateBoxes(boxesTotal) {
+    let boxes = [];
+    for (let index = 0; index < boxesTotal.length; index++) {
+      const box = {
+        'id': index,
+        'available': boxesTotal[index],
+        'total': boxesTotal[index],
+        'title': `Box #${index}`,
+        'description': `Box #${index} is a very good one`,
+        'price': 2
+      };
+      boxes[index] = box;
+    }
+    return boxes;
+  }
+
+  function generateCampaign(id, boxesTotal, owner) {
+    return {
+      'id': id,
+      'owner' : {
+        'owner': owner,
+        'ownerPublicKey': RANDOM_SECRET,
+      },
+      'info': {
+        'title': `Campaign #${id + 1}`,
+        'description': `Campaign #${id + 1} is a very nice one`,
+        'duration': 3628800,
+      },
+      'animal': {
+        'earTag': 'DE12345',
+        'name': 'Erna',
+        'farm': 'Nice Farm',
+        'age': 2
+      },
+      'stakeholders': {
+        'farmer': {
+          'owner': FARMER_ADDR,
+          'share': 40,
+          'info': 'some info'
+        },
+        'butcher': {
+          'owner': BUTCHER_ADDR,
+          'share': 30,
+          'info': 'some info'
+        },
+        'delivery': {
+          'owner': DELIVERY_ADDR,
+          'share': 30,
+          'info': 'some info'
+        }
+      },
+      'boxes': generateBoxes(boxesTotal),
+    };
+  }
+
   async function createCampaign(contract, campaign, from) {
     await contract
       .createCampaign(
