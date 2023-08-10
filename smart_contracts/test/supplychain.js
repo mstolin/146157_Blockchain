@@ -199,4 +199,27 @@ contract('SupplyChains', (accounts) => {
     supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
     assert.equal(supplychain.isAnimalProcessed, true);
   });
+
+  it('should mark the boxes as prepared', async() => {
+    const crowdfunding_contract = await Crowdfunding.deployed();
+    const supplychain_contract = await SupplyChains.deployed();
+
+    const campaignId = await crowdfunding_contract.getNumberOfCampaigns.call();
+
+    await generateCampaignAndByAll(crowdfunding_contract, campaignId);
+
+    let supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
+    assert.equal(supplychain.areBoxesPrepared, false);
+
+    await supplychain_contract.markBoxAsPrepared(campaignId, 0, { 'from': BUTCHER_ADDR });
+    await supplychain_contract.markBoxAsPrepared(campaignId, 1, { 'from': BUTCHER_ADDR });
+
+    supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
+    assert.equal(supplychain.areBoxesPrepared, false);
+
+    await supplychain_contract.markBoxAsPrepared(campaignId, 2, { 'from': BUTCHER_ADDR });
+
+    supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
+    assert.equal(supplychain.areBoxesPrepared, true);
+  });
 });
