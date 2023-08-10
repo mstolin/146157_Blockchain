@@ -6,7 +6,7 @@ import "./SupplyChains.sol";
 
 contract Crowdfunding {
     // address of the supply chain contract
-    address supplychainAddress;
+    address public supplychainAddress;
 
     // all campaigns
     mapping(uint256 => Campaign) public campaigns;
@@ -198,8 +198,8 @@ contract Crowdfunding {
         if (campaign.meta.boxesSold == campaign.meta.totalBoxes) {
             // Mark campaign as stopped
             campaign.meta.isStopped = true;
-            // TODO Start Supply Chain
-            // campaign.supplychain.isStarted = true;
+            // Start supply chain
+            SupplyChains(supplychainAddress).StartSupplyChain(campaign, getSoldBoxes(campaign.id));
         }
     }
 
