@@ -213,9 +213,11 @@ contract Crowdfunding {
             campaign.meta.boxesSold == campaign.meta.totalBoxes,
             "There can't be any boxes left"
         );
-
-        // TODO Check if supply chain has been completed
-        // e.g. require(campaign.supplyChain.isCompleted);
+        // Check if supply chain has been completed
+        require(
+            SupplyChains(supplychainAddress).isCompleted(campaign.id), 
+            "Supply chain must be completed"
+        );
 
         // Generate shares
         uint256 farmerShare = campaign.meta.collectedAmount * campaign.stakeholders.farmer.share;
