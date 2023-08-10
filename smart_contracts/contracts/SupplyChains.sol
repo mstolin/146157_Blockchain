@@ -55,6 +55,18 @@ contract SupplyChains {
   }
 
   /*
+  * Get an array of bool from the preparedBoxes mapping
+  */
+  function getPreparedBoxesStatus(uint256 _campaignId) public view returns (bool[] memory) {
+    SupplyChain memory supplychain = supplychains[_campaignId];
+    bool[] memory preparedBoxesStatus = new bool[](supplychain.totalBoxes);
+    for (uint256 index = 0; index < supplychain.totalBoxes; index++) {
+      preparedBoxesStatus[index] = preparedBoxes[_campaignId][index];
+    }
+    return preparedBoxesStatus;
+  }
+
+  /*
   * Mark the animal of a campaign as delivered (to the butcher)
   */
   function markAnimalAsDelivered(uint256 _campaignId) public {

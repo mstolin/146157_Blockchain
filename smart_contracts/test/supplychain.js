@@ -217,9 +217,19 @@ contract('SupplyChains', (accounts) => {
     supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
     assert.equal(supplychain.areBoxesPrepared, false);
 
+    preparedBoxesStatus = await supplychain_contract.getPreparedBoxesStatus.call(campaignId);
+    assert.equal(preparedBoxesStatus[0], true);
+    assert.equal(preparedBoxesStatus[1], true);
+    assert.equal(preparedBoxesStatus[2], false);
+
     await supplychain_contract.markBoxAsPrepared(campaignId, 2, { 'from': BUTCHER_ADDR });
 
     supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
     assert.equal(supplychain.areBoxesPrepared, true);
+
+    preparedBoxesStatus = await supplychain_contract.getPreparedBoxesStatus.call(campaignId);
+    assert.equal(preparedBoxesStatus[0], true);
+    assert.equal(preparedBoxesStatus[1], true);
+    assert.equal(preparedBoxesStatus[2], true);
   });
 });
