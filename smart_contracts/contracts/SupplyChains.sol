@@ -30,9 +30,9 @@ contract SupplyChains {
     for (uint256 index = 0; index < _boxes.length; index++) {
       BoxSellRef memory box = _boxes[index];
       totalNumOfBoxes += 1;
-      preparedBoxes[_campaign.id][box.id];
-      distributedBoxes[_campaign.id][box.id];
-      deliveredBoxes[_campaign.id][box.id];
+      preparedBoxes[_campaign.id][box.id] = false;
+      distributedBoxes[_campaign.id][box.id] = false;
+      deliveredBoxes[_campaign.id][box.id] = false;
     }
     require(totalNumOfBoxes > 0, "There must be at least one box in total");
 
@@ -60,7 +60,6 @@ contract SupplyChains {
   function markAnimalAsDelivered(uint256 _campaignId) public {
     SupplyChain storage supplychain = supplychains[_campaignId];
 
-    // verify that the sender is the farmer
     require(msg.sender == supplychain.stakeholders.farmer.owner, "Only the farmer can mark the animal as delivered");
     supplychain.isAnimalDelivered = true;
   }
@@ -71,7 +70,6 @@ contract SupplyChains {
   function markAnimalAsProcessed(uint256 _campaignId) public {
     SupplyChain storage supplychain = supplychains[_campaignId];
 
-    // verify that the sender is the butcher
     require(msg.sender == supplychain.stakeholders.butcher.owner, "Only the butcher can mark the animal as processed");
     supplychain.isAnimalProcessed = true;
   }
@@ -83,7 +81,11 @@ contract SupplyChains {
     SupplyChain storage supplychain = supplychains[_campaignId];
 
     require(msg.sender == supplychain.stakeholders.butcher.owner, "Only the butcher can mark a box as prepared");
-    // TODO
+    preparedBoxes[_campaignId][_boxId] = true;
+
+    if(areAllBoxesPrepared(_campaignId)) {
+      supplychain.areBoxesPrepared = true;
+    }
   }
 
   /*
@@ -93,7 +95,11 @@ contract SupplyChains {
     SupplyChain storage supplychain = supplychains[_campaignId];
 
     require(msg.sender == supplychain.stakeholders.delivery.owner, "Only the delivery service can mark a box as distributed");
-    // TODO
+    distributedBoxes[_campaignId][_boxId] = true;
+
+    if(areAllBoxesDistributed(_campaignId)) {
+      supplychain.areBoxesDistributed = true;
+    }
   }
 
   /*
@@ -103,7 +109,11 @@ contract SupplyChains {
     SupplyChain storage supplychain = supplychains[_campaignId];
 
     require(msg.sender == supplychain.stakeholders.delivery.owner, "Only the delivery service can mark a box as delivered");
-    // TODO
+    deliveredBoxes[_campaignId][_boxId] = true;
+
+    if(areAllBoxesDelivered(_campaignId)) {
+      supplychain.areBoxesDelivered = true;
+    }
   }
 
   /*
