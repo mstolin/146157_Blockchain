@@ -102,13 +102,8 @@ struct Campaign {
   CampaignAnimalData animal;
   /// Stakeholders involved in the process
   StakeholderList stakeholders;
-  /// Supply chain info
-  SupplyChainRef supplychain;
 }
 
-/**
-* ?? STRUCT FOR SUPPLY CHAIN ??
-*/
 struct SupplyChain {
   uint256 campaignRef;
   /// if the animal is ready and delivered to the butcher
@@ -131,9 +126,4 @@ struct SupplyChain {
   uint256 receivedBoxes;
   // Stakeholder involved in the process
   StakeholderList stakeholders;
-}
-
-struct SupplyChainRef {
-  bool isStarted;
-  bool isCompleted;
 }
