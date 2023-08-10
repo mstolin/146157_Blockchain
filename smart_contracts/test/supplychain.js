@@ -138,4 +138,29 @@ contract('SupplyChains', (accounts) => {
       assert.isAtMost(Number(soldBoxes[index].boughtAt), (new Date()).getTime() / 1000);
     }
   }
+
+  it('should buy all from a campaign and start a new supply chain', async () => {
+    const crowdfunding_contract = await Crowdfunding.deployed();
+    const supplychain_contract = await SupplyChains.deployed();
+
+    const campaignId = await crowdfunding_contract.getNumberOfCampaigns.call();
+
+    await generateCampaignAndByAll(crowdfunding_contract, campaignId);
+
+    // retrieve the supplychain and check if it is correct
+    const supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
+    assert.equal(supplychain.campaignRef, campaignId);
+    assert.equal(supplychain.isAnimalDelivered, false);
+    assert.equal(supplychain.isAnimalProcessed, false);
+    assert.equal(supplychain.areBoxesPrepared, false);
+    assert.equal(supplychain.areBoxesDistributed, false);
+    assert.equal(supplychain.areBoxesDelivered, false);
+    assert.equal(supplychain.totalBoxes, 3);
+    assert.equal(supplychain.preparedBoxes, 0);
+    assert.equal(supplychain.deliveredBoxes, 0);
+    assert.equal(supplychain.receivedBoxes, 0);
+    assert.equal(supplychain.stakeholders.farmer.owner, FARMER_ADDR);
+    assert.equal(supplychain.stakeholders.butcher.owner, BUTCHER_ADDR);
+    assert.equal(supplychain.stakeholders.delivery.owner, DELIVERY_ADDR);
+  });
 });
