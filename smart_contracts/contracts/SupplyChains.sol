@@ -61,7 +61,7 @@ contract SupplyChains {
     SupplyChain storage supplychain = supplychains[_campaignId];
 
     // verify that the sender is the farmer
-    require(msg.sender == supplychain.stakeholders.farmer.owner);
+    require(msg.sender == supplychain.stakeholders.farmer.owner, "Only the farmer can mark the animal as delivered");
     supplychain.isAnimalDelivered = true;
   }
 
@@ -72,8 +72,38 @@ contract SupplyChains {
     SupplyChain storage supplychain = supplychains[_campaignId];
 
     // verify that the sender is the butcher
-    require(msg.sender == supplychain.stakeholders.butcher.owner);
+    require(msg.sender == supplychain.stakeholders.butcher.owner, "Only the butcher can mark the animal as processed");
     supplychain.isAnimalProcessed = true;
+  }
+
+  /*
+  * Mark a box as prepared by the butcher
+  */
+  function markBoxAsPrepared(uint256 _campaignId, uint256 _boxId) public {
+    SupplyChain storage supplychain = supplychains[_campaignId];
+
+    require(msg.sender == supplychain.stakeholders.butcher.owner, "Only the butcher can mark a box as prepared");
+    // TODO
+  }
+
+  /*
+  * Mark a box as distributed by the delivery service
+  */
+  function markBoxAsDistributed(uint256 _campaignId, uint256 _boxId) public {
+    SupplyChain storage supplychain = supplychains[_campaignId];
+
+    require(msg.sender == supplychain.stakeholders.delivery.owner, "Only the delivery service can mark a box as distributed");
+    // TODO
+  }
+
+  /*
+  * Mark a box as delivered by the delivery service
+  */
+  function markBoxAsDelivered(uint256 _campaignId, uint256 _boxId) public {
+    SupplyChain storage supplychain = supplychains[_campaignId];
+
+    require(msg.sender == supplychain.stakeholders.delivery.owner, "Only the delivery service can mark a box as delivered");
+    // TODO
   }
 
   /*
@@ -105,7 +135,7 @@ contract SupplyChains {
   }
 
   /*
-  * Checl if all boxes are delivered by the customers
+  * Check if all boxes are delivered by the delivery service
   */
   function areAllBoxesDelivered(uint256 _campaignId) public view returns (bool) {
     SupplyChain memory supplychain = supplychains[_campaignId];
