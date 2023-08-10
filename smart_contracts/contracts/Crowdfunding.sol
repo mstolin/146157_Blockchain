@@ -70,8 +70,6 @@ contract Crowdfunding {
         campaign.meta.totalBoxTypes = _boxes.length;
         campaign.animal = _animal;
         campaign.stakeholders = _stakeholders;
-        campaign.supplychain.isStarted = false;
-        campaign.supplychain.isCompleted = false;
 
         // increase total num of campaigns
         numberOfCampaigns++;
