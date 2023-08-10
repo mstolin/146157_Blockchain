@@ -117,4 +117,12 @@ contract SupplyChains {
     }
     return true;
   }
+
+  /*
+  * Check if the supply chain is completed
+  */
+  function isCompleted(uint256 _campaignId) external view returns (bool) {
+    SupplyChain memory supplychain = supplychains[_campaignId];
+    return (supplychain.isAnimalDelivered && supplychain.isAnimalProcessed && supplychain.areBoxesPrepared && supplychain.areBoxesDistributed && supplychain.areBoxesDelivered);
+  }
 }
