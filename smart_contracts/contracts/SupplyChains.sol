@@ -43,6 +43,8 @@ contract SupplyChains {
 
     // import stakeholders from campaign
     supplychain.stakeholders = _campaign.stakeholders;
+
+    NumberOfSupplyChains++;
   }
 
   /*
