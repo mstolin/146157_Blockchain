@@ -14,8 +14,6 @@ contract Crowdfunding {
 
     uint256 public numberOfCampaigns = 0;
 
-    // SupplyChains supplychain = new SupplyChains();
-
     /**
      * Creates a new campaign
      */
@@ -193,7 +191,6 @@ contract Crowdfunding {
             // Mark campaign as stopped
             campaign.meta.isStopped = true;
             // TODO Start Supply Chain
-            // supplychain.StartSupplyChain(campaign, getSoldBoxes(campaign.id));
             // campaign.supplychain.isStarted = true;
         }
     }
@@ -211,7 +208,6 @@ contract Crowdfunding {
 
         // TODO Check if supply chain has been completed
         // e.g. require(campaign.supplyChain.isCompleted);
-        // require (campaign.supplychain.isCompleted, "The supply chain must be finished");
 
         // Generate shares
         uint256 farmerShare = campaign.meta.collectedAmount * campaign.stakeholders.farmer.share;
