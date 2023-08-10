@@ -66,6 +66,29 @@ contract SupplyChains {
     return preparedBoxesStatus;
   }
 
+  /* 
+  * Get an array of bool from the distributedBoxes mapping
+  */
+  function getDistributedBoxesStatus(uint256 _campaignId) public view returns (bool[] memory) {
+    SupplyChain memory supplychain = supplychains[_campaignId];
+    bool[] memory distributedBoxesStatus = new bool[](supplychain.totalBoxes);
+    for (uint256 index = 0; index < supplychain.totalBoxes; index++) {
+      distributedBoxesStatus[index] = distributedBoxes[_campaignId][index];
+    }
+    return distributedBoxesStatus;
+  }
+  /*
+  * Get an array of bool from the deliveredBoxes mapping
+  */
+  function getDeliveredBoxesStatus(uint256 _campaignId) public view returns (bool[] memory) {
+    SupplyChain memory supplychain = supplychains[_campaignId];
+    bool[] memory deliveredBoxesStatus = new bool[](supplychain.totalBoxes);
+    for (uint256 index = 0; index < supplychain.totalBoxes; index++) {
+      deliveredBoxesStatus[index] = deliveredBoxes[_campaignId][index];
+    }
+    return deliveredBoxesStatus;
+  }
+
   /*
   * Mark the animal of a campaign as delivered (to the butcher)
   */
@@ -83,6 +106,7 @@ contract SupplyChains {
     SupplyChain storage supplychain = supplychains[_campaignId];
 
     require(msg.sender == supplychain.stakeholders.butcher.owner, "Only the butcher can mark the animal as processed");
+    require(supplychain.isAnimalDelivered, "The animal must be delivered before being processed");
     supplychain.isAnimalProcessed = true;
   }
 
@@ -93,6 +117,7 @@ contract SupplyChains {
     SupplyChain storage supplychain = supplychains[_campaignId];
 
     require(msg.sender == supplychain.stakeholders.butcher.owner, "Only the butcher can mark a box as prepared");
+    require(supplychain.isAnimalProcessed, "The animal must be processed before preparing boxes");
     preparedBoxes[_campaignId][_boxId] = true;
 
     if(areAllBoxesPrepared(_campaignId)) {
@@ -107,6 +132,7 @@ contract SupplyChains {
     SupplyChain storage supplychain = supplychains[_campaignId];
 
     require(msg.sender == supplychain.stakeholders.delivery.owner, "Only the delivery service can mark a box as distributed");
+    require(supplychain.areBoxesPrepared, "Boxes must be prepared before being distributed");
     distributedBoxes[_campaignId][_boxId] = true;
 
     if(areAllBoxesDistributed(_campaignId)) {
@@ -121,6 +147,7 @@ contract SupplyChains {
     SupplyChain storage supplychain = supplychains[_campaignId];
 
     require(msg.sender == supplychain.stakeholders.delivery.owner, "Only the delivery service can mark a box as delivered");
+    require(supplychain.areBoxesDistributed, "Boxes must be distributed before being delivered");
     deliveredBoxes[_campaignId][_boxId] = true;
 
     if(areAllBoxesDelivered(_campaignId)) {

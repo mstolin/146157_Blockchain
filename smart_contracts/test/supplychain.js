@@ -177,6 +177,7 @@ contract('SupplyChains', (accounts) => {
     let supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
     assert.equal(supplychain.isAnimalDelivered, false);
 
+    // test
     await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': FARMER_ADDR });
     
     supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
@@ -194,6 +195,9 @@ contract('SupplyChains', (accounts) => {
     let supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
     assert.equal(supplychain.isAnimalProcessed, false);
     
+    await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': FARMER_ADDR });
+
+    // test
     await supplychain_contract.markAnimalAsProcessed(campaignId, { 'from': BUTCHER_ADDR });
     
     supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
@@ -211,6 +215,10 @@ contract('SupplyChains', (accounts) => {
     let supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
     assert.equal(supplychain.areBoxesPrepared, false);
 
+    await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': FARMER_ADDR });
+    await supplychain_contract.markAnimalAsProcessed(campaignId, { 'from': BUTCHER_ADDR });
+
+    // test
     await supplychain_contract.markBoxAsPrepared(campaignId, 0, { 'from': BUTCHER_ADDR });
     await supplychain_contract.markBoxAsPrepared(campaignId, 1, { 'from': BUTCHER_ADDR });
 
