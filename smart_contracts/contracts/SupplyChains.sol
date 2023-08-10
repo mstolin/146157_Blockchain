@@ -48,6 +48,13 @@ contract SupplyChains {
   }
 
   /*
+  * Retrieve a supplychain by campaign id
+  */
+  function getSupplyChainById(uint256 _campaignId) public view returns (SupplyChain memory) {
+    return supplychains[_campaignId];
+  }
+
+  /*
   * Mark the animal of a campaign as delivered (to the butcher)
   */
   function markAnimalAsDelivered(uint256 _campaignId) public {
