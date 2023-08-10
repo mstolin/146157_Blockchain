@@ -176,12 +176,27 @@ contract('SupplyChains', (accounts) => {
 
     let supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
     assert.equal(supplychain.isAnimalDelivered, false);
-    
-    accounts[1] = FARMER_ADDR;
-    // is required to set FARMER_ADDR using an account provided by ganache test net
+
     await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': FARMER_ADDR });
     
     supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
     assert.equal(supplychain.isAnimalDelivered, true);
+  });
+
+  it('should mark the animal as processed', async() => {
+    const crowdfunding_contract = await Crowdfunding.deployed();
+    const supplychain_contract = await SupplyChains.deployed();
+
+    const campaignId = await crowdfunding_contract.getNumberOfCampaigns.call();
+
+    await generateCampaignAndByAll(crowdfunding_contract, campaignId);
+
+    let supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
+    assert.equal(supplychain.isAnimalProcessed, false);
+    
+    await supplychain_contract.markAnimalAsProcessed(campaignId, { 'from': BUTCHER_ADDR });
+    
+    supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
+    assert.equal(supplychain.isAnimalProcessed, true);
   });
 });
