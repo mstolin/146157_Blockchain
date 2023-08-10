@@ -15,7 +15,7 @@ contract SupplyChains {
   uint256 public NumberOfSupplyChains = 0;
 
 
-  function StartSupplyChain(Campaign memory _campaign, BoxSellRef[] memory _boxes) public {
+  function StartSupplyChain(Campaign memory _campaign, BoxSellRef[] memory _boxes) external {
     // get the supplychain related to campaign id
     SupplyChain storage supplychain = supplychains[_campaign.id];
 
