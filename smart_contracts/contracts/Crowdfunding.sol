@@ -5,6 +5,9 @@ import "./Types.sol";
 import "./SupplyChains.sol";
 
 contract Crowdfunding {
+    // address of the supply chain contract
+    address supplychainAddress;
+
     // all campaigns
     mapping(uint256 => Campaign) public campaigns;
     // Boxes of each campaign
@@ -13,6 +16,11 @@ contract Crowdfunding {
     mapping(uint256 => mapping(uint256 => BoxSellRef)) soldBoxes;
 
     uint256 public numberOfCampaigns = 0;
+
+    // retrieve supply chain contract address from truffle deployment
+    constructor(address _supplychainAddress) {
+        supplychainAddress = _supplychainAddress;
+    }
 
     /**
      * Creates a new campaign
