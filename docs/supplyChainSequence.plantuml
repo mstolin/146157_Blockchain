@@ -1,39 +1,41 @@
 @startuml
 actor Farmer as farmer
 actor Butcher as butcher
-actor Delivery as delivery
+actor "Delivery\nService" as delivery
 actor Customer as customer
-participant Contract as contract
+participant "Supply Chain\nContract" as supplyContract
+participant "Crowdfunding\nContract" as crowdContract
 
-farmer --> butcher: deliver animal
+farmer -> butcher: Deliver Animal
 activate farmer
 activate butcher
-farmer --> contract: animalDelivered()
+farmer -> supplyContract: Call animal\ndelivered function
 deactivate farmer
-activate contract
-butcher --> contract: animalDelivered()
+activate supplyContract
+butcher -> supplyContract: Call animal\ndelivered function
 
-butcher --> butcher: process animal
-butcher --> contract: animalProcessed()
-butcher --> butcher: process boxes
-butcher --> contract: boxesProcessed()
-butcher --> delivery: distribute boxes
+butcher -> butcher: Process Animal
+butcher -> supplyContract: Call animal\nprocessed function
+butcher -> butcher: Process Boxes
+butcher -> supplyContract: Call boxes\nprocessed function
+butcher -> delivery: Distribute Boxes
 activate delivery
-butcher --> contract: boxesDistributed()
+butcher -> supplyContract: Call boxes\ndistributed function
 deactivate butcher
-delivery --> contract: boxesDistributed)
+delivery -> supplyContract: Call boxes\ndistributed function
 
-delivery --> customer: deliver box
-activate customer
-delivery --> contract: boxDelivered()
-deactivate customer
-deactivate delivery
-
-alt all boxes delivered
-    contract -> contract: payOut()
-    contract -> farmer: pay share
-    contract -> butcher: pay share
-    contract -> delivery: pay share
+loop Until all Boxes have\nbeen delivered
+    delivery -> customer: Deliver Box
+    activate customer
+    delivery -> supplyContract: Call box\ndelivered\nfunction
+    deactivate customer
+    deactivate delivery
 end
-deactivate contract
+
+alt All Boxes delivered
+    supplyContract -> crowdContract: Notify Supply Chain\nhas finished
+    activate crowdContract
+end
+deactivate crowdContract
+deactivate supplyContract
 @enduml

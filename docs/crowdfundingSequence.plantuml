@@ -7,18 +7,18 @@ actor "Delivery\nService" as delivery
 participant "Crowdfunding\nContract" as crowdContract
 participant "Supply Chain\nContract" as supplyContract
 
-owner --> crowdContract: Call create function
+owner -> crowdContract: Call create function
 activate crowdContract
-crowdContract --> crowdContract: Validate Input
-crowdContract --> crowdContract: Save Campaign
-crowdContract --> crowdContract: Save Boxes
+crowdContract -> crowdContract: Validate Input
+crowdContract -> crowdContract: Save Campaign
+crowdContract -> crowdContract: Save Boxes
 deactivate crowdContract
 
-customer --> crowdContract: call buy function
+customer -> crowdContract: call buy function
 activate crowdContract
-crowdContract --> crowdContract: Validate Input
-crowdContract --> crowdContract: Add Sell Reference
-crowdContract --> crowdContract: Update Campaign\nMetadata
+crowdContract -> crowdContract: Validate Input
+crowdContract -> crowdContract: Add Sell Reference
+crowdContract -> crowdContract: Update Campaign\nMetadata
 
 alt All Boxes have been sold
     activate supplyContract
@@ -26,12 +26,11 @@ alt All Boxes have been sold
 
     alt Supply Chain has finished
         supplyContract -> crowdContract: Notify
+        deactivate supplyContract
+        crowdContract -> farmer: Pay out
+        crowdContract -> butcher: Pay out
+        crowdContract -> delivery: Pay out
     end
-    deactivate supplyContract
-
-    crowdContract -> farmer: Pay out
-    crowdContract -> butcher: Pay out
-    crowdContract -> delivery: Pay out
 end
 deactivate crowdContract
 @enduml
