@@ -18,9 +18,9 @@ struct Box {
 
 struct BoxSellRef {
   /// The id of the specific sell
-  uint256 id;
+  uint16 id;
   /// ID of the box
-  uint256 boxId;
+  uint8 boxId;
   /// Address of the owner
   address owner;
   /// Date of soll

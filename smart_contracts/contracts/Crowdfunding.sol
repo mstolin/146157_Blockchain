@@ -5,13 +5,13 @@ import "./CrowdfundingTypes.sol";
 
 contract Crowdfunding {
     // all campaigns
-    mapping(uint256 => Campaign) public campaigns;
+    mapping(uint256 => Campaign) private campaigns;
     // Boxes of each campaign
-    mapping(uint256 => mapping(uint8 => Box)) boxes;
+    mapping(uint256 => mapping(uint8 => Box)) private boxes;
     // Sold boxes of each campaign (campignId => sellId => BoxSellRef)
-    mapping(uint256 => mapping(uint256 => BoxSellRef)) soldBoxes;
+    mapping(uint256 => mapping(uint256 => BoxSellRef)) private soldBoxes;
 
-    uint256 public numberOfCampaigns = 0;
+    uint256 private numberOfCampaigns = 0;
 
     /**
      * Creates a new campaign
@@ -24,7 +24,7 @@ contract Crowdfunding {
         StakeholderList memory _stakeholders,
         CampaignAnimalData memory _animal,
         Box[] memory _boxes
-    ) public returns (uint256) {
+    ) public {
         // check crowdfunding duration
         require(_duration > 0, "Duration must be higher than 0");
         require(_duration <= 6 weeks, "Duration can't be higher than 6 weeks");
@@ -71,9 +71,6 @@ contract Crowdfunding {
 
         // increase total num of campaigns
         numberOfCampaigns++;
-
-        // return the most recent campaign index
-        return numberOfCampaigns - 1;
     }
 
     /**
@@ -128,7 +125,7 @@ contract Crowdfunding {
     /**
      * Removes a campaign
      */
-    function stopCampaign(uint256 _campaignId) public returns (bool) {
+    function stopCampaign(uint256 _campaignId) public {
         Campaign storage campaign = campaigns[_campaignId];
         require(!campaign.meta.isStopped, "Campaign already stopped");
         require(
@@ -141,8 +138,6 @@ contract Crowdfunding {
         );
 
         campaign.meta.isStopped = true;
-
-        return true;
     }
 
     /**
@@ -170,7 +165,7 @@ contract Crowdfunding {
         require(amount >= box.price, "Given amount is below box price");
 
         // Add buyer (Don't increase boxes sold yet, we need it starting at 0)
-        uint256 sellId = campaign.meta.boxesSold;
+        uint16 sellId = campaign.meta.boxesSold;
         BoxSellRef storage sellRef = soldBoxes[_campaignId][
             campaign.meta.boxesSold
         ];
