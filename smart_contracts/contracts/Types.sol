@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 struct Box {
   /// Id of the Box
-  uint256 id;
+  uint8 id;
   /// Title of a box
   string title;
   /// Description of a box
@@ -11,9 +11,9 @@ struct Box {
   /// The price of this box in wei
   uint256 price;
   /// Overall total number of boxes
-  uint32 total;
+  uint8 total;
   /// Number of available boxes
-  uint32 available;
+  uint8 available;
 }
 
 struct BoxSellRef {
@@ -44,11 +44,11 @@ struct CampaignMeta {
   /// Creation date
   uint256 createdAt;
   /// Total number of boxes
-  uint256 totalBoxes;
+  uint16 totalBoxes;
   /// Number of sold boxes
-  uint256 boxesSold;
+  uint16 boxesSold;
   /// Number of box types
-  uint256 totalBoxTypes;
+  uint8 totalBoxTypes;
   /// Is it already stopped
   bool isStopped;
 }

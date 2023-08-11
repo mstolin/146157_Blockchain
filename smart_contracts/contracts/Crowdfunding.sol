@@ -7,7 +7,7 @@ contract Crowdfunding {
     // all campaigns
     mapping(uint256 => Campaign) public campaigns;
     // Boxes of each campaign
-    mapping(uint256 => mapping(uint256 => Box)) boxes;
+    mapping(uint256 => mapping(uint8 => Box)) boxes;
     // Sold boxes of each campaign (campignId => sellId => BoxSellRef)
     mapping(uint256 => mapping(uint256 => BoxSellRef)) soldBoxes;
 
@@ -37,8 +37,9 @@ contract Crowdfunding {
         require(deadline > current, "Deadline must be in the future");
 
         // add boxes to campaign
-        uint256 totalNumOfBoxes = 0;
-        for (uint256 index = 0; index < _boxes.length; index++) {
+        require(_boxes.length <= type(uint16).max, "Number of boxes can't be higher than (2^16)-1");
+        uint16 totalNumOfBoxes = 0;
+        for (uint8 index = 0; index < _boxes.length; index++) {
             Box memory box = _boxes[index];
             require(
                 box.total > 0,
@@ -46,7 +47,7 @@ contract Crowdfunding {
             );
             require(
                 box.total == box.available,
-                "Initially total and available must be equal"
+                "Initially total and available of a box must be equal"
             );
             totalNumOfBoxes += box.total;
             boxes[numberOfCampaigns][box.id] = box;
@@ -64,7 +65,7 @@ contract Crowdfunding {
         campaign.meta.isStopped = false;
         campaign.meta.totalBoxes = totalNumOfBoxes;
         campaign.meta.boxesSold = 0;
-        campaign.meta.totalBoxTypes = _boxes.length;
+        campaign.meta.totalBoxTypes = uint8(_boxes.length);
         campaign.animal = _animal;
         campaign.stakeholders = _stakeholders;
 
@@ -99,9 +100,9 @@ contract Crowdfunding {
      */
     function getBoxes(uint256 _campaignId) public view returns (Box[] memory) {
         Campaign storage campaign = campaigns[_campaignId];
-        uint256 totalBoxTypes = campaign.meta.totalBoxTypes;
+        uint8 totalBoxTypes = campaign.meta.totalBoxTypes;
         Box[] memory boxesOfCampaign = new Box[](totalBoxTypes);
-        for (uint256 index = 0; index < totalBoxTypes; index++) {
+        for (uint8 index = 0; index < totalBoxTypes; index++) {
             Box storage box = boxes[_campaignId][index];
             boxesOfCampaign[index] = box;
         }
@@ -149,7 +150,7 @@ contract Crowdfunding {
      */
     function buyBox(
         uint256 _campaignId,
-        uint256 _boxId,
+        uint8 _boxId,
         string memory _physAddress
     ) public payable {
         // get campaign ref
