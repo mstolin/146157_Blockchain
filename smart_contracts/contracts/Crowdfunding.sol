@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL
 pragma solidity ^0.8.13;
 
-import "./Types.sol";
+import "./CrowdfundingTypes.sol";
 
 contract Crowdfunding {
     // all campaigns
