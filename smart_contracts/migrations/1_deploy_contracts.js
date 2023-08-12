@@ -12,10 +12,12 @@ module.exports = async function(deployer, network, accounts) {
   console.log("SupplyChains address: ", SupplyChainsInstance.address);
   // deployer.deploy(Crowdfunding);
 
+  /* Initialize data call for testing
   await CrowdfundingInstance.initializeData(accounts[1], accounts[2], accounts[3], accounts[4], "RANDOM_SECRET");
   console.log("Owner address: ", accounts[1]);
   console.log("Farmer address: ", accounts[2]);
   console.log("Butcher address: ", accounts[3]);
   console.log("Delivery address: ", accounts[4]);
   console.log("Crowdfunding data initialized");
+  */
 };
