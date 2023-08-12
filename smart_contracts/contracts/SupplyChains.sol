@@ -10,7 +10,7 @@ contract SupplyChains {
 
   mapping(uint256 => mapping(uint256 => BoxProcessStatus)) processedBoxes;
   mapping(uint256 => mapping(uint256 => BoxDistributionStatus)) distributedBoxes;
-  mapping(uint256 => mapping(uint256 => BoxDeliveryStatus)) deliveredBoxes;
+  mapping(uint256 => mapping(uint256 => BoxDeliverStatus)) deliveredBoxes;
 
   uint256 public NumberOfSupplyChains = 0;
 
@@ -38,9 +38,9 @@ contract SupplyChains {
     require(totalNumOfBoxes > 0, "There must be at least one box in total");
 
     supplychain.totalBoxes = totalNumOfBoxes;
-    supplychain.preparedBoxes = 0;
+    supplychain.processedBoxes = 0;
+    supplychain.distributedBoxes = 0;
     supplychain.deliveredBoxes = 0;
-    supplychain.receivedBoxes = 0;
 
     // import stakeholders from campaign
     supplychain.stakeholders = _campaign.stakeholders;
@@ -86,6 +86,7 @@ contract SupplyChains {
     require(msg.sender == supplychain.stakeholders.butcher.owner, "Only the butcher can mark a box as processed");
     require(supplychain.isAnimalProcessed.butcher, "The animal must be processed before preparing boxes");
     processedBoxes[_campaignId][_boxId].butcher = true;
+    supplychain.processedBoxes++;
 
     if(areBoxesProcessed(_campaignId)) {
       supplychain.areBoxesProcessed.butcher = true;
@@ -114,6 +115,10 @@ contract SupplyChains {
         supplychain.areBoxesDistributed.delivery = true;
       }
     }
+
+    if (distributedBoxes[_campaignId][_boxId].butcher && distributedBoxes[_campaignId][_boxId].delivery) {
+      supplychain.distributedBoxes++;
+    }
   }
 
   /*
@@ -128,6 +133,7 @@ contract SupplyChains {
       "Boxes must be distributed before being delivered");
     
     deliveredBoxes[_campaignId][_boxId].delivery = true;
+    supplychain.deliveredBoxes++;
 
     if(areBoxesDelivered(_campaignId)) {
       supplychain.areBoxesDelivered.delivery = true;

@@ -115,15 +115,15 @@ struct SupplyChain {
   /// if the boxes are distributed by the delivery service
   BoxDistributionStatus areBoxesDistributed;
   /// if the boxes are delivered to the customers
-  BoxDeliveryStatus areBoxesDelivered;
+  BoxDeliverStatus areBoxesDelivered;
   /// total number of boxes
   uint256 totalBoxes;
   /// total number of prepared boxes
-  uint256 preparedBoxes;
+  uint256 processedBoxes;
   /// total number of delivered boxes
-  uint256 deliveredBoxes;
+  uint256 distributedBoxes;
   /// total number of received boxes
-  uint256 receivedBoxes;
+  uint256 deliveredBoxes;
   // Stakeholder involved in the process
   StakeholderList stakeholders;
 }
@@ -146,6 +146,6 @@ struct BoxDistributionStatus {
   bool delivery;
 }
 
-struct BoxDeliveryStatus {
+struct BoxDeliverStatus {
   bool delivery;
 }
