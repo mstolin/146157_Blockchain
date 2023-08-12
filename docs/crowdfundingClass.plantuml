@@ -1,0 +1,84 @@
+@startuml
+class  Crowdfunding <<contract>> {
+  {field} -campaigns : mapping(uint256 => Campaign)
+  {field} -boxes : mapping(uint256 => mapping(uint8 => Box))
+  {field} -soldBoxes : mapping(uint256 => mapping(uint256 => BoxSellRef))
+  {field} -numberOfCampaigns : uint256
+  {method} +createCampaign(_title : string, _description : string, _duration : uint32, _campaignOwner : CampaignOwner,\n_stakeholders: StakeholderList, _animal : CampaignAnimalData, boxes : Box[])
+  {method} +getNumberOfCampaigns(): uint256
+  {method} +getCampaigns(): Campaign[]
+  {method} +getBoxes(_campaignId : uint256): Box[]
+  {method} +getSoldBoxes(_campaignId : uint256): BoxSellRef[]
+  {method} +stopCampaign(_campaignId : uint256)
+  {method} +buyBox(_campaignId : uint256, _boxId : uint256, _physAddress : string)
+  {method} +payOut(_campaignId : uint256)
+}
+struct Box {
+  +id : uint8
+  +title : string
+  +description : string
+  +price : uint256
+  +total : uint8
+  +available : uint8
+}
+struct BoxSellRef {
+  +id : uint16
+  +boxId : uint8
+  +owner : address
+  +boughtAt : uint256
+  +physAddress : string
+}
+struct Campaign {
+  +id : uint256
+  +info : CampaignInfo
+  +meta : CampaignMeta
+  +owner : CampaignOwner
+  +animal : CampaignAnimalData
+  +stakeholders : StakeholderList
+}
+struct CampaignInfo {
+  +title : string
+  +createdAt : uint256
+  +totalBoxes : uint16
+  +boxesSold : uint16
+  +totalBoxTypes : uint8
+  +isStopped : bool
+}
+struct CampaignMeta {
+  +collectedAmount : uint256
+  +description : string
+  +deadline : uint256
+}
+struct CampaignAnimalData {
+  +earTag : string
+  +name : string
+  +farm : string
+  +age : uint8
+}
+struct CampaignOwner {
+  +owner : address
+  +ownerPublicKey : string
+}
+struct Stakeholder {
+  +owner : address
+  +share : uint8
+  +info : string
+}
+struct StakeholderList {
+  +farmer : Stakeholder
+  +butcher : Stakeholder
+  +delivery : Stakeholder
+}
+
+Crowdfunding "1" *-- "many" Campaign
+Campaign "1" *-- "1" CampaignMeta
+Campaign "1" *-- "1" CampaignInfo
+Campaign "1" *-- "1" CampaignOwner
+Campaign "1" *-- "1" CampaignAnimalData
+Campaign "1" *-- "1" StakeholderList
+StakeholderList "1" *-- "3" Stakeholder
+
+Crowdfunding "1" *-- "many" Box
+Crowdfunding "1" *-- "many" BoxSellRef
+
+@enduml

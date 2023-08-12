@@ -1,0 +1,41 @@
+@startuml
+actor Farmer as farmer
+actor Butcher as butcher
+actor "Delivery\nService" as delivery
+actor Customer as customer
+participant "Supply Chain\nContract" as supplyContract
+participant "Crowdfunding\nContract" as crowdContract
+
+farmer -> butcher: Deliver Animal
+activate farmer
+activate butcher
+farmer -> supplyContract: Call animal\ndelivered function
+deactivate farmer
+activate supplyContract
+butcher -> supplyContract: Call animal\ndelivered function
+
+butcher -> butcher: Process Animal
+butcher -> supplyContract: Call animal\nprocessed function
+butcher -> butcher: Process Boxes
+butcher -> supplyContract: Call boxes\nprocessed function
+butcher -> delivery: Distribute Boxes
+activate delivery
+butcher -> supplyContract: Call boxes\ndistributed function
+deactivate butcher
+delivery -> supplyContract: Call boxes\ndistributed function
+
+loop Until all Boxes have\nbeen delivered
+    delivery -> customer: Deliver Box
+    activate customer
+    delivery -> supplyContract: Call box\ndelivered\nfunction
+    deactivate customer
+    deactivate delivery
+end
+
+alt All Boxes delivered
+    supplyContract -> crowdContract: Notify Supply Chain\nhas finished
+    activate crowdContract
+end
+deactivate crowdContract
+deactivate supplyContract
+@enduml

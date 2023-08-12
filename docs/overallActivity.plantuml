@@ -1,0 +1,30 @@
+@startuml
+|Campaign Owner|
+start
+
+group "Crowdfunding"
+:Create Campaign;
+
+|Customer|
+if (Campaign is active?) then (yes)
+  repeat :Buys box;
+  repeat while (all boxes sold?) is (no) not (yes)
+else (Campaign has stopped)
+  stop
+endif
+end group
+
+|Farmer|
+group "Supply Chain"
+:Deliver Animal;
+
+|Butcher|
+:Process Animal;
+:Process Boxes;
+
+|Delivery Service|
+:Receive Boxes;
+:Deliver Boxes;
+end group
+stop
+@enduml
