@@ -229,37 +229,4 @@ contract Crowdfunding {
         payable(campaign.stakeholders.butcher.owner).transfer(butcherShare);
         payable(campaign.stakeholders.delivery.owner).transfer(deliveryShare);
     }
-
-    /*
-    * Initialize data for supply chain testing purposes: add a new campaign
-    */
-    function initializeData(
-        address payable owner,
-        address payable farmer, 
-        address payable butcher,
-        address payable delivery,
-        string memory private_key
-    ) public {
-        string memory title = "Test Campaign";
-        string memory descritpion = "This is a test campaign";
-        uint32 duration = 6 weeks;
-        CampaignOwner memory campaign_owner = CampaignOwner(owner, private_key);
-
-        Stakeholder memory test_farmer = Stakeholder(farmer, 20, "Farmer");
-        Stakeholder memory test_butcher = Stakeholder(butcher, 30, "Butcher");
-        Stakeholder memory test_delivery = Stakeholder(delivery, 50, "Delivery");
-        StakeholderList memory stakeholders = StakeholderList(test_farmer, test_butcher, test_delivery);
-
-        CampaignAnimalData memory animal = CampaignAnimalData("123456789", "Berta", "Bauernhof", 2);
-
-        Box[] memory test_boxes = new Box[](3);
-        Box memory box1 = Box(0, "Test Box 1", "descritpion", 10000, 1, 1);
-        Box memory box2 = Box(1, "Test Box 2", "descritpion", 15000, 2, 2);
-        Box memory box3 = Box(2, "Test Box 3", "descritpion", 20000, 1, 1);
-        test_boxes[0] = box1;
-        test_boxes[1] = box2;
-        test_boxes[2] = box3;
-
-        createCampaign(title, descritpion, duration, campaign_owner, stakeholders, animal, test_boxes);
-    }
 }

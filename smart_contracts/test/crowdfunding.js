@@ -75,26 +75,6 @@ contract('Crowdfunding', (accounts) => {
       );
   }
 
-  it('should initialize data', async () => {
-    const contract = await Crowdfunding.deployed();
-    const owner = accounts[1];
-    const farmer = accounts[2];
-    const butcher = accounts[3];
-    const delivery = accounts[4];
-
-    await contract.initializeData(owner, farmer, butcher, delivery, RANDOM_SECRET, { 'from': owner });
-    const campaigns = await contract.getCampaigns.call();
-    const campaign = campaigns[0];
-    assert.equal(campaigns.length, 1);
-    assert.equal(campaign.id, 0);
-    assert.equal(campaign.meta.totalBoxes, 4); // fixed value in initializeData
-    assert.equal(campaign.owner.owner, owner);
-    assert.equal(campaign.owner.ownerPublicKey, RANDOM_SECRET);
-    assert.equal(campaign.stakeholders.farmer.owner, farmer);
-    assert.equal(campaign.stakeholders.butcher.owner, butcher);
-    assert.equal(campaign.stakeholders.delivery.owner, delivery);
-  });
-
   it('should correctly create campaigns and boxes', async () => {
     const contract = await Crowdfunding.deployed();
     const owner = accounts[0];
