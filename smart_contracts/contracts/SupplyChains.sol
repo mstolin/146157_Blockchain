@@ -14,7 +14,6 @@ contract SupplyChains {
 
   uint256 public NumberOfSupplyChains = 0;
 
-
   function StartSupplyChain(Campaign memory _campaign, BoxSellRef[] memory _boxes) external {
     SupplyChain storage supplychain = supplychains[_campaign.id];
 
@@ -216,7 +215,7 @@ contract SupplyChains {
   function getSupplyChainById(uint256 _campaignId) public view returns (SupplyChain memory) {
     return supplychains[_campaignId];
   }
-  
+
   /*
   * getBoxStatus: 0 = processed, 1 = distributed, 2 = delivered
   */

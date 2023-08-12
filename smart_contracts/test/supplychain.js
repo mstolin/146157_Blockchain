@@ -3,7 +3,6 @@ const SupplyChains = artifacts.require('SupplyChains');
 
 const RANDOM_SECRET = 'RANDOM_SECRET';
 
-
 contract('SupplyChains', (accounts) => {
   const FARMER_ADDR = accounts[7];
   const BUTCHER_ADDR = accounts[8];
@@ -341,7 +340,7 @@ contract('SupplyChains', (accounts) => {
     // test
     let isCompleted = await supplychain_contract.isCompleted.call(campaignId);
     assert.equal(isCompleted, false);
-    
+
     await supplychain_contract.markBoxAsDelivered(campaignId, 0, { 'from': DELIVERY_ADDR });
 
     supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
