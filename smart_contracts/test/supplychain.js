@@ -314,7 +314,7 @@ contract('SupplyChains', (accounts) => {
     assert.equal(distributedBoxesStatus[2], true);
   });
 
-  it('should mark the boxes as delivered', async() => {
+  it('should mark the boxes as delivered and the supply chain should be completed', async() => {
     const crowdfunding_contract = await Crowdfunding.deployed();
     const supplychain_contract = await SupplyChains.deployed();
 
@@ -339,6 +339,9 @@ contract('SupplyChains', (accounts) => {
     await supplychain_contract.markBoxAsDistributed(campaignId, 2, { 'from': BUTCHER_ADDR });
 
     // test
+    let isCompleted = await supplychain_contract.isCompleted.call(campaignId);
+    assert.equal(isCompleted, false);
+    
     await supplychain_contract.markBoxAsDelivered(campaignId, 0, { 'from': DELIVERY_ADDR });
 
     supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
@@ -359,5 +362,8 @@ contract('SupplyChains', (accounts) => {
     assert.equal(deliveredBoxesStatus[0], true);
     assert.equal(deliveredBoxesStatus[1], true);
     assert.equal(deliveredBoxesStatus[2], true);
+
+    isCompleted = await supplychain_contract.isCompleted.call(campaignId);
+    assert.equal(isCompleted, true);
   });
 });
