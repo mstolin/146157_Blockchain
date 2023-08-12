@@ -48,6 +48,25 @@ contract SupplyChains {
     NumberOfSupplyChains++;
   }
 
+  /**
+  * Returns all supply chains
+  */
+  function getSupplyChains() public view returns (SupplyChain[] memory) {
+    SupplyChain[] memory allSupplychains = new SupplyChain[](NumberOfSupplyChains);
+    for (uint256 index = 0; index < NumberOfSupplyChains; index++) {
+      SupplyChain storage supplychain = supplychains[index];
+      allSupplychains[index] = supplychain;
+    }
+    return allSupplychains;
+  }
+
+  /**
+  * Returns the total number of supply chains
+  */
+  function getNumberOfSupplyChains() public view returns (uint256) {
+    return NumberOfSupplyChains;
+  }
+
   /*
   * Mark the animal of a campaign as delivered (to the butcher)
   */
