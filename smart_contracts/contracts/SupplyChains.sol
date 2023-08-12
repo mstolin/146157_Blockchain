@@ -50,32 +50,6 @@ contract SupplyChains {
   }
 
   /*
-  * Retrieve a supplychain by campaign id
-  */
-  function getSupplyChainById(uint256 _campaignId) public view returns (SupplyChain memory) {
-    return supplychains[_campaignId];
-  }
-
-  /*
-  * getBoxStatus: 0 = processed, 1 = distributed, 2 = delivered
-  */
-  function getBoxesStatus(uint256 _campaignId, uint8 mode) public view returns (bool[] memory) {
-    require(mode >= 0 && mode <= 2, "Mode must be between 0 and 2");
-    SupplyChain memory supplychain = supplychains[_campaignId];
-    bool[] memory boxesStatus = new bool[](supplychain.totalBoxes);
-    for (uint256 index = 0; index < supplychain.totalBoxes; index++) {
-      if (mode == 0) {
-        boxesStatus[index] = processedBoxes[_campaignId][index].butcher;
-      } else if (mode == 1) {
-        boxesStatus[index] = (distributedBoxes[_campaignId][index].butcher && distributedBoxes[_campaignId][index].delivery);
-      } else if (mode == 2) {
-        boxesStatus[index] = deliveredBoxes[_campaignId][index].delivery;
-      }
-    }
-    return boxesStatus;
-  }
-
-  /*
   * Mark the animal of a campaign as delivered (to the butcher)
   */
   function markAnimalAsDelivered(uint256 _campaignId) public {
@@ -176,6 +150,8 @@ contract SupplyChains {
       supplychain.areBoxesDelivered.delivery);
   }
 
+  // ----- HELPER METHODS -----
+
   /*
   * Check if all boxes are processed by the butcher
   */
@@ -230,5 +206,33 @@ contract SupplyChains {
       }
     }
     return true;
+  }
+
+  // ----- TESTING -----
+
+  /*
+  * Retrieve a supplychain by campaign id
+  */
+  function getSupplyChainById(uint256 _campaignId) public view returns (SupplyChain memory) {
+    return supplychains[_campaignId];
+  }
+  
+  /*
+  * getBoxStatus: 0 = processed, 1 = distributed, 2 = delivered
+  */
+  function getBoxesStatus(uint256 _campaignId, uint8 mode) public view returns (bool[] memory) {
+    require(mode >= 0 && mode <= 2, "Mode must be between 0 and 2");
+    SupplyChain memory supplychain = supplychains[_campaignId];
+    bool[] memory boxesStatus = new bool[](supplychain.totalBoxes);
+    for (uint256 index = 0; index < supplychain.totalBoxes; index++) {
+      if (mode == 0) {
+        boxesStatus[index] = processedBoxes[_campaignId][index].butcher;
+      } else if (mode == 1) {
+        boxesStatus[index] = (distributedBoxes[_campaignId][index].butcher && distributedBoxes[_campaignId][index].delivery);
+      } else if (mode == 2) {
+        boxesStatus[index] = deliveredBoxes[_campaignId][index].delivery;
+      }
+    }
+    return boxesStatus;
   }
 }
