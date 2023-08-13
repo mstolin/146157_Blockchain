@@ -13,7 +13,7 @@ import ContractService from "./contract.service";
 })
 export class SupplyChainService extends ContractService {
 
-  private readonly _contractAddress: string = "0x4DD93311B0e6e3B641912A1FD8962B486146669C";
+  private readonly _contractAddress: string = "0x47A26CF68D09CbbcF1cCE3Ce6D324012c8f749c1";
 
   constructor() {
     super();
@@ -35,12 +35,12 @@ export class SupplyChainService extends ContractService {
       const contract = this.getContract();
       if (contract) {
         try {
-          let supplychain: SupplyChainResp[] = await contract.
-            methods
-            .getSupplyChains()
-            .call();
-            supplychain = supplychain.map(resp => SupplyChain.fromResponse(resp));
-            resolve(supplychain);
+          let supplychains: SupplyChainResp[] = await contract
+              .methods
+              .getSupplyChains()
+              .call();
+          supplychains = supplychains.map(resp => SupplyChain.fromResponse(resp));
+          resolve(supplychains);
         } catch (err) {
           reject(err);
         }
@@ -53,9 +53,9 @@ export class SupplyChainService extends ContractService {
   getSupplyChain(campaignRef: number): Promise<SupplyChain> {
     return new Promise(async (resolve, reject) => {
       try {
-        const supplychain = (await this.getSupplyChains()).filter(supplychain => supplychain.campaignRef == campaignRef);
-        if (supplychain.length > 0) {
-          resolve(supplychain[0]);
+        const supplychains = (await this.getSupplyChains()).filter(supplychain => supplychain.campaignRef == campaignRef);
+        if (supplychains.length > 0) {
+          resolve(supplychains[0]);
         } else {
           reject();
         }
