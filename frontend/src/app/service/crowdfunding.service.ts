@@ -17,7 +17,7 @@ import BoxSellRef from '../models/boxSellRef';
 })
 export class CrowdfundingService extends ContractService {
 
-  private readonly _contractAddress: string = '0x0E75E4DA1aA192aA84A244a178224AE62DB85089';
+  private readonly _contractAddress: string = '0xFcA07283527C67F9bacDbEF5b23E0f16fa9B8811';
 
   constructor() {
     super();
@@ -79,6 +79,14 @@ export class CrowdfundingService extends ContractService {
         reject();
       }
     });
+  }
+
+  async getStoppedCampaigns(): Promise<Campaign[]> {
+    return this.getCampaigns().then(campaigns => campaigns.filter(campaign => campaign.meta.isStopped));
+  }
+
+  async getActiveCampaigns(): Promise<Campaign[]> {
+    return this.getCampaigns().then(campaigns => campaigns.filter(campaign => !campaign.meta.isStopped));
   }
 
   getCampaign(campaignId: number): Promise<Campaign> {
@@ -154,7 +162,7 @@ export class CrowdfundingService extends ContractService {
     });
   }
 
-  stopCampaign(campaignId: number): Promise {
+  stopCampaign(campaignId: number): Promise<bool> {
     return new Promise(async (resolve, reject) => {
       const contract = this.getContract();
       if (contract) {
@@ -163,7 +171,7 @@ export class CrowdfundingService extends ContractService {
             .methods
             .stopCampaign(campaignId)
             .send({ 'from': this.selectedAddress });
-          resolve();
+          resolve(true);
         } catch (err) {
           reject(err);
         }

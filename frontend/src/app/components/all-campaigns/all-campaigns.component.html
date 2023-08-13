@@ -1,6 +1,14 @@
 <div class="container">
-  <div class="row" *ngIf="campaigns.length > 0; else noCampaigns">
-    <div *ngFor="let campaign of campaigns" class="col-md-3">
+  <div>
+    <ul class="nav nav-underline">
+      <li class="nav-item">
+        <p class="nav-link active" aria-current="page" href="#">Active Campaigns</p>
+      </li>
+    </ul>
+  </div>
+
+  <div class="row" *ngIf="activeCampaigns.length > 0; else noCampaigns">
+    <div *ngFor="let campaign of activeCampaigns" class="col-md-3">
       <app-campaign-thumbnail [campaign]="campaign" />
     </div>
   </div>
@@ -11,4 +19,18 @@
       </figure>
     </div>
   </ng-template>
+
+  <div *ngIf="stoppedCampaigns.length > 0">
+    <ul class="nav nav-underline">
+      <li class="nav-item">
+        <p class="nav-link active" aria-current="page" href="#">Stopped Campaigns</p>
+      </li>
+    </ul>
+  </div>
+
+  <div class="row" *ngIf="stoppedCampaigns.length > 0">
+    <div *ngFor="let campaign of stoppedCampaigns" class="col-md-3">
+      <app-campaign-thumbnail [campaign]="campaign" />
+    </div>
+  </div>
 </div>

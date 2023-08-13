@@ -9,13 +9,20 @@ import { CrowdfundingService } from 'src/app/service/crowdfunding.service';
 })
 export class AllCampaignsComponent implements OnInit {
 
-  campaigns: Campaign[] = [];
+  activeCampaigns: Campaign[] = [];
+  stoppedCampaigns: Campaign[] = [];
 
   constructor(private crowdfundingService: CrowdfundingService) {}
 
   ngOnInit():void {
-    this.crowdfundingService.getCampaigns().then(campaigns => {
-      this.campaigns = campaigns;
+    this.crowdfundingService.getActiveCampaigns().then(campaigns => {
+      this.activeCampaigns = campaigns;
+    }).catch(err => {
+      console.log("ERR", err);
+    });
+
+    this.crowdfundingService.getStoppedCampaigns().then(campaigns => {
+      this.stoppedCampaigns = campaigns;
     }).catch(err => {
       console.log("ERR", err);
     });

@@ -4,6 +4,11 @@
   </div>
 
   <div class="container">
+    <div class="row" *ngIf="owner && owner == campaign.owner.address">
+      <div>
+        <button class="btn btn-primary" (click)="stopCampaign()">Stop</button>
+      </div>
+    </div>
     <div class="row">
       <p>By <strong>{{ campaign.owner.address }}</strong></p>
     </div>
