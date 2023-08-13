@@ -4,12 +4,12 @@ import { ContractAbi } from 'web3';
 import { Injectable } from '@angular/core';
 
 import { SupplyChainResp } from '../models/responseModels';
-import { AnimalDeliverStatus, AnimalProcessStatus, BoxProcessStatus, BoxDistributionStatus, BoxDeliverStatus } from '../models/supplychainStates';
+import SupplyChain from "../models/supplychain";
 
 @Injectable({
   providedIn: 'root'
 })
-export class SupplychainService {
+export class SupplyChainService {
 
   private readonly _contractAddress: string = "";
 
@@ -28,22 +28,37 @@ export class SupplychainService {
     }
   }
 
-  getSupplyChains(): Promise<SupplyChain> {
+  getSupplyChains(): Promise<SupplyChain[]> {
     return new Promise(async (resolve, reject) => {
       const contract = this.getContract();
       if (contract) {
         try {
-          let supplychains: SupplyChainResp[] = await contract.
+          let supplychain: SupplyChainResp[] = await contract.
             methods
             .getSupplyChains()
             .call();
-            supplychains = supplychains.map(resp => SupplyChain.fromResponse(resp));
-            resolve(supplychains);
+            supplychain = supplychain.map(resp => SupplyChain.fromResponse(resp));
+            resolve(supplychain);
         } catch (err) {
           reject(err);
         }
       } else {
         reject();
+      }
+    });
+  }
+
+  getSupplyChain(campaignRef: number): Promise<SupplyChain> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const supplychain = (await this.getSupplyChains()).filter(supplychain => supplychain.campaignRef == campaignRef);
+        if (supplychain.length > 0) {
+          resolve(supplychain[0]);
+        } else {
+          reject();
+        }
+      } catch(err) {
+        reject(err);
       }
     });
   }
@@ -86,5 +101,61 @@ export class SupplychainService {
     });
   }
 
+  markBoxAsProcessed(campaignRef: number, boxId: number): Promise {
+    return new Promise(async (resolve, reject) => {
+      const contract = this.getContract();
+      if (contract) {
+        try {
+          await contract
+              .methods
+              .markBoxAsProcessed(campaignRef, boxId)
+              .call();
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      } else {
+        reject();
+      }
+    });
+  }
+
+  markBoxAsDistributed(campaignRef: number, boxId: number): Promise {
+    return new Promise(async (resolve, reject) => {
+      const contract = this.getContract();
+      if (contract) {
+        try {
+          await contract
+              .methods
+              .markBoxAsDistributed(campaignRef, boxId)
+              .call();
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      } else {
+        reject();
+      }
+    });
+  }
+
+  markBoxAsDelivered(campaignRef: number, boxId: number): Promise {
+    return new Promise( async (resolve, reject) => {
+      const contract = this.getContract();
+      if (contract) {
+        try {
+          await contract
+              .methods
+              .markBoxAsDelivered(campaignRef, boxId)
+              .call();
+          resolve();
+        } catch(err) {
+          reject(err);
+        }
+      } else {
+        reject();
+      }
+    });
+  }
 
 }
