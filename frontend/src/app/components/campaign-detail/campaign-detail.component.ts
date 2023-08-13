@@ -5,6 +5,8 @@ import BoxSellRef from 'src/app/models/boxSellRef';
 import Campaign from 'src/app/models/campaign';
 import { CrowdfundingService } from 'src/app/service/crowdfunding.service';
 import { utils } from 'web3';
+import {SupplyChainService} from "../../service/supplychain.service";
+import SupplyChain from "../../models/supplychain";
 
 @Component({
   selector: 'app-campaign-detail',
@@ -13,12 +15,16 @@ import { utils } from 'web3';
 })
 export class CampaignDetailComponent implements OnInit {
 
+  // campaign
   campaign!: Campaign;
   collectedEther!: string;
   availableBoxes: Box[] = [];
   soldBoxes: BoxSellRef[] = [];
 
-  constructor(private route: ActivatedRoute, private crowdfundingService: CrowdfundingService) { }
+  // supply chain
+  supplychain!: SupplyChain;
+
+  constructor(private route: ActivatedRoute, private crowdfundingService: CrowdfundingService, private supplychainService: SupplyChainService) { }
 
   private loadData(campaignId: number) {
     this.crowdfundingService.getCampaign(campaignId).then(campaign => {
@@ -36,6 +42,12 @@ export class CampaignDetailComponent implements OnInit {
 
     this.crowdfundingService.getSoldBoxes(campaignId).then(boxes => {
       this.soldBoxes = boxes;
+    }).catch(err => {
+      console.log(err);
+    });
+
+    this.supplychainService.getSupplyChain(campaignId).then(supplychain => {
+      this.supplychain = supplychain;
     }).catch(err => {
       console.log(err);
     });
