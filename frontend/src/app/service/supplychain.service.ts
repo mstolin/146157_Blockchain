@@ -3,15 +3,17 @@
 import { ContractAbi } from 'web3';
 import { Injectable } from '@angular/core';
 
+import SupplyChains from '../../assets/abi/SupplyChains.json';
 import { SupplyChainResp } from '../models/responseModels';
 import SupplyChain from "../models/supplychain";
+import ContractService from "./contract.service";
 
 @Injectable({
   providedIn: 'root'
 })
-export class SupplyChainService {
+export class SupplyChainService extends ContractService {
 
-  private readonly _contractAddress: string = "";
+  private readonly _contractAddress: string = "0x4DD93311B0e6e3B641912A1FD8962B486146669C";
 
   constructor() {
     super();
@@ -20,7 +22,7 @@ export class SupplyChainService {
   override getContract(): Contract<ContractAbi> | undefined {
     if (this.web3) {
       return new this.web3.eth.Contract(
-        SupplyChain.abi,
+        SupplyChains.abi,
         this._contractAddress,
       );
     } else {
