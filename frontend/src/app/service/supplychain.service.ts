@@ -73,7 +73,7 @@ export class SupplyChainService extends ContractService {
           await contract
             .methods
             .markAnimalAsDelivered(campaignRef)
-            .call();
+            .call({ 'from': this.selectedAddress });
           resolve();
         } catch (err) {
           reject(err);
@@ -92,7 +92,7 @@ export class SupplyChainService extends ContractService {
           await contract
             .methods
             .markAnimalAsProcessed(campaignRef)
-            .call();
+            .call({ 'from': this.selectedAddress });
           resolve();
         } catch (err) {
           reject(err);
@@ -111,7 +111,7 @@ export class SupplyChainService extends ContractService {
           await contract
               .methods
               .markBoxAsProcessed(campaignRef, boxId)
-              .call();
+              .call({ 'from': this.selectedAddress });
           resolve();
         } catch (err) {
           reject(err);
@@ -131,7 +131,7 @@ export class SupplyChainService extends ContractService {
               .methods
               .markBoxAsDistributed(campaignRef, boxId)
               .call();
-          resolve();
+          resolve({ 'from': this.selectedAddress });
         } catch (err) {
           reject(err);
         }
@@ -149,7 +149,7 @@ export class SupplyChainService extends ContractService {
           await contract
               .methods
               .markBoxAsDelivered(campaignRef, boxId)
-              .call();
+              .call({ 'from': this.selectedAddress });
           resolve();
         } catch(err) {
           reject(err);
@@ -167,7 +167,7 @@ export class SupplyChainService extends ContractService {
         try {
           let processedBoxesStatus: boolean[] = await contract
               .methods
-              .getProcessedBoxStatus(campaignRef)
+              .getBoxesStatus(campaignRef, 0)
               .call();
           resolve(processedBoxesStatus);
         } catch (err) {
@@ -186,7 +186,7 @@ export class SupplyChainService extends ContractService {
         try {
           let distributedBoxesStatus: boolean[] = await contract
               .methods
-              .getDistributedBoxStatus(campaignRef)
+              .getBoxesStatus(campaignRef, 1)
               .call();
           resolve(distributedBoxesStatus);
         } catch (err) {
@@ -205,7 +205,7 @@ export class SupplyChainService extends ContractService {
         try {
           let deliveredBoxesStatus: boolean[] = await contract
               .methods
-              .getDeliveredBoxStatus(campaignRef)
+              .getBoxesStatus(campaignRef, 2)
               .call();
           resolve(deliveredBoxesStatus);
         } catch (err) {
