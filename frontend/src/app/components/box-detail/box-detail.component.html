@@ -25,10 +25,29 @@
     </ul>
   </div>
 
+  <!-- New -->
   <div class="container">
     <div class="card">
       <div class="card-body">
-        Not yet delivered
+        <div *ngIf="!processStatus">Not yet processed</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <div class="card-body">
+        <div *ngIf="!distributionStatus">Not yet distributed</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- End new -->
+
+  <div class="container">
+    <div class="card">
+      <div class="card-body">
+        <div *ngIf="!deliveryStatus">Not yet delivered</div>
       </div>
     </div>
   </div>
