@@ -160,4 +160,60 @@ export class SupplyChainService extends ContractService {
     });
   }
 
+  getProcessedBoxesStatus(campaignRef: number): Promise<boolean[]> {
+    return new Promise(async (resolve, reject) => {
+      const contract = this.getContract();
+      if (contract) {
+        try {
+          let processedBoxesStatus: boolean[] = await contract
+              .methods
+              .getProcessedBoxStatus(campaignRef)
+              .call();
+          resolve(processedBoxesStatus);
+        } catch (err) {
+          reject(err);
+        }
+      } else {
+        reject();
+      }
+    });
+  }
+
+  getDistributedBoxesStatus(campaignRef: number): Promise<boolean[]> {
+    return new Promise(async (resolve, reject) => {
+      const contract = this.getContract();
+      if (contract) {
+        try {
+          let distributedBoxesStatus: boolean[] = await contract
+              .methods
+              .getDistributedBoxStatus(campaignRef)
+              .call();
+          resolve(distributedBoxesStatus);
+        } catch (err) {
+          reject(err);
+        }
+      } else {
+        reject();
+      }
+    });
+  }
+
+  getDeliveredBoxesStatus(campaignRef: number): Promise<boolean[]> {
+    return new Promise(async (resolve, reject) => {
+      const contract = this.getContract();
+      if (contract) {
+        try {
+          let deliveredBoxesStatus: boolean[] = await contract
+              .methods
+              .getDeliveredBoxStatus(campaignRef)
+              .call();
+          resolve(deliveredBoxesStatus);
+        } catch (err) {
+          reject(err);
+        }
+      } else {
+        reject();
+      }
+    });
+  }
 }
