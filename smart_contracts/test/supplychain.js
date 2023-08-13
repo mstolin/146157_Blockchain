@@ -149,7 +149,7 @@ contract('SupplyChains', (accounts) => {
     await generateCampaignAndBuyAll(crowdfunding_contract, campaignId);
 
     // retrieve the supplychain and check if it is correct
-    const supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
+    const supplychain = await supplychain_contract.getSupplyChain.call(campaignId);
     assert.equal(supplychain.campaignRef, campaignId);
     assert.equal(supplychain.isAnimalDelivered.farmer, false);
     assert.equal(supplychain.isAnimalDelivered.butcher, false);
@@ -175,20 +175,20 @@ contract('SupplyChains', (accounts) => {
 
     await generateCampaignAndBuyAll(crowdfunding_contract, campaignId);
 
-    let supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
+    let supplychain = await supplychain_contract.getSupplyChain.call(campaignId);
     assert.equal(supplychain.isAnimalDelivered.butcher, false);
     assert.equal(supplychain.isAnimalDelivered.farmer, false);
 
     // test
     await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': FARMER_ADDR });
     
-    supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
+    supplychain = await supplychain_contract.getSupplyChain.call(campaignId);
     assert.equal(supplychain.isAnimalDelivered.farmer, true);
     assert.equal(supplychain.isAnimalDelivered.butcher, false);
 
     await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': BUTCHER_ADDR });
 
-    supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
+    supplychain = await supplychain_contract.getSupplyChain.call(campaignId);
     assert.equal(supplychain.isAnimalDelivered.farmer, true);
     assert.equal(supplychain.isAnimalDelivered.butcher, true);
   });
@@ -201,7 +201,7 @@ contract('SupplyChains', (accounts) => {
 
     await generateCampaignAndBuyAll(crowdfunding_contract, campaignId);
 
-    let supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
+    let supplychain = await supplychain_contract.getSupplyChain.call(campaignId);
     assert.equal(supplychain.isAnimalProcessed.butcher, false);
     
     await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': FARMER_ADDR });
@@ -210,7 +210,7 @@ contract('SupplyChains', (accounts) => {
     // test
     await supplychain_contract.markAnimalAsProcessed(campaignId, { 'from': BUTCHER_ADDR });
     
-    supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
+    supplychain = await supplychain_contract.getSupplyChain.call(campaignId);
     assert.equal(supplychain.isAnimalProcessed.butcher, true);
   });
 
@@ -222,7 +222,7 @@ contract('SupplyChains', (accounts) => {
 
     await generateCampaignAndBuyAll(crowdfunding_contract, campaignId);
 
-    let supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
+    let supplychain = await supplychain_contract.getSupplyChain.call(campaignId);
     assert.equal(supplychain.areBoxesProcessed.butcher, false);
 
     await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': FARMER_ADDR });
@@ -240,7 +240,7 @@ contract('SupplyChains', (accounts) => {
     await supplychain_contract.markBoxAsProcessed(campaignId, 0, { 'from': BUTCHER_ADDR });
     await supplychain_contract.markBoxAsProcessed(campaignId, 1, { 'from': BUTCHER_ADDR });
     
-    supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
+    supplychain = await supplychain_contract.getSupplyChain.call(campaignId);
     assert.equal(supplychain.areBoxesProcessed.butcher, false);
 
     processedBoxesStatus = await supplychain_contract.getBoxesStatus.call(campaignId, 0);
@@ -251,7 +251,7 @@ contract('SupplyChains', (accounts) => {
 
     await supplychain_contract.markBoxAsProcessed(campaignId, 2, { 'from': BUTCHER_ADDR });
 
-    supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
+    supplychain = await supplychain_contract.getSupplyChain.call(campaignId);
     assert.equal(supplychain.areBoxesProcessed.butcher, true);
 
     processedBoxesStatus = await supplychain_contract.getBoxesStatus.call(campaignId, 0);
@@ -269,7 +269,7 @@ contract('SupplyChains', (accounts) => {
 
     await generateCampaignAndBuyAll(crowdfunding_contract, campaignId);
 
-    let supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
+    let supplychain = await supplychain_contract.getSupplyChain.call(campaignId);
     assert.equal(supplychain.areBoxesDistributed.butcher, false);
     assert.equal(supplychain.areBoxesDistributed.delivery, false);
 
@@ -294,7 +294,7 @@ contract('SupplyChains', (accounts) => {
 
     await supplychain_contract.markBoxAsDistributed(campaignId, 0, { 'from': DELIVERY_ADDR });
 
-    supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
+    supplychain = await supplychain_contract.getSupplyChain.call(campaignId);
     assert.equal(supplychain.areBoxesDistributed.butcher, false);
     assert.equal(supplychain.areBoxesDistributed.delivery, false);
 
@@ -308,7 +308,7 @@ contract('SupplyChains', (accounts) => {
     await supplychain_contract.markBoxAsDistributed(campaignId, 2, { 'from': DELIVERY_ADDR });
     await supplychain_contract.markBoxAsDistributed(campaignId, 2, { 'from': BUTCHER_ADDR });
 
-    supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
+    supplychain = await supplychain_contract.getSupplyChain.call(campaignId);
     assert.equal(supplychain.areBoxesDistributed.butcher, true);
     assert.equal(supplychain.areBoxesDistributed.delivery, true);
 
@@ -327,7 +327,7 @@ contract('SupplyChains', (accounts) => {
 
     await generateCampaignAndBuyAll(crowdfunding_contract, campaignId);
 
-    let supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
+    let supplychain = await supplychain_contract.getSupplyChain.call(campaignId);
     assert.equal(supplychain.areBoxesDelivered.delivery, false);
 
     await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': FARMER_ADDR });
@@ -350,7 +350,7 @@ contract('SupplyChains', (accounts) => {
 
     await supplychain_contract.markBoxAsDelivered(campaignId, 0, { 'from': DELIVERY_ADDR });
 
-    supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
+    supplychain = await supplychain_contract.getSupplyChain.call(campaignId);
     assert.equal(supplychain.areBoxesDelivered.delivery, false);
 
     deliveredBoxesStatus = await supplychain_contract.getBoxesStatus.call(campaignId, 2);
@@ -362,7 +362,7 @@ contract('SupplyChains', (accounts) => {
     await supplychain_contract.markBoxAsDelivered(campaignId, 1, { 'from': DELIVERY_ADDR });
     await supplychain_contract.markBoxAsDelivered(campaignId, 2, { 'from': DELIVERY_ADDR });
 
-    supplychain = await supplychain_contract.getSupplyChainById.call(campaignId);
+    supplychain = await supplychain_contract.getSupplyChain.call(campaignId);
     assert.equal(supplychain.areBoxesDelivered.delivery, true);
 
     deliveredBoxesStatus = await supplychain_contract.getBoxesStatus.call(campaignId, 2);

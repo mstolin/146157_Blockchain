@@ -237,7 +237,7 @@ contract SupplyChains {
   /*
   * Retrieve a supplychain by campaign id
   */
-  function getSupplyChainById(uint256 _campaignId) public view returns (SupplyChain memory) {
+  function getSupplyChain(uint256 _campaignId) public view returns (SupplyChain memory) {
     return supplychains[_campaignId];
   }
 
