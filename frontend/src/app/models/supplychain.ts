@@ -68,7 +68,7 @@ export default class SupplyChain {
       );
     }
 
-    get id() {
+    get campaignRef() {
         return this._campaignRef;
     }
 
