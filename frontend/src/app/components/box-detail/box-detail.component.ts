@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { selectWallet } from '../../state/wallet.selectors';
 import BoxSellRef from 'src/app/models/boxSellRef';
 import Box from 'src/app/models/box';
+import {SupplyChainService} from "../../service/supplychain.service";
 
 @Component({
   selector: 'app-box-detail',
@@ -21,7 +22,16 @@ export class BoxDetailComponent implements OnInit {
   privateKey?: string;
   address?: string;
 
-  constructor(private store: Store, private route: ActivatedRoute, private crowdfundingService: CrowdfundingService) {
+  processStatus!: boolean;
+  distributionStatus!: boolean;
+  deliveryStatus!: boolean;
+
+  constructor(
+      private store: Store,
+      private route: ActivatedRoute,
+      private crowdfundingService: CrowdfundingService,
+      private supplychainService: SupplyChainService
+  ) {
     this.wallet$.subscribe(wallet => {
       if (wallet.activeAccount) {
         this.owner = wallet.activeAccount;
@@ -38,6 +48,24 @@ export class BoxDetailComponent implements OnInit {
           .catch(err => console.log('ERR', err));
       })
       .catch(err => console.log('ERR:', err));
+
+    this.supplychainService.getProcessedBoxesStatus(campaignId)
+        .then(processedBoxesStatus => {
+          this.processStatus = processedBoxesStatus[boxId];
+        })
+        .catch(err => console.log('ERR:', err));
+
+    this.supplychainService.getDistributedBoxesStatus(campaignId)
+        .then(distributedBoxesStatus => {
+          this.distributionStatus = distributedBoxesStatus[boxId];
+        })
+        .catch(err => console.log('ERR:', err));
+
+    this.supplychainService.getDeliveredBoxesStatus(campaignId)
+        .then(deliveredBoxesStatus => {
+          this.deliveryStatus = deliveredBoxesStatus[boxId];
+        })
+        .catch(err => console.log('ERR:', err));
   }
 
   private decrypt(cipher: Buffer, owner: string): Promise<string> {
