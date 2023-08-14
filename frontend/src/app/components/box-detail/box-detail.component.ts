@@ -47,7 +47,7 @@ export class BoxDetailComponent implements OnInit {
     this.crowdfundingService.getSoldBox(campaignId, boxId)
       .then(sellRef => {
         this.sellRef = sellRef;
-        this.crowdfundingService.getBox(campaignId, boxId)
+        this.crowdfundingService.getBox(campaignId, sellRef.boxId)
           .then(box => this.box = box)
           .catch(err => console.log('ERR', err));
       })
