@@ -73,7 +73,15 @@ export default class SupplyChain {
     }
 
     get isAnimalDelivered() {
-        return this._isAnimalDelivered.butcher && this._isAnimalDelivered.farmer;
+        return (this._isAnimalDelivered.butcher && this._isAnimalDelivered.farmer);
+    }
+
+    get isAnimalDeliveredButcher() {
+        return this._isAnimalDelivered.butcher;
+    }
+
+    get isAnimalDeliveredFarmer() {
+        return this._isAnimalDelivered.farmer;
     }
 
     get isAnimalProcessed() {
@@ -85,7 +93,7 @@ export default class SupplyChain {
     }
 
     get areBoxesDistributed() {
-        return this._areBoxesDistributed.butcher && this._areBoxesDistributed.delivery;
+        return (this._areBoxesDistributed.butcher && this._areBoxesDistributed.delivery);
     }
 
     get areBoxesDelivered() {
