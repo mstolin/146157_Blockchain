@@ -79,7 +79,7 @@
           <div class="fw-bold">Animal delivered to Butcher</div>
           <div *ngIf="!supplychain.isAnimalDelivered; else Delivered">
             <div>Not delivered yet </div>
-            <div>Farmer: {{ supplychain.isAnimalDeliveredButcher }} - Butcher: {{ supplychain.isAnimalDeliveredFarmer }}</div>
+            <div>Farmer: {{ supplychain.isAnimalDeliveredFarmer }} - Butcher: {{ supplychain.isAnimalDeliveredButcher }}</div>
             <button (click)="onDelivered()" class="btn btn-primary">Mark as delivered</button>
           </div>
           <ng-template #Delivered>
@@ -92,8 +92,9 @@
           <div class="fw-bold">Animal processed by Butcher</div>
           <div *ngIf="!supplychain.isAnimalProcessed; else Processed">
             <div>Not processed yet</div>
+            <div>Butcher: {{ supplychain.isAnimalProcessed }}</div>
             <div *ngIf="supplychain.isAnimalDelivered">
-              <button type="submit" class="btn btn-primary">Mark as processed</button>
+              <button (click)="onProcessed()" class="btn btn-primary">Mark as processed</button>
             </div>
           </div>
           <ng-template #Processed>

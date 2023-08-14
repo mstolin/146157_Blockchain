@@ -82,10 +82,20 @@ export class CampaignDetailComponent implements OnInit {
   onDelivered() : void {
     if (this.owner) {
       this.supplychainService.markAnimalAsDelivered(this.supplychain.campaignRef).then(() => {
-        console.log("Delivered");
-      }).catch((error: any) => {
-        console.log("ERR" + error);
+        console.log("delivered");
+      }).catch(err => {
+        console.log("ERR" + err);
       });
+    }
+  }
+
+  onProcessed() : void {
+    if (this.owner) {
+      this.supplychainService.markAnimalAsProcessed(this.supplychain.campaignRef).then(() => {
+        console.log("processed");
+      }).catch(err => {
+        console.log("ERR" + err);
+      })
     }
   }
 }
