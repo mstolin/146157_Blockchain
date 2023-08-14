@@ -29,7 +29,15 @@
   <div class="container">
     <div class="card">
       <div class="card-body">
-        <div *ngIf="!processStatus">Not yet processed</div>
+        <div *ngIf="!boxStatus.isProcessed; else Processed">
+          <div>Not yet processed</div>
+          <div *ngIf="animalDeliveryStatus">
+            <button (click)="onProcessed()" class="btn btn-primary">Mark as processed</button>
+          </div>
+        </div>
+        <ng-template #Processed>
+          <div>Processed</div>
+        </ng-template>
       </div>
     </div>
   </div>
@@ -37,7 +45,15 @@
   <div class="container">
     <div class="card">
       <div class="card-body">
-        <div *ngIf="!distributionStatus">Not yet distributed</div>
+        <div *ngIf="!boxStatus.isDistributed; else Distributed">
+          <div>Not yet distributed</div>
+          <div *ngIf="boxesProcessStatus">
+            <button (click)="onDistributed()" class="btn btn-primary">Mark as distributed</button>
+          </div>
+        </div>
+        <ng-template #Distributed>
+          <div>Distributed</div>
+        </ng-template>
       </div>
     </div>
   </div>
@@ -47,7 +63,15 @@
   <div class="container">
     <div class="card">
       <div class="card-body">
-        <div *ngIf="!deliveryStatus">Not yet delivered</div>
+        <div *ngIf="!boxStatus.isDelivered; else Delivered">
+          <div>Not yet delivered</div>
+          <div *ngIf="boxesDistributionStatus">
+            <button (click)="onDistributed()" class="btn btn-primary">Mark as delivered</button>
+          </div>
+        </div>
+        <ng-template #Delivered>
+          <div>Delivered</div>
+        </ng-template>
       </div>
     </div>
   </div>

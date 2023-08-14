@@ -6,6 +6,7 @@ import { selectWallet } from '../../state/wallet.selectors';
 import BoxSellRef from 'src/app/models/boxSellRef';
 import Box from 'src/app/models/box';
 import {SupplyChainService} from "../../service/supplychain.service";
+import BoxStatus from "../../models/boxStatus";
 
 @Component({
   selector: 'app-box-detail',
@@ -22,9 +23,12 @@ export class BoxDetailComponent implements OnInit {
   privateKey?: string;
   address?: string;
 
-  processStatus!: boolean;
-  distributionStatus!: boolean;
-  deliveryStatus!: boolean;
+  animalDeliveryStatus!: boolean;
+  animalProcessStatus!: boolean;
+  boxesProcessStatus!: boolean;
+  boxesDistributionStatus!: boolean;
+  boxesDeliveryStatus!: boolean;
+  boxStatus!: BoxStatus;
 
   constructor(
       private store: Store,
@@ -49,23 +53,21 @@ export class BoxDetailComponent implements OnInit {
       })
       .catch(err => console.log('ERR:', err));
 
-    this.supplychainService.getProcessedBoxesStatus(campaignId)
-        .then(processedBoxesStatus => {
-          this.processStatus = processedBoxesStatus[boxId];
+    this.supplychainService.getBoxStatus(campaignId, boxId)
+        .then(boxStatus => {
+          this.boxStatus = boxStatus;
         })
         .catch(err => console.log('ERR:', err));
 
-    this.supplychainService.getDistributedBoxesStatus(campaignId)
-        .then(distributedBoxesStatus => {
-          this.distributionStatus = distributedBoxesStatus[boxId];
-        })
-        .catch(err => console.log('ERR:', err));
-
-    this.supplychainService.getDeliveredBoxesStatus(campaignId)
-        .then(deliveredBoxesStatus => {
-          this.deliveryStatus = deliveredBoxesStatus[boxId];
-        })
-        .catch(err => console.log('ERR:', err));
+    this.supplychainService.getSupplyChain(campaignId)
+      .then(supplychain => {
+        this.animalDeliveryStatus = supplychain.isAnimalDelivered;
+        this.animalProcessStatus = supplychain.isAnimalProcessed;
+        this.boxesDeliveryStatus = supplychain.areBoxesDelivered;
+        this.boxesDistributionStatus = supplychain.areBoxesDistributed;
+        this.boxesProcessStatus = supplychain.areBoxesProcessed;
+      })
+      .catch(err => console.log('ERR:', err));
   }
 
   private decrypt(cipher: Buffer, owner: string): Promise<string> {
@@ -112,6 +114,36 @@ export class BoxDetailComponent implements OnInit {
       this.decrypt(Buffer.from(this.sellRef.physAddress, 'base64'), this.owner).then(address => {
         this.address = address;
       }).catch(err => console.log('ERR', err));
+    }
+  }
+
+  onProcessed() : void {
+    if (this.owner) {
+      this.supplychainService.markBoxAsProcessed(this.boxStatus.campaignRef, this.boxStatus.boxId).then(() => {
+        console.log("processed");
+      }).catch(err => {
+        console.log("ERR" + err);
+      });
+    }
+  }
+
+  onDistributed() : void {
+    if (this.owner) {
+      this.supplychainService.markBoxAsDistributed(this.boxStatus.campaignRef, this.boxStatus.boxId).then(() => {
+        console.log("distributed");
+      }).catch(err => {
+        console.log("ERR" + err);
+      });
+    }
+  }
+
+  onDelivered() : void {
+    if (this.owner) {
+      this.supplychainService.markBoxAsDelivered(this.boxStatus.campaignRef, this.boxStatus.boxId).then(() => {
+        console.log("delivered");
+      }).catch(err => {
+        console.log("ERR" + err);
+      });
     }
   }
 
