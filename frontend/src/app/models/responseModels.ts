@@ -78,3 +78,12 @@ export type SupplyChainResp = {
   deliveredBoxes: number;
   stakeholders: CampaignStakeholderListResp;
 };
+
+export type BoxStatusResp = {
+  campaignRef: number;
+  boxId: number;
+  isProcessed: boolean;
+  isDistributedFromButcher: boolean;
+  isDistributedToDelivery: boolean;
+  isDelivered: boolean;
+}
