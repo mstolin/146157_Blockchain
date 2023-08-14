@@ -220,9 +220,9 @@ contract Crowdfunding {
         );
 
         // Generate shares
-        uint256 farmerShare = campaign.meta.collectedAmount * campaign.stakeholders.farmer.share;
-        uint256 butcherShare = campaign.meta.collectedAmount * campaign.stakeholders.butcher.share;
-        uint256 deliveryShare = campaign.meta.collectedAmount * campaign.stakeholders.delivery.share;
+        uint256 farmerShare = (campaign.meta.collectedAmount * campaign.stakeholders.farmer.share) / 100;
+        uint256 butcherShare = (campaign.meta.collectedAmount * campaign.stakeholders.butcher.share) / 100; 
+        uint256 deliveryShare = (campaign.meta.collectedAmount * campaign.stakeholders.delivery.share) / 100;
 
         // payout stakeholders
         payable(campaign.stakeholders.farmer.owner).transfer(farmerShare);
