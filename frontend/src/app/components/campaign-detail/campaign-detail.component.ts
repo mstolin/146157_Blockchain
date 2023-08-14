@@ -30,6 +30,7 @@ export class CampaignDetailComponent implements OnInit {
   // supply chain
   supplychain!: SupplyChain;
   isSupplyChainCompleted!: boolean;
+  isPaid: boolean = false;
 
   constructor(private store: Store, private route: ActivatedRoute, private crowdfundingService: CrowdfundingService, private supplychainService: SupplyChainService) {
     this.wallet$.subscribe(wallet => {
@@ -108,7 +109,12 @@ export class CampaignDetailComponent implements OnInit {
 
   onPayOut() : void {
     if (this.owner) {
-      // TODO payout
+      this.crowdfundingService.payOut(this.campaign.id).then(() => {
+        this.isPaid = true;
+        console.log("payout");
+      }).catch(err => {
+        console.log("ERR" + err);
+      })
     }
   }
 }
