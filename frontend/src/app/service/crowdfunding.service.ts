@@ -185,4 +185,16 @@ export class CrowdfundingService extends ContractService {
     }
   }
 
+  async payOut(campaignId: number) {
+    const contract = this.getContract();
+    if (contract) {
+      await contract
+        .methods
+        .payOut(campaignId)
+        .send({ from: this.selectedAddress });
+    } else {
+      throw('');
+    }
+  }
+
 }
