@@ -105,56 +105,70 @@ struct Campaign {
 }
 
 struct SupplyChain {
+  /// The campaign ID
   uint256 campaignRef;
-  /// if the animal is ready and delivered to the butcher
+  /// Delivery status of the animal
   AnimalDeliverStatus isAnimalDelivered;
-  /// if the animal is ready to be processed in boxes
+  /// Process status of the animal
   AnimalProcessStatus isAnimalProcessed;
-  /// if the boxes are ready for deliver to the delivery service
+  /// Process status of the boxes
   BoxProcessStatus areBoxesProcessed;
-  /// if the boxes are distributed by the delivery service
+  /// Distribution status of the boxes
   BoxDistributionStatus areBoxesDistributed;
-  /// if the boxes are delivered to the customers
+  /// Delivery status of the boxes
   BoxDeliverStatus areBoxesDelivered;
-  /// total number of boxes
+  /// Total number of boxes
   uint256 totalBoxes;
-  /// total number of prepared boxes
+  /// Total number of prepared boxes
   uint256 processedBoxes;
-  /// total number of delivered boxes
+  /// Total number of delivered boxes
   uint256 distributedBoxes;
-  /// total number of received boxes
+  /// Total number of received boxes
   uint256 deliveredBoxes;
   // Stakeholder involved in the process
   StakeholderList stakeholders;
 }
 
 struct BoxStatus {
+  /// The campaign ID
   uint256 campaignRef;
+  /// The box sell ID
   uint256 boxId;
+  /// Process status of the box
   bool isProcessed;
+  /// Distribution status of the box (marked by the butcher)
   bool isDistributedFromButcher;
+  /// Distribution status of the box (marked by the delivery service)
   bool isDistributedToDelivery;
+  /// Delivery status of the box
   bool isDelivered;
 }
 
 struct AnimalDeliverStatus {
+  /// Delivery status of the animal (marked by the farmer)
   bool farmer;
+  /// Delivery status of the animal (marked by the butcher)
   bool butcher;
 }
 
 struct AnimalProcessStatus {
+  /// Process status of the animal (marked by the butcher)
   bool butcher;
 }
 
 struct BoxProcessStatus {
+  /// Process status of the boxes (marked by the butcher)
   bool butcher;
 }
 
 struct BoxDistributionStatus {
+  /// Distribution status of the boxes (marked by the butcher)
   bool butcher;
+  /// Distribution status of the boxes (marked by the delivery service)
   bool delivery;
 }
 
 struct BoxDeliverStatus {
+  /// Delivery status of the boxes (marked by the delivery service)
   bool delivery;
 }
