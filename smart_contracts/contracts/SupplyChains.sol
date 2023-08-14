@@ -8,9 +8,7 @@ contract SupplyChains {
 
   mapping(uint256 => SupplyChain) public supplychains;
 
-  mapping(uint256 => mapping(uint256 => BoxProcessStatus)) processedBoxes;
-  mapping(uint256 => mapping(uint256 => BoxDistributionStatus)) distributedBoxes;
-  mapping(uint256 => mapping(uint256 => BoxDeliverStatus)) deliveredBoxes;
+  mapping(uint256 => mapping(uint256 => BoxStatus)) boxesStatus;
 
   uint256 public NumberOfSupplyChains = 0;
 
@@ -30,10 +28,13 @@ contract SupplyChains {
     for (uint256 index = 0; index < _boxes.length; index++) {
       BoxSellRef memory box = _boxes[index];
       totalNumOfBoxes += 1;
-      processedBoxes[_campaign.id][box.id].butcher = false;
-      distributedBoxes[_campaign.id][box.id].butcher = false;
-      distributedBoxes[_campaign.id][box.id].delivery = false;
-      deliveredBoxes[_campaign.id][box.id].delivery = false;
+
+      boxesStatus[_campaign.id][box.id].campaignRef = _campaign.id;
+      boxesStatus[_campaign.id][box.id].boxId = box.id;
+      boxesStatus[_campaign.id][box.id].isProcessed = false;
+      boxesStatus[_campaign.id][box.id].isDistributedFromButcher = false;
+      boxesStatus[_campaign.id][box.id].isDistributedToDelivery = false;
+      boxesStatus[_campaign.id][box.id].isDelivered = false;
     }
     require(totalNumOfBoxes > 0, "There must be at least one box in total");
 
@@ -61,13 +62,25 @@ contract SupplyChains {
   }
 
   /**
+  * Returns all boxes status of a specific campaign
+  */
+  function getBoxesStatus(uint256 _campaignId) public view returns (BoxStatus[] memory) {
+    SupplyChain memory supplychain = supplychains[_campaignId];
+    BoxStatus[] memory boxesStatuses = new BoxStatus[](supplychain.totalBoxes);
+    for (uint256 index = 0; index < supplychain.totalBoxes; index++) {
+      boxesStatuses[index] = boxesStatus[_campaignId][index];
+    }
+    return boxesStatuses;
+  }
+
+  /**
   * Returns the total number of supply chains
   */
   function getNumberOfSupplyChains() public view returns (uint256) {
     return NumberOfSupplyChains;
   }
 
-  /*
+  /**
   * Mark the animal of a campaign as delivered (to the butcher)
   */
   function markAnimalAsDelivered(uint256 _campaignId) public {
@@ -77,6 +90,7 @@ contract SupplyChains {
       (msg.sender == supplychain.stakeholders.farmer.owner) || (msg.sender == supplychain.stakeholders.butcher.owner), 
       "Only the farmer and the butcher can mark the animal as delivered"
     );
+    require(!supplychain.isAnimalDelivered.farmer || !supplychain.isAnimalDelivered.butcher, "The animal is already delivered");
 
     if (msg.sender == supplychain.stakeholders.farmer.owner) {
       supplychain.isAnimalDelivered.farmer = true;
@@ -85,18 +99,20 @@ contract SupplyChains {
     }
   }
 
-  /*
+  /**
   * Mark the animal as processed by the butcher
   */
   function markAnimalAsProcessed(uint256 _campaignId) public {
     SupplyChain storage supplychain = supplychains[_campaignId];
 
     require(msg.sender == supplychain.stakeholders.butcher.owner, "Only the butcher can mark the animal as processed");
-    require(supplychain.isAnimalDelivered.butcher && supplychain.isAnimalDelivered.farmer, "The animal must be delivered before being processed");
+    require((supplychain.isAnimalDelivered.butcher && supplychain.isAnimalDelivered.farmer), "The animal must be delivered before being processed");
+    require(!supplychain.isAnimalProcessed.butcher, "The animal is already processed");
+
     supplychain.isAnimalProcessed.butcher = true;
   }
 
-  /*
+  /**
   * Mark a box as processed by the butcher
   */
   function markBoxAsProcessed(uint256 _campaignId, uint256 _boxId) public {
@@ -104,7 +120,10 @@ contract SupplyChains {
 
     require(msg.sender == supplychain.stakeholders.butcher.owner, "Only the butcher can mark a box as processed");
     require(supplychain.isAnimalProcessed.butcher, "The animal must be processed before preparing boxes");
-    processedBoxes[_campaignId][_boxId].butcher = true;
+    require(!boxesStatus[_campaignId][_boxId].isProcessed, "The box is already processed");
+
+    boxesStatus[_campaignId][_boxId].isProcessed = true;
+
     supplychain.processedBoxes++;
 
     if(areBoxesProcessed(_campaignId)) {
@@ -112,7 +131,7 @@ contract SupplyChains {
     }
   }
 
-  /*
+  /**
   * Mark a box as distributed by the delivery service
   */
   function markBoxAsDistributed(uint256 _campaignId, uint256 _boxId) public {
@@ -120,27 +139,32 @@ contract SupplyChains {
 
     require(
       (msg.sender == supplychain.stakeholders.delivery.owner) || (msg.sender == supplychain.stakeholders.butcher.owner), 
-      "Only the delivery service can mark a box as distributed");
+      "Only the butcher and the delivery service can mark a box as distributed");
     require(supplychain.areBoxesProcessed.butcher, "Boxes must be prepared before being distributed");
+    require(
+      (!boxesStatus[_campaignId][_boxId].isDistributedFromButcher || !boxesStatus[_campaignId][_boxId].isDistributedToDelivery), 
+      "The box is already distributed");
 
     if (msg.sender == supplychain.stakeholders.butcher.owner) {
-      distributedBoxes[_campaignId][_boxId].butcher = true;
+      boxesStatus[_campaignId][_boxId].isDistributedFromButcher = true;
+
       if(areBoxesDistributedFromButcher(_campaignId)) {
         supplychain.areBoxesDistributed.butcher = true;
       }
     } else if (msg.sender == supplychain.stakeholders.delivery.owner) {
-      distributedBoxes[_campaignId][_boxId].delivery = true;
+      boxesStatus[_campaignId][_boxId].isDistributedToDelivery = true;
+
       if (areBoxesDistributedToDelivery(_campaignId)) {
         supplychain.areBoxesDistributed.delivery = true;
       }
     }
 
-    if (distributedBoxes[_campaignId][_boxId].butcher && distributedBoxes[_campaignId][_boxId].delivery) {
+    if (boxesStatus[_campaignId][_boxId].isDistributedFromButcher && boxesStatus[_campaignId][_boxId].isDistributedToDelivery) {
       supplychain.distributedBoxes++;
     }
   }
 
-  /*
+  /**
   * Mark a box as delivered by the delivery service
   */
   function markBoxAsDelivered(uint256 _campaignId, uint256 _boxId) public {
@@ -150,8 +174,10 @@ contract SupplyChains {
     require(
       supplychain.areBoxesDistributed.butcher || supplychain.areBoxesDistributed.delivery, 
       "Boxes must be distributed before being delivered");
+    require(!boxesStatus[_campaignId][_boxId].isDelivered, "The box is already delivered");
     
-    deliveredBoxes[_campaignId][_boxId].delivery = true;
+    boxesStatus[_campaignId][_boxId].isDelivered = true;
+    
     supplychain.deliveredBoxes++;
 
     if(areBoxesDelivered(_campaignId)) {
@@ -159,7 +185,7 @@ contract SupplyChains {
     }
   }
 
-  /*
+  /**
   * Check if the supply chain is completed
   */
   function isCompleted(uint256 _campaignId) external view returns (bool) {
@@ -176,87 +202,59 @@ contract SupplyChains {
 
   // ----- HELPER METHODS -----
 
-  /*
+  /**
   * Check if all boxes are processed by the butcher
   */
   function areBoxesProcessed(uint256 _campaignId) public view returns (bool) {
     SupplyChain memory supplychain = supplychains[_campaignId];
 
     for (uint256 index = 0; index < supplychain.totalBoxes; index++) {
-      if (!processedBoxes[_campaignId][index].butcher) {
+      if (!boxesStatus[_campaignId][index].isProcessed) {
         return false;
       }
     }
     return true;
   }
 
-  /*
+  /**
   * Check if all boxes are distributed from the butcher
   */
   function areBoxesDistributedFromButcher(uint256 _campaignId) public view returns (bool) {
     SupplyChain memory supplychain = supplychains[_campaignId];
 
     for (uint256 index = 0; index < supplychain.totalBoxes; index++) {
-      if (!distributedBoxes[_campaignId][index].butcher) {
+      if (!boxesStatus[_campaignId][index].isDistributedFromButcher) {
         return false;
       }
     }
     return true;
   }
 
-  /*
+  /**
   * Check if all boxes are distributed to the delivery service
   */
   function areBoxesDistributedToDelivery(uint256 _campaignId) public view returns (bool) {
     SupplyChain memory supplychain = supplychains[_campaignId];
 
     for (uint256 index = 0; index < supplychain.totalBoxes; index++) {
-      if (!distributedBoxes[_campaignId][index].delivery) {
+      if (!boxesStatus[_campaignId][index].isDistributedToDelivery) {
         return false;
       }
     }
     return true;
   }
 
-  /*
+  /**
   * Check if all boxes are delivered by the delivery service
   */
   function areBoxesDelivered(uint256 _campaignId) public view returns (bool) {
     SupplyChain memory supplychain = supplychains[_campaignId];
 
     for (uint256 index = 0; index < supplychain.totalBoxes; index++) {
-      if (!deliveredBoxes[_campaignId][index].delivery) {
+      if(!boxesStatus[_campaignId][index].isDelivered) {
         return false;
       }
     }
     return true;
-  }
-
-  // ----- TESTING -----
-
-  /*
-  * Retrieve a supplychain by campaign id
-  */
-  function getSupplyChain(uint256 _campaignId) public view returns (SupplyChain memory) {
-    return supplychains[_campaignId];
-  }
-
-  /*
-  * getBoxStatus: 0 = processed, 1 = distributed, 2 = delivered
-  */
-  function getBoxesStatus(uint256 _campaignId, uint8 mode) public view returns (bool[] memory) {
-    require(mode >= 0 && mode <= 2, "Mode must be between 0 and 2");
-    SupplyChain memory supplychain = supplychains[_campaignId];
-    bool[] memory boxesStatus = new bool[](supplychain.totalBoxes);
-    for (uint256 index = 0; index < supplychain.totalBoxes; index++) {
-      if (mode == 0) {
-        boxesStatus[index] = processedBoxes[_campaignId][index].butcher;
-      } else if (mode == 1) {
-        boxesStatus[index] = (distributedBoxes[_campaignId][index].butcher && distributedBoxes[_campaignId][index].delivery);
-      } else if (mode == 2) {
-        boxesStatus[index] = deliveredBoxes[_campaignId][index].delivery;
-      }
-    }
-    return boxesStatus;
   }
 }

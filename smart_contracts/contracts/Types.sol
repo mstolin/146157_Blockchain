@@ -128,6 +128,15 @@ struct SupplyChain {
   StakeholderList stakeholders;
 }
 
+struct BoxStatus {
+  uint256 campaignRef;
+  uint256 boxId;
+  bool isProcessed;
+  bool isDistributedFromButcher;
+  bool isDistributedToDelivery;
+  bool isDelivered;
+}
+
 struct AnimalDeliverStatus {
   bool farmer;
   bool butcher;
