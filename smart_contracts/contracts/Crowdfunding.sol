@@ -5,13 +5,13 @@ import "./CrowdfundingTypes.sol";
 
 contract Crowdfunding {
     // all campaigns
-    mapping(uint256 => Campaign) private campaigns;
+    mapping(uint256 => Campaign) campaigns;
     // Boxes of each campaign
-    mapping(uint256 => mapping(uint8 => Box)) private boxes;
+    mapping(uint256 => mapping(uint8 => Box)) boxes;
     // Sold boxes of each campaign (campignId => sellId => BoxSellRef)
-    mapping(uint256 => mapping(uint256 => BoxSellRef)) private soldBoxes;
+    mapping(uint256 => mapping(uint256 => BoxSellRef)) soldBoxes;
 
-    uint256 private numberOfCampaigns = 0;
+    uint256 numberOfCampaigns = 0;
 
     /**
      * Creates a new campaign
@@ -37,7 +37,7 @@ contract Crowdfunding {
         require(deadline > current, "Deadline must be in the future");
 
         // add boxes to campaign
-        require(_boxes.length <= type(uint16).max, "Number of boxes can't be higher than (2^16)-1");
+        require(_boxes.length <= type(uint8).max, "Number of boxes can't be higher than (2^16)-1");
         uint16 totalNumOfBoxes = 0;
         for (uint8 index = 0; index < _boxes.length; index++) {
             Box memory box = _boxes[index];
