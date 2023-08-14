@@ -1,6 +1,6 @@
 import Stakeholder from './stakeholder';
 import { AnimalDeliverStatus, AnimalProcessStatus, BoxDeliverStatus, BoxDistributionStatus, BoxProcessStatus } from './supplychainStates';
-import {SupplyChainResp} from "./responseModels";
+import { SupplyChainResp } from "./responseModels";
 
 type Stakeholders = {
     farmer: Stakeholder;
