@@ -66,7 +66,7 @@
         <div *ngIf="!boxStatus.isDelivered; else Delivered">
           <div>Not yet delivered</div>
           <div *ngIf="boxesDistributionStatus">
-            <button (click)="onDistributed()" class="btn btn-primary">Mark as delivered</button>
+            <button (click)="onDelivered()" class="btn btn-primary">Mark as delivered</button>
           </div>
         </div>
         <ng-template #Delivered>
