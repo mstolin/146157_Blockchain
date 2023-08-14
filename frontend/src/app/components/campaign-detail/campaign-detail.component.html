@@ -105,19 +105,34 @@
       <li class="list-group-item d-flex justify-content-between align-items-start">
         <div class="ms-2 me-auto">
           <div class="fw-bold">Boxes processed by Butcher</div>
-          <div *ngIf="!supplychain.areBoxesProcessed">Not yet processed - {{ supplychain.totalBoxes - supplychain.processedBoxes }} boxes to go</div>
+          <div *ngIf="!supplychain.areBoxesProcessed; else AllProcessed">
+            <div>Not yet processed - {{ supplychain.totalBoxes - supplychain.processedBoxes }} boxes to go</div>
+          </div>
+          <ng-template #AllProcessed>
+            <div>All boxes processed</div>
+          </ng-template>
         </div>
       </li>
       <li class="list-group-item d-flex justify-content-between align-items-start">
         <div class="ms-2 me-auto">
           <div class="fw-bold">Boxes distributed to Delivery Service</div>
-          <div *ngIf="!supplychain.areBoxesDistributed">Not yet distributed - {{ supplychain.totalBoxes - supplychain.distributedBoxes }} boxes to go</div>
+          <div *ngIf="!supplychain.areBoxesDistributed; else AllDistributed">
+            <div>Not yet distributed - {{ supplychain.totalBoxes - supplychain.distributedBoxes }} boxes to go</div>
+          </div>
+          <ng-template #AllDistributed>
+            <div>All boxes distributed</div>
+          </ng-template>
         </div>
       </li>
       <li class="list-group-item d-flex justify-content-between align-items-start">
         <div class="ms-2 me-auto">
           <div class="fw-bold">Boxes distributed to Delivery Service</div>
-          <div *ngIf="!supplychain.areBoxesDelivered">Not yet delivered - {{ supplychain.totalBoxes - supplychain.deliveredBoxes }} boxes to go</div>
+          <div *ngIf="!supplychain.areBoxesDelivered; else AllDelivered">
+            <div>Not yet delivered - {{ supplychain.totalBoxes - supplychain.deliveredBoxes }} boxes to go</div>
+          </div>
+          <ng-template #AllDelivered>
+            <div>All boxes delivered</div>
+          </ng-template>
         </div>
       </li>
       <li *ngIf="isSupplyChainCompleted" class="list-group-item d-flex justify-content-between align-items-start">
