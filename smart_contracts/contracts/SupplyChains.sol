@@ -94,7 +94,8 @@ contract SupplyChains {
 
     if (msg.sender == supplychain.stakeholders.farmer.owner) {
       supplychain.isAnimalDelivered.farmer = true;
-    } else if (msg.sender == supplychain.stakeholders.butcher.owner) {
+    }
+    if (msg.sender == supplychain.stakeholders.butcher.owner) {
       supplychain.isAnimalDelivered.butcher = true;
     }
   }
@@ -151,7 +152,9 @@ contract SupplyChains {
       if(areBoxesDistributedFromButcher(_campaignId)) {
         supplychain.areBoxesDistributed.butcher = true;
       }
-    } else if (msg.sender == supplychain.stakeholders.delivery.owner) {
+    }
+
+    if (msg.sender == supplychain.stakeholders.delivery.owner) {
       boxesStatus[_campaignId][_boxId].isDistributedToDelivery = true;
 
       if (areBoxesDistributedToDelivery(_campaignId)) {
