@@ -29,6 +29,7 @@ export class CampaignDetailComponent implements OnInit {
 
   // supply chain
   supplychain!: SupplyChain;
+  isSupplyChainCompleted!: boolean;
 
   constructor(private store: Store, private route: ActivatedRoute, private crowdfundingService: CrowdfundingService, private supplychainService: SupplyChainService) {
     this.wallet$.subscribe(wallet => {
@@ -63,6 +64,12 @@ export class CampaignDetailComponent implements OnInit {
     }).catch(err => {
       console.log(err);
     });
+
+    this.supplychainService.isSupplyChainCompleted(campaignId).then(isCompleted => {
+      this.isSupplyChainCompleted = isCompleted;
+    }).catch(err => {
+      console.log(err);
+    })
   }
 
   ngOnInit(): void {
@@ -96,6 +103,12 @@ export class CampaignDetailComponent implements OnInit {
       }).catch(err => {
         console.log("ERR" + err);
       })
+    }
+  }
+
+  onPayOut() : void {
+    if (this.owner) {
+      // TODO payout
     }
   }
 }

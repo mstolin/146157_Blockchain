@@ -101,6 +101,25 @@ export class SupplyChainService extends ContractService {
     });
   }
 
+  isSupplyChainCompleted(campaignRef: number): Promise<boolean> {
+    return new Promise(async (resolve, reject) => {
+      const contract = this.getContract();
+      if (contract) {
+        try {
+          const isCompleted = await contract
+              .methods
+              .isCompleted(campaignRef)
+              .call();
+          resolve(isCompleted);
+        } catch (err) {
+          reject(err);
+        }
+      } else {
+        reject();
+      }
+    });
+  }
+
   async markAnimalAsDelivered(campaignRef: number) {
     const contract = this.getContract();
     if (contract) {
