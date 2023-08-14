@@ -13,7 +13,7 @@ import ContractService from "./contract.service";
 })
 export class SupplyChainService extends ContractService {
 
-  private readonly _contractAddress: string = "0x47A26CF68D09CbbcF1cCE3Ce6D324012c8f749c1";
+  private readonly _contractAddress: string = "0x276E6C96BE4962791f3161f2c6Acf6c49C146C4a";
 
   constructor() {
     super();
@@ -65,99 +65,64 @@ export class SupplyChainService extends ContractService {
     });
   }
 
-  markAnimalAsDelivered(campaignRef: number): Promise {
-    return new Promise(async (resolve, reject) => {
-      const contract = this.getContract();
-      if (contract) {
-        try {
-          await contract
-            .methods
-            .markAnimalAsDelivered(campaignRef)
-            .call({ 'from': this.selectedAddress });
-          resolve();
-        } catch (err) {
-          reject(err);
-        }
-      } else {
-        reject();
-      }
-    });
+  async markAnimalAsDelivered(campaignRef: number) {
+    const contract = this.getContract();
+    if (contract) {
+      await contract
+        .methods
+        .markAnimalAsDelivered(campaignRef)
+        .send({ 'from': this.selectedAddress });
+    } else {
+      throw('');
+    }
   }
 
-  markAnimalAsProcessed(campaignRef: number): Promise {
-    return new Promise(async (resolve, reject) => {
-      const contract = this.getContract();
-      if(contract) {
-        try {
-          await contract
-            .methods
-            .markAnimalAsProcessed(campaignRef)
-            .call({ 'from': this.selectedAddress });
-          resolve();
-        } catch (err) {
-          reject(err);
-        }
-      } else {
-        reject();
-      }
-    });
+  async markAnimalAsProcessed(campaignRef: number) {
+    const contract = this.getContract();
+    if (contract) {
+      await contract
+        .methods
+        .markAnimalAsProcessed(campaignRef)
+        .send({'from': this.selectedAddress});
+    } else {
+      throw('');
+    }
   }
 
-  markBoxAsProcessed(campaignRef: number, boxId: number): Promise {
-    return new Promise(async (resolve, reject) => {
-      const contract = this.getContract();
-      if (contract) {
-        try {
-          await contract
-              .methods
-              .markBoxAsProcessed(campaignRef, boxId)
-              .call({ 'from': this.selectedAddress });
-          resolve();
-        } catch (err) {
-          reject(err);
-        }
-      } else {
-        reject();
-      }
-    });
+  async markBoxAsProcessed(campaignRef: number, boxId: number) {
+    const contract = this.getContract();
+    if (contract) {
+      await contract
+        .methods
+        .markBoxAsProcessed(campaignRef, boxId)
+        .send({'from': this.selectedAddress});
+    } else {
+      throw('');
+    }
   }
 
-  markBoxAsDistributed(campaignRef: number, boxId: number): Promise {
-    return new Promise(async (resolve, reject) => {
-      const contract = this.getContract();
-      if (contract) {
-        try {
-          await contract
-              .methods
-              .markBoxAsDistributed(campaignRef, boxId)
-              .call();
-          resolve({ 'from': this.selectedAddress });
-        } catch (err) {
-          reject(err);
-        }
-      } else {
-        reject();
-      }
-    });
+  async markBoxAsDistributed(campaignRef: number, boxId: number) {
+    const contract = this.getContract();
+    if (contract) {
+      await contract
+        .methods
+        .markBoxAsDistributed(campaignRef, boxId)
+        .send({'from': this.selectedAddress});
+    } else {
+      throw('');
+    }
   }
 
-  markBoxAsDelivered(campaignRef: number, boxId: number): Promise {
-    return new Promise( async (resolve, reject) => {
-      const contract = this.getContract();
-      if (contract) {
-        try {
-          await contract
-              .methods
-              .markBoxAsDelivered(campaignRef, boxId)
-              .call({ 'from': this.selectedAddress });
-          resolve();
-        } catch(err) {
-          reject(err);
-        }
-      } else {
-        reject();
-      }
-    });
+  async markBoxAsDelivered(campaignRef: number, boxId: number) {
+    const contract = this.getContract();
+    if (contract) {
+      await contract
+        .methods
+        .markBoxAsDelivered(campaignRef, boxId)
+        .send({'from': this.selectedAddress});
+    } else {
+      throw('');
+    }
   }
 
   getProcessedBoxesStatus(campaignRef: number): Promise<boolean[]> {
