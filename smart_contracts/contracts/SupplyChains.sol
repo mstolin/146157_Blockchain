@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL
 pragma solidity ^0.8.13;
 
+import "./SupplyChainsTypes.sol";
 import "./Types.sol";
 import "./Crowdfunding.sol";
 
