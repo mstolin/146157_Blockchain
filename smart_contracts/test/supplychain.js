@@ -397,4 +397,48 @@ contract('SupplyChains', (accounts) => {
     isCompleted = await supplychain_contract.isCompleted.call(campaignId);
     assert.isTrue(isCompleted);
   });
+
+  it('should complete the supplychain and payout', async() => {
+    const crowdfunding_contract = await Crowdfunding.deployed();
+    const supplychain_contract = await SupplyChains.deployed();
+
+    const campaignId = await crowdfunding_contract.getNumberOfCampaigns.call();
+
+    await generateCampaignAndBuyAll(crowdfunding_contract, campaignId);
+
+    let supplychains = await supplychain_contract.getSupplyChains.call();
+    supplychain = supplychains[campaignId];
+    assert.isFalse(supplychain.areBoxesDelivered.delivery);
+
+    await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': FARMER_ADDR });
+    await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': BUTCHER_ADDR });
+    await supplychain_contract.markAnimalAsProcessed(campaignId, { 'from': BUTCHER_ADDR });
+    await supplychain_contract.markBoxAsProcessed(campaignId, 0, { 'from': BUTCHER_ADDR });
+    await supplychain_contract.markBoxAsProcessed(campaignId, 1, { 'from': BUTCHER_ADDR });
+    await supplychain_contract.markBoxAsProcessed(campaignId, 2, { 'from': BUTCHER_ADDR });
+    await supplychain_contract.markBoxAsDistributed(campaignId, 0, { 'from': DELIVERY_ADDR });
+    await supplychain_contract.markBoxAsDistributed(campaignId, 1, { 'from': DELIVERY_ADDR });
+    await supplychain_contract.markBoxAsDistributed(campaignId, 2, { 'from': DELIVERY_ADDR });
+    await supplychain_contract.markBoxAsDistributed(campaignId, 0, { 'from': BUTCHER_ADDR });
+    await supplychain_contract.markBoxAsDistributed(campaignId, 1, { 'from': BUTCHER_ADDR });
+    await supplychain_contract.markBoxAsDistributed(campaignId, 2, { 'from': BUTCHER_ADDR });
+    await supplychain_contract.markBoxAsDelivered(campaignId, 0, { 'from': DELIVERY_ADDR });
+    await supplychain_contract.markBoxAsDelivered(campaignId, 1, { 'from': DELIVERY_ADDR });
+    await supplychain_contract.markBoxAsDelivered(campaignId, 2, { 'from': DELIVERY_ADDR });
+
+    isCompleted = await supplychain_contract.isCompleted.call(campaignId);
+    assert.isTrue(isCompleted);
+
+    // test
+
+    let oldFarmerBalance = await web3.eth.getBalance(FARMER_ADDR);
+    let oldButcherBalance = await web3.eth.getBalance(BUTCHER_ADDR);
+    let oldDeliveryBalance = await web3.eth.getBalance(DELIVERY_ADDR);
+
+    await crowdfunding_contract.payOut(campaignId);
+
+    assert.isTrue(await web3.eth.getBalance(FARMER_ADDR) > oldFarmerBalance, "Farmer balance should be greater!");
+    assert.isTrue(await web3.eth.getBalance(BUTCHER_ADDR) > oldButcherBalance, "Butcher balance should be greater!");
+    assert.isTrue(await web3.eth.getBalance(DELIVERY_ADDR) > oldDeliveryBalance, "Delivery balance should be greater!");
+  });
 });
