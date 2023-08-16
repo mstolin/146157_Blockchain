@@ -13,7 +13,10 @@ contract SupplyChains {
 
   uint256 NumberOfSupplyChains = 0;
 
-  function StartSupplyChain(Campaign memory _campaign, BoxSellRef[] memory _boxes) external {
+  /**
+  * Create a supply chain related to a campaign
+  */
+  function createSupplyChain(Campaign memory _campaign) external {
     SupplyChain storage supplychain = supplychains[_campaign.id];
 
     supplychain.campaignRef = _campaign.id;
@@ -24,22 +27,7 @@ contract SupplyChains {
     supplychain.areBoxesDistributed.butcher = false;
     supplychain.areBoxesDistributed.delivery = false;
     supplychain.areBoxesDelivered.delivery = false;
-
-    uint16 totalNumOfBoxes = 0;
-    for (uint256 index = 0; index < _boxes.length; index++) {
-      BoxSellRef memory box = _boxes[index];
-      totalNumOfBoxes += 1;
-
-      boxesStatus[_campaign.id][box.id].campaignRef = _campaign.id;
-      boxesStatus[_campaign.id][box.id].boxId = box.id;
-      boxesStatus[_campaign.id][box.id].isProcessed = false;
-      boxesStatus[_campaign.id][box.id].isDistributedFromButcher = false;
-      boxesStatus[_campaign.id][box.id].isDistributedToDelivery = false;
-      boxesStatus[_campaign.id][box.id].isDelivered = false;
-    }
-    require(totalNumOfBoxes > 0, "There must be at least one box in total");
-
-    supplychain.totalBoxes = totalNumOfBoxes;
+    supplychain.totalBoxes = 0;
     supplychain.processedBoxes = 0;
     supplychain.distributedBoxes = 0;
     supplychain.deliveredBoxes = 0;
@@ -48,6 +36,32 @@ contract SupplyChains {
     supplychain.stakeholders = _campaign.stakeholders;
 
     NumberOfSupplyChains++;
+  }
+
+  /**
+  * Add a sold box to a supply chain
+  */
+  function addBox(uint256 _campaignId, BoxSellRef memory _box) external {
+    SupplyChain storage supplychain = supplychains[_campaignId];
+
+    boxesStatus[_campaignId][_box.id].campaignRef = _campaignId;
+    boxesStatus[_campaignId][_box.id].boxId = _box.id;
+    boxesStatus[_campaignId][_box.id].isProcessed = false;
+    boxesStatus[_campaignId][_box.id].isDistributedFromButcher = false;
+    boxesStatus[_campaignId][_box.id].isDistributedToDelivery = false;
+    boxesStatus[_campaignId][_box.id].isDelivered = false;
+
+    supplychain.totalBoxes++;
+  }
+  
+  /**
+  * Mark a supply chain as started
+  */
+  function startSupplyChain(uint256 _campaignRef) external {
+    SupplyChain storage supplychain = supplychains[_campaignRef];
+
+    require(!supplychain.isStarted, "The supply chain is already started");
+    supplychain.isStarted = true;
   }
 
   /**
@@ -75,18 +89,11 @@ contract SupplyChains {
   }
 
   /**
-  * Returns the total number of supply chains
-  */
-  function getNumberOfSupplyChains() public view returns (uint256) {
-    return NumberOfSupplyChains;
-  }
-
-  /**
   * Mark the animal of a campaign as delivered (to the butcher)
   */
   function markAnimalAsDelivered(uint256 _campaignId) public {
     SupplyChain storage supplychain = supplychains[_campaignId];
-
+    require(supplychain.isStarted, "The supply chain must be started before marking the animal as delivered");
     require(
       (msg.sender == supplychain.stakeholders.farmer.owner) || (msg.sender == supplychain.stakeholders.butcher.owner),
       "Only the farmer and the butcher can mark the animal as delivered"
@@ -107,6 +114,7 @@ contract SupplyChains {
   function markAnimalAsProcessed(uint256 _campaignId) public {
     SupplyChain storage supplychain = supplychains[_campaignId];
 
+    require(supplychain.isStarted, "The supply chain must be started before marking the animal as processed");
     require(msg.sender == supplychain.stakeholders.butcher.owner, "Only the butcher can mark the animal as processed");
     require((supplychain.isAnimalDelivered.butcher && supplychain.isAnimalDelivered.farmer), "The animal must be delivered before being processed");
     require(!supplychain.isAnimalProcessed.butcher, "The animal is already processed");
@@ -120,6 +128,7 @@ contract SupplyChains {
   function markBoxAsProcessed(uint256 _campaignId, uint16 _boxId) public {
     SupplyChain storage supplychain = supplychains[_campaignId];
 
+    require(supplychain.isStarted, "The supply chain must be started before marking a box as processed");
     require(msg.sender == supplychain.stakeholders.butcher.owner, "Only the butcher can mark a box as processed");
     require(supplychain.isAnimalProcessed.butcher, "The animal must be processed before preparing boxes");
     require(!boxesStatus[_campaignId][_boxId].isProcessed, "The box is already processed");
@@ -139,6 +148,7 @@ contract SupplyChains {
   function markBoxAsDistributed(uint256 _campaignId, uint16 _boxId) public {
     SupplyChain storage supplychain = supplychains[_campaignId];
 
+    require(supplychain.isStarted, "The supply chain must be started before marking a box as distributed");
     require(
       (msg.sender == supplychain.stakeholders.delivery.owner) || (msg.sender == supplychain.stakeholders.butcher.owner),
       "Only the butcher and the delivery service can mark a box as distributed");
@@ -174,6 +184,7 @@ contract SupplyChains {
   function markBoxAsDelivered(uint256 _campaignId, uint16 _boxId) public {
     SupplyChain storage supplychain = supplychains[_campaignId];
 
+    require(supplychain.isStarted, "The supply chain must be started before marking a box as delivered");
     require(msg.sender == supplychain.stakeholders.delivery.owner, "Only the delivery service can mark a box as delivered");
     require(
       supplychain.areBoxesDistributed.butcher || supplychain.areBoxesDistributed.delivery,

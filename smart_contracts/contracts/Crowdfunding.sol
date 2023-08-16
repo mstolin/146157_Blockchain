@@ -80,6 +80,9 @@ contract Crowdfunding {
 
         // increase total num of campaigns
         numberOfCampaigns++;
+
+        // Start supply chain
+        SupplyChains(supplychainAddress).createSupplyChain(campaign);
     }
 
     /**
@@ -199,18 +202,20 @@ contract Crowdfunding {
         meta.boxesSold += 1;
         meta.collectedAmount += amount;
 
+        SupplyChains(supplychainAddress).addBox(_campaignId, sellRef);
+
         if (campaign.meta.boxesSold == campaign.meta.totalBoxes) {
             // Mark campaign as stopped
             campaign.meta.isStopped = true;
             // Start supply chain
-            SupplyChains(supplychainAddress).StartSupplyChain(campaign, getSoldBoxes(campaign.id));
+            SupplyChains(supplychainAddress).startSupplyChain(campaign.id);
         }
     }
 
     /**
      * Pay-out all stakeholders of the campaign
      */
-    function payOut(uint256 _campaignId) public {
+    function payOut(uint256 _campaignId) external payable {
         Campaign storage campaign = campaigns[_campaignId];
         require(campaign.meta.isStopped, "The campaign must be finished");
         require(
