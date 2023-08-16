@@ -110,15 +110,4 @@ export class CampaignDetailComponent implements OnInit {
       })
     }
   }
-
-  onPayOut() : void {
-    if (this.owner) {
-      this.crowdfundingService.payOut(this.campaign.id).then(() => {
-        this.isPaid = true;
-        console.log("payout");
-      }).catch(err => {
-        console.log("ERR" + err);
-      })
-    }
-  }
 }
