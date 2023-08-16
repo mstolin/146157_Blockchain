@@ -1,5 +1,12 @@
 import Stakeholder from './stakeholder';
-import { AnimalDeliverStatus, AnimalProcessStatus, BoxDeliverStatus, BoxDistributionStatus, BoxProcessStatus } from './supplychainStates';
+import {
+  AnimalDeliverStatus,
+  AnimalProcessStatus,
+  BoxDeliverStatus,
+  BoxDistributionStatus,
+  BoxProcessStatus, DeliveredBoxesCounter, DistributedBoxesCounter,
+  ProcessedBoxesCounter
+} from './supplychainStates';
 import { SupplyChainResp } from "./responseModels";
 
 type Stakeholders = {
@@ -18,9 +25,9 @@ export default class SupplyChain {
     private readonly _areBoxesDistributed: BoxDistributionStatus;
     private readonly _areBoxesDelivered: BoxDeliverStatus;
     private readonly _totalBoxes: number;
-    private readonly _processedBoxes: number;
-    private readonly _distributedBoxes: number;
-    private readonly _deliveredBoxes: number;
+    private readonly _processedBoxes: ProcessedBoxesCounter;
+    private readonly _distributedBoxes: DistributedBoxesCounter;
+    private readonly _deliveredBoxes: DeliveredBoxesCounter;
     private readonly _stakeholders: Stakeholders;
 
     constructor(
@@ -32,9 +39,9 @@ export default class SupplyChain {
         areBoxesDistributed: BoxDistributionStatus,
         areBoxesDelivered: BoxDeliverStatus,
         totalBoxes: number,
-        processedBoxes: number,
-        distributedBoxes: number,
-        deliveredBoxes: number,
+        processedBoxes: ProcessedBoxesCounter,
+        distributedBoxes: DistributedBoxesCounter,
+        deliveredBoxes: DeliveredBoxesCounter,
         stakeholders: Stakeholders
     ) {
         this._campaignRef = campaignRef;
@@ -113,15 +120,19 @@ export default class SupplyChain {
     }
 
     get processedBoxes() {
-      return this._processedBoxes;
+      return this._processedBoxes.butcher;
     }
 
     get distributedBoxes() {
-      return this._distributedBoxes;
+      if (this._distributedBoxes.butcher >= this._distributedBoxes.delivery) {
+        return this._distributedBoxes.butcher;
+      } else {
+        return this._distributedBoxes.delivery;
+      }
     }
 
     get deliveredBoxes() {
-      return this._deliveredBoxes;
+      return this._deliveredBoxes.delivery;
     }
 
     get stakeholders() {

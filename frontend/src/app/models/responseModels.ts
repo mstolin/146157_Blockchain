@@ -1,4 +1,11 @@
-import { AnimalDeliverStatus, AnimalProcessStatus, BoxDeliverStatus, BoxDistributionStatus, BoxProcessStatus } from "./supplychainStates";
+import {
+  AnimalDeliverStatus,
+  AnimalProcessStatus,
+  BoxDeliverStatus,
+  BoxDistributionStatus,
+  BoxProcessStatus, DeliveredBoxesCounter, DistributedBoxesCounter,
+  ProcessedBoxesCounter
+} from "./supplychainStates";
 
 export type CampaignResp = {
   id: number;
@@ -74,9 +81,9 @@ export type SupplyChainResp = {
   areBoxesDistributed: BoxDistributionStatus;
   areBoxesDelivered: BoxDeliverStatus;
   totalBoxes: number;
-  processedBoxes: number;
-  distributedBoxes: number;
-  deliveredBoxes: number;
+  processedBoxes: ProcessedBoxesCounter;
+  distributedBoxes: DistributedBoxesCounter;
+  deliveredBoxes: DeliveredBoxesCounter;
   stakeholders: CampaignStakeholderListResp;
 };
 

@@ -19,3 +19,16 @@ export type BoxDistributionStatus = {
 export type BoxDeliverStatus = {
     delivery: boolean;
 };
+
+export type ProcessedBoxesCounter = {
+  butcher: number;
+}
+
+export type DistributedBoxesCounter = {
+  butcher: number;
+  delivery: number;
+}
+
+export type DeliveredBoxesCounter = {
+  delivery: number;
+}
