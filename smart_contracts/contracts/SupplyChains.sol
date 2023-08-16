@@ -27,6 +27,7 @@ contract SupplyChains {
     SupplyChain storage supplychain = supplychains[_campaign.id];
 
     supplychain.campaignRef = _campaign.id;
+    supplychain.isStarted = false;
     supplychain.isAnimalDelivered.butcher = false;
     supplychain.isAnimalDelivered.farmer = false;
     supplychain.isAnimalProcessed.butcher = false;
@@ -203,6 +204,7 @@ contract SupplyChains {
 
     if(supplychain.totalBoxes == supplychain.deliveredBoxes.delivery) {
       supplychain.areBoxesDelivered.delivery = true;
+      Crowdfunding(crowdfundingAddress).payOut(_campaignId);
     }
   }
 
