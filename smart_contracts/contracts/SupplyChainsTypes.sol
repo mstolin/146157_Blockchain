@@ -6,6 +6,8 @@ import "./CrowdfundingTypes.sol";
 struct SupplyChain {
   /// The campaign ID
   uint256 campaignRef;
+  /// Is the supply chain started
+  bool isStarted;
   /// Delivery status of the animal
   AnimalDeliverStatus isAnimalDelivered;
   /// Process status of the animal
