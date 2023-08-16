@@ -6,12 +6,19 @@ import "./CrowdfundingTypes.sol";
 import "./Crowdfunding.sol";
 
 contract SupplyChains {
+  // address of the crowdfunding contract
+  address public crowdfundingAddress;
 
   mapping(uint256 => SupplyChain) supplychains;
 
   mapping(uint256 => mapping(uint16 => BoxStatus)) boxesStatus;
 
   uint256 NumberOfSupplyChains = 0;
+
+  // Add the address of the crowdfunding contract
+  function setCrowdfundingAddress(address _crowdfundingAddress) public {
+    crowdfundingAddress = _crowdfundingAddress;
+  }
 
   /**
   * Create a supply chain related to a campaign

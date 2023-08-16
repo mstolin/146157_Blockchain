@@ -16,9 +16,9 @@ contract Crowdfunding {
     mapping(uint256 => mapping(uint256 => BoxSellRef)) soldBoxes;
 
     uint256 numberOfCampaigns = 0;
-
-    // retrieve supply chain contract address from truffle deployment
-    constructor(address _supplychainAddress) {
+    
+    // Add the address of the supply chain contract
+    function setSupplyChainAddress(address _supplychainAddress) public {
         supplychainAddress = _supplychainAddress;
     }
 
