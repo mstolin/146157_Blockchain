@@ -17,13 +17,13 @@ struct SupplyChain {
   /// Delivery status of the boxes
   BoxDeliverStatus areBoxesDelivered;
   /// Total number of boxes
-  uint256 totalBoxes;
+  uint16 totalBoxes;
   /// Total number of prepared boxes
-  uint256 processedBoxes;
+  uint16 processedBoxes;
   /// Total number of delivered boxes
-  uint256 distributedBoxes;
+  uint16 distributedBoxes;
   /// Total number of received boxes
-  uint256 deliveredBoxes;
+  uint16 deliveredBoxes;
   // Stakeholder involved in the process
   StakeholderList stakeholders;
 }
@@ -32,7 +32,7 @@ struct BoxStatus {
   /// The campaign ID
   uint256 campaignRef;
   /// The box sell ID
-  uint256 boxId;
+  uint16 boxId;
   /// Process status of the box
   bool isProcessed;
   /// Distribution status of the box (marked by the butcher)

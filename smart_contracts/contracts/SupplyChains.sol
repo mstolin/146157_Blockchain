@@ -7,11 +7,11 @@ import "./Crowdfunding.sol";
 
 contract SupplyChains {
 
-  mapping(uint256 => SupplyChain) public supplychains;
+  mapping(uint256 => SupplyChain) supplychains;
 
-  mapping(uint256 => mapping(uint256 => BoxStatus)) boxesStatus;
+  mapping(uint256 => mapping(uint16 => BoxStatus)) boxesStatus;
 
-  uint256 public NumberOfSupplyChains = 0;
+  uint256 NumberOfSupplyChains = 0;
 
   function StartSupplyChain(Campaign memory _campaign, BoxSellRef[] memory _boxes) external {
     SupplyChain storage supplychain = supplychains[_campaign.id];
@@ -25,7 +25,7 @@ contract SupplyChains {
     supplychain.areBoxesDistributed.delivery = false;
     supplychain.areBoxesDelivered.delivery = false;
 
-    uint totalNumOfBoxes = 0;
+    uint16 totalNumOfBoxes = 0;
     for (uint256 index = 0; index < _boxes.length; index++) {
       BoxSellRef memory box = _boxes[index];
       totalNumOfBoxes += 1;
@@ -68,7 +68,7 @@ contract SupplyChains {
   function getBoxesStatus(uint256 _campaignId) public view returns (BoxStatus[] memory) {
     SupplyChain memory supplychain = supplychains[_campaignId];
     BoxStatus[] memory boxesStatuses = new BoxStatus[](supplychain.totalBoxes);
-    for (uint256 index = 0; index < supplychain.totalBoxes; index++) {
+    for (uint16 index = 0; index < supplychain.totalBoxes; index++) {
       boxesStatuses[index] = boxesStatus[_campaignId][index];
     }
     return boxesStatuses;
@@ -117,7 +117,7 @@ contract SupplyChains {
   /**
   * Mark a box as processed by the butcher
   */
-  function markBoxAsProcessed(uint256 _campaignId, uint256 _boxId) public {
+  function markBoxAsProcessed(uint256 _campaignId, uint16 _boxId) public {
     SupplyChain storage supplychain = supplychains[_campaignId];
 
     require(msg.sender == supplychain.stakeholders.butcher.owner, "Only the butcher can mark a box as processed");
@@ -136,7 +136,7 @@ contract SupplyChains {
   /**
   * Mark a box as distributed by the delivery service
   */
-  function markBoxAsDistributed(uint256 _campaignId, uint256 _boxId) public {
+  function markBoxAsDistributed(uint256 _campaignId, uint16 _boxId) public {
     SupplyChain storage supplychain = supplychains[_campaignId];
 
     require(
@@ -171,7 +171,7 @@ contract SupplyChains {
   /**
   * Mark a box as delivered by the delivery service
   */
-  function markBoxAsDelivered(uint256 _campaignId, uint256 _boxId) public {
+  function markBoxAsDelivered(uint256 _campaignId, uint16 _boxId) public {
     SupplyChain storage supplychain = supplychains[_campaignId];
 
     require(msg.sender == supplychain.stakeholders.delivery.owner, "Only the delivery service can mark a box as delivered");
@@ -212,7 +212,7 @@ contract SupplyChains {
   function areBoxesProcessed(uint256 _campaignId) public view returns (bool) {
     SupplyChain memory supplychain = supplychains[_campaignId];
 
-    for (uint256 index = 0; index < supplychain.totalBoxes; index++) {
+    for (uint16 index = 0; index < supplychain.totalBoxes; index++) {
       if (!boxesStatus[_campaignId][index].isProcessed) {
         return false;
       }
@@ -226,7 +226,7 @@ contract SupplyChains {
   function areBoxesDistributedFromButcher(uint256 _campaignId) public view returns (bool) {
     SupplyChain memory supplychain = supplychains[_campaignId];
 
-    for (uint256 index = 0; index < supplychain.totalBoxes; index++) {
+    for (uint16 index = 0; index < supplychain.totalBoxes; index++) {
       if (!boxesStatus[_campaignId][index].isDistributedFromButcher) {
         return false;
       }
@@ -240,7 +240,7 @@ contract SupplyChains {
   function areBoxesDistributedToDelivery(uint256 _campaignId) public view returns (bool) {
     SupplyChain memory supplychain = supplychains[_campaignId];
 
-    for (uint256 index = 0; index < supplychain.totalBoxes; index++) {
+    for (uint16 index = 0; index < supplychain.totalBoxes; index++) {
       if (!boxesStatus[_campaignId][index].isDistributedToDelivery) {
         return false;
       }
@@ -254,7 +254,7 @@ contract SupplyChains {
   function areBoxesDelivered(uint256 _campaignId) public view returns (bool) {
     SupplyChain memory supplychain = supplychains[_campaignId];
 
-    for (uint256 index = 0; index < supplychain.totalBoxes; index++) {
+    for (uint16 index = 0; index < supplychain.totalBoxes; index++) {
       if(!boxesStatus[_campaignId][index].isDelivered) {
         return false;
       }
