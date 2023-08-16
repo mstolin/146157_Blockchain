@@ -82,19 +82,73 @@
       <li class="list-group-item d-flex justify-content-between align-items-start">
         <div class="ms-2 me-auto">
           <div class="fw-bold">Animal delivered to Butcher</div>
-          No
+          <div *ngIf="!supplychain.isAnimalDelivered; else Delivered">
+            <div>Not delivered yet </div>
+            <div>Farmer: {{ supplychain.isAnimalDeliveredFarmer }} - Butcher: {{ supplychain.isAnimalDeliveredButcher }}</div>
+            <button (click)="onDelivered()" class="btn btn-primary">Mark as delivered</button>
+          </div>
+          <ng-template #Delivered>
+            <div>Delivered</div>
+          </ng-template>
         </div>
       </li>
       <li class="list-group-item d-flex justify-content-between align-items-start">
         <div class="ms-2 me-auto">
           <div class="fw-bold">Animal processed by Butcher</div>
-          No
+          <div *ngIf="!supplychain.isAnimalProcessed; else Processed">
+            <div>Not processed yet</div>
+            <div>Butcher: {{ supplychain.isAnimalProcessed }}</div>
+            <div *ngIf="supplychain.isAnimalDelivered">
+              <button (click)="onProcessed()" class="btn btn-primary">Mark as processed</button>
+            </div>
+          </div>
+          <ng-template #Processed>
+            <div>Processed</div>
+          </ng-template>
         </div>
       </li>
       <li class="list-group-item d-flex justify-content-between align-items-start">
         <div class="ms-2 me-auto">
-          <div class="fw-bold">Boxes processed by butcher</div>
-          No
+          <div class="fw-bold">Boxes processed by Butcher</div>
+          <div *ngIf="!supplychain.areBoxesProcessed; else AllProcessed">
+            <div>Not yet processed - {{ supplychain.totalBoxes - supplychain.processedBoxes }} boxes to go</div>
+          </div>
+          <ng-template #AllProcessed>
+            <div>All boxes processed</div>
+          </ng-template>
+        </div>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">Boxes distributed to Delivery Service</div>
+          <div *ngIf="!supplychain.areBoxesDistributed; else AllDistributed">
+            <div>Not yet distributed - {{ supplychain.totalBoxes - supplychain.distributedBoxes }} boxes to go</div>
+          </div>
+          <ng-template #AllDistributed>
+            <div>All boxes distributed</div>
+          </ng-template>
+        </div>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">Boxes distributed to Delivery Service</div>
+          <div *ngIf="!supplychain.areBoxesDelivered; else AllDelivered">
+            <div>Not yet delivered - {{ supplychain.totalBoxes - supplychain.deliveredBoxes }} boxes to go</div>
+          </div>
+          <ng-template #AllDelivered>
+            <div>All boxes delivered</div>
+          </ng-template>
+        </div>
+      </li>
+      <li *ngIf="isSupplyChainCompleted" class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">Supply Chain completed</div>
+          <div *ngIf="!isPaid; else Paid">
+            <button (click)="onPayOut()" class="btn btn-primary">Pay out</button>
+          </div>
+          <ng-template #Paid>
+            <div>Payment done</div>
+          </ng-template>
         </div>
       </li>
     </ol>

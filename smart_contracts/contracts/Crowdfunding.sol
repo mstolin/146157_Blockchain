@@ -2,8 +2,12 @@
 pragma solidity ^0.8.13;
 
 import "./CrowdfundingTypes.sol";
+import "./SupplyChains.sol";
 
 contract Crowdfunding {
+    // address of the supply chain contract
+    address public supplychainAddress;
+
     // all campaigns
     mapping(uint256 => Campaign) campaigns;
     // Boxes of each campaign
@@ -12,6 +16,11 @@ contract Crowdfunding {
     mapping(uint256 => mapping(uint256 => BoxSellRef)) soldBoxes;
 
     uint256 numberOfCampaigns = 0;
+
+    // retrieve supply chain contract address from truffle deployment
+    constructor(address _supplychainAddress) {
+        supplychainAddress = _supplychainAddress;
+    }
 
     /**
      * Creates a new campaign
@@ -193,7 +202,8 @@ contract Crowdfunding {
         if (campaign.meta.boxesSold == campaign.meta.totalBoxes) {
             // Mark campaign as stopped
             campaign.meta.isStopped = true;
-            // TODO Start Supply Chain
+            // Start supply chain
+            SupplyChains(supplychainAddress).StartSupplyChain(campaign, getSoldBoxes(campaign.id));
         }
     }
 
@@ -207,14 +217,16 @@ contract Crowdfunding {
             campaign.meta.boxesSold == campaign.meta.totalBoxes,
             "There can't be any boxes left"
         );
-
-        // TODO Check if supply chain has been completed
-        // e.g. require(campaign.supplyChain.isCompleted);
+        // Check if supply chain has been completed
+        require(
+            SupplyChains(supplychainAddress).isCompleted(campaign.id),
+            "Supply chain must be completed"
+        );
 
         // Generate shares
-        uint256 farmerShare = campaign.meta.collectedAmount * campaign.stakeholders.farmer.share;
-        uint256 butcherShare = campaign.meta.collectedAmount * campaign.stakeholders.butcher.share;
-        uint256 deliveryShare = campaign.meta.collectedAmount * campaign.stakeholders.delivery.share;
+        uint256 farmerShare = (campaign.meta.collectedAmount * campaign.stakeholders.farmer.share) / 100;
+        uint256 butcherShare = (campaign.meta.collectedAmount * campaign.stakeholders.butcher.share) / 100;
+        uint256 deliveryShare = (campaign.meta.collectedAmount * campaign.stakeholders.delivery.share) / 100;
 
         // payout stakeholders
         payable(campaign.stakeholders.farmer.owner).transfer(farmerShare);

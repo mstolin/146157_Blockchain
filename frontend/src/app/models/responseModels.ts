@@ -1,3 +1,5 @@
+import { AnimalDeliverStatus, AnimalProcessStatus, BoxDeliverStatus, BoxDistributionStatus, BoxProcessStatus } from "./supplychainStates";
+
 export type CampaignResp = {
   id: number;
   info: CampaignInfoResp;
@@ -61,4 +63,27 @@ export type BoxSellRefResp = {
   owner: string;
   physAddress: string;
   boughtAt: number;
+}
+
+export type SupplyChainResp = {
+  campaignRef: number;
+  isAnimalDelivered: AnimalDeliverStatus;
+  isAnimalProcessed: AnimalProcessStatus;
+  areBoxesProcessed: BoxProcessStatus;
+  areBoxesDistributed: BoxDistributionStatus;
+  areBoxesDelivered: BoxDeliverStatus;
+  totalBoxes: number;
+  processedBoxes: number;
+  distributedBoxes: number;
+  deliveredBoxes: number;
+  stakeholders: CampaignStakeholderListResp;
+};
+
+export type BoxStatusResp = {
+  campaignRef: number;
+  boxId: number;
+  isProcessed: boolean;
+  isDistributedFromButcher: boolean;
+  isDistributedToDelivery: boolean;
+  isDelivered: boolean;
 }

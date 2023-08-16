@@ -17,7 +17,7 @@ import BoxSellRef from '../models/boxSellRef';
 })
 export class CrowdfundingService extends ContractService {
 
-  private readonly _contractAddress: string = '0x8054491D1044D1888ecAB1a14D681bb28fA078bC';
+  private readonly _contractAddress: string = '0x72e3092661627bbA2B072130B522f2933fA85948';
 
   constructor() {
     super();
@@ -190,6 +190,18 @@ export class CrowdfundingService extends ContractService {
         .methods
         .buyBox(campaignId, boxId, address)
         .send({ from: this.selectedAddress, value });
+    } else {
+      throw('');
+    }
+  }
+
+  async payOut(campaignId: number) {
+    const contract = this.getContract();
+    if (contract) {
+      await contract
+        .methods
+        .payOut(campaignId)
+        .send({ from: this.selectedAddress });
     } else {
       throw('');
     }
