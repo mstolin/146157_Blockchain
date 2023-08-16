@@ -35,9 +35,10 @@ contract SupplyChains {
     supplychain.areBoxesDistributed.delivery = false;
     supplychain.areBoxesDelivered.delivery = false;
     supplychain.totalBoxes = 0;
-    supplychain.processedBoxes = 0;
-    supplychain.distributedBoxes = 0;
-    supplychain.deliveredBoxes = 0;
+    supplychain.processedBoxes.butcher = 0;
+    supplychain.distributedBoxes.butcher = 0;
+    supplychain.distributedBoxes.delivery = 0;
+    supplychain.deliveredBoxes.delivery = 0;
 
     // import stakeholders from campaign
     supplychain.stakeholders = _campaign.stakeholders;
@@ -142,9 +143,9 @@ contract SupplyChains {
 
     boxesStatus[_campaignId][_boxId].isProcessed = true;
 
-    supplychain.processedBoxes++;
+    supplychain.processedBoxes.butcher++;
 
-    if(areBoxesProcessed(_campaignId)) {
+    if(supplychain.totalBoxes == supplychain.processedBoxes.butcher) {
       supplychain.areBoxesProcessed.butcher = true;
     }
   }
@@ -166,22 +167,20 @@ contract SupplyChains {
 
     if (msg.sender == supplychain.stakeholders.butcher.owner) {
       boxesStatus[_campaignId][_boxId].isDistributedFromButcher = true;
+      supplychain.distributedBoxes.butcher++;
 
-      if(areBoxesDistributedFromButcher(_campaignId)) {
+      if(supplychain.totalBoxes == supplychain.distributedBoxes.butcher) {
         supplychain.areBoxesDistributed.butcher = true;
       }
     }
 
     if (msg.sender == supplychain.stakeholders.delivery.owner) {
       boxesStatus[_campaignId][_boxId].isDistributedToDelivery = true;
+      supplychain.distributedBoxes.delivery++;
 
-      if (areBoxesDistributedToDelivery(_campaignId)) {
+      if (supplychain.totalBoxes == supplychain.distributedBoxes.delivery) {
         supplychain.areBoxesDistributed.delivery = true;
       }
-    }
-
-    if (boxesStatus[_campaignId][_boxId].isDistributedFromButcher && boxesStatus[_campaignId][_boxId].isDistributedToDelivery) {
-      supplychain.distributedBoxes++;
     }
   }
 
@@ -200,9 +199,9 @@ contract SupplyChains {
 
     boxesStatus[_campaignId][_boxId].isDelivered = true;
 
-    supplychain.deliveredBoxes++;
+    supplychain.deliveredBoxes.delivery++;
 
-    if(areBoxesDelivered(_campaignId)) {
+    if(supplychain.totalBoxes == supplychain.deliveredBoxes.delivery) {
       supplychain.areBoxesDelivered.delivery = true;
     }
   }
@@ -220,63 +219,5 @@ contract SupplyChains {
       supplychain.areBoxesDistributed.butcher &&
       supplychain.areBoxesDistributed.delivery &&
       supplychain.areBoxesDelivered.delivery);
-  }
-
-  // ----- HELPER METHODS -----
-
-  /**
-  * Check if all boxes are processed by the butcher
-  */
-  function areBoxesProcessed(uint256 _campaignId) public view returns (bool) {
-    SupplyChain memory supplychain = supplychains[_campaignId];
-
-    for (uint16 index = 0; index < supplychain.totalBoxes; index++) {
-      if (!boxesStatus[_campaignId][index].isProcessed) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  /**
-  * Check if all boxes are distributed from the butcher
-  */
-  function areBoxesDistributedFromButcher(uint256 _campaignId) public view returns (bool) {
-    SupplyChain memory supplychain = supplychains[_campaignId];
-
-    for (uint16 index = 0; index < supplychain.totalBoxes; index++) {
-      if (!boxesStatus[_campaignId][index].isDistributedFromButcher) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  /**
-  * Check if all boxes are distributed to the delivery service
-  */
-  function areBoxesDistributedToDelivery(uint256 _campaignId) public view returns (bool) {
-    SupplyChain memory supplychain = supplychains[_campaignId];
-
-    for (uint16 index = 0; index < supplychain.totalBoxes; index++) {
-      if (!boxesStatus[_campaignId][index].isDistributedToDelivery) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  /**
-  * Check if all boxes are delivered by the delivery service
-  */
-  function areBoxesDelivered(uint256 _campaignId) public view returns (bool) {
-    SupplyChain memory supplychain = supplychains[_campaignId];
-
-    for (uint16 index = 0; index < supplychain.totalBoxes; index++) {
-      if(!boxesStatus[_campaignId][index].isDelivered) {
-        return false;
-      }
-    }
-    return true;
   }
 }

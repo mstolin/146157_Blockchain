@@ -21,11 +21,11 @@ struct SupplyChain {
   /// Total number of boxes
   uint16 totalBoxes;
   /// Total number of prepared boxes
-  uint16 processedBoxes;
+  ProcessedBoxesCounter processedBoxes;
   /// Total number of delivered boxes
-  uint16 distributedBoxes;
+  DistributedBoxesCounter distributedBoxes;
   /// Total number of received boxes
-  uint16 deliveredBoxes;
+  DeliveredBoxesCounter deliveredBoxes;
   // Stakeholder involved in the process
   StakeholderList stakeholders;
 }
@@ -72,4 +72,17 @@ struct BoxDistributionStatus {
 struct BoxDeliverStatus {
   /// Delivery status of the boxes (marked by the delivery service)
   bool delivery;
+}
+
+struct ProcessedBoxesCounter {
+  uint16 butcher;
+}
+
+struct DistributedBoxesCounter {
+  uint16 butcher;
+  uint16 delivery;
+}
+
+struct DeliveredBoxesCounter {
+  uint16 delivery;
 }
