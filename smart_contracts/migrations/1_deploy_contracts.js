@@ -8,8 +8,8 @@ module.exports = async function(deployer, network, accounts) {
   await deployer.deploy(Crowdfunding);
   const CrowdfundingInstance = await Crowdfunding.deployed();
 
-  CrowdfundingInstance.setSupplyChainsAddress(SupplyChainsInstance.address);
-  SupplyChainsInstance.setCrowdfundingAddress(CrowdfundingInstance.address);
+  await CrowdfundingInstance.setSupplyChainsAddress(SupplyChainsInstance.address);
+  await SupplyChainsInstance.setCrowdfundingAddress(CrowdfundingInstance.address);
 
   console.log("Crowdfunding address: ", CrowdfundingInstance.address);
   console.log("SupplyChains address: ", SupplyChainsInstance.address);
