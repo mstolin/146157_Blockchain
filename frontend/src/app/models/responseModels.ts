@@ -67,6 +67,7 @@ export type BoxSellRefResp = {
 
 export type SupplyChainResp = {
   campaignRef: number;
+  isStarted: boolean;
   isAnimalDelivered: AnimalDeliverStatus;
   isAnimalProcessed: AnimalProcessStatus;
   areBoxesProcessed: BoxProcessStatus;

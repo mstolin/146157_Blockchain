@@ -11,6 +11,7 @@ type Stakeholders = {
 export default class SupplyChain {
 
     private readonly _campaignRef: number;
+    private readonly _isStarted: boolean;
     private readonly _isAnimalDelivered: AnimalDeliverStatus;
     private readonly _isAnimalProcessed: AnimalProcessStatus;
     private readonly _areBoxesProcessed: BoxProcessStatus;
@@ -24,6 +25,7 @@ export default class SupplyChain {
 
     constructor(
         campaignRef: number,
+        isStarted: boolean,
         isAnimalDelivered: AnimalDeliverStatus,
         isAnimalProcessed: AnimalProcessStatus,
         areBoxesProcessed: BoxProcessStatus,
@@ -36,6 +38,7 @@ export default class SupplyChain {
         stakeholders: Stakeholders
     ) {
         this._campaignRef = campaignRef;
+        this._isStarted = isStarted;
         this._isAnimalDelivered = isAnimalDelivered;
         this._isAnimalProcessed = isAnimalProcessed;
         this._areBoxesProcessed = areBoxesProcessed;
@@ -51,6 +54,7 @@ export default class SupplyChain {
     static fromResponse(resp: SupplyChainResp): SupplyChain {
       return new SupplyChain(
         resp.campaignRef,
+        resp.isStarted,
         resp.isAnimalDelivered,
         resp.isAnimalProcessed,
         resp.areBoxesProcessed,
@@ -70,6 +74,10 @@ export default class SupplyChain {
 
     get campaignRef() {
         return this._campaignRef;
+    }
+
+    get isStarted() {
+      return this._isStarted;
     }
 
     get isAnimalDelivered() {
