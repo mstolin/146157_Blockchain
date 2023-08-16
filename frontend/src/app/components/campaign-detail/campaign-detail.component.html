@@ -83,8 +83,8 @@
         <div class="ms-2 me-auto">
           <div class="fw-bold">Animal delivered to Butcher</div>
           <div *ngIf="!supplychain.isAnimalDelivered; else Delivered">
-            <div>Not delivered yet </div>
-            <div>Farmer: {{ supplychain.isAnimalDeliveredFarmer }} - Butcher: {{ supplychain.isAnimalDeliveredButcher }}</div>
+            <div *ngIf="!supplychain.isAnimalDeliveredFarmer">Farmer has not yet confirmed delivery</div>
+            <div *ngIf="!supplychain.isAnimalDeliveredButcher">Butcher has not yet confirmed delivery</div>
             <button (click)="onDelivered()" class="btn btn-primary">Mark as delivered</button>
           </div>
           <ng-template #Delivered>
@@ -97,7 +97,6 @@
           <div class="fw-bold">Animal processed by Butcher</div>
           <div *ngIf="!supplychain.isAnimalProcessed; else Processed">
             <div>Not processed yet</div>
-            <div>Butcher: {{ supplychain.isAnimalProcessed }}</div>
             <div *ngIf="supplychain.isAnimalDelivered">
               <button (click)="onProcessed()" class="btn btn-primary">Mark as processed</button>
             </div>

@@ -47,6 +47,8 @@
       <div class="card-body">
         <div *ngIf="!boxStatus.isDistributed; else Distributed">
           <div>Not yet distributed</div>
+          <div *ngIf="!boxStatus.isDistributedFromButcher">Butcher has not yet confirmed distribution</div>
+          <div *ngIf="!boxStatus.isDistributedToDelivery">Delivery service has not yet confirmed distribution</div>
           <div *ngIf="boxesProcessStatus">
             <button (click)="onDistributed()" class="btn btn-primary">Mark as distributed</button>
           </div>

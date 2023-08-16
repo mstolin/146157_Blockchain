@@ -52,6 +52,14 @@ export default class BoxStatus {
     return this._isDistributedFromButcher && this._isDistributedToDelivery;
   }
 
+  get isDistributedFromButcher(): boolean {
+    return this._isDistributedFromButcher;
+  }
+
+  get isDistributedToDelivery(): boolean {
+    return this._isDistributedToDelivery;
+  }
+
   get isDelivered(): boolean {
     return this._isDelivered;
   }
