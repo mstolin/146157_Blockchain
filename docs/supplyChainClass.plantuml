@@ -1,0 +1,82 @@
+@startuml
+class  SupplyChains <<contract>> {
+  {field} +supplychains : mapping(uint256 => SupplyChain)
+  {field} +boxesStatus : mapping(uint256 => mapping(uint256 => BoxStatus))
+  {field} +numberOfSupplyChains : uint256
+  {method} +StartSupplyChain(_campaign : Campaign, _boxes : BoxSellRef)
+  {method} +getNumberOfSupplyChains() : uint256
+  {method} +getSupplyChains(): SupplyChain[]
+  {method} +getBoxesStatus(_campaignId: uint256): BoxStatus[]
+  {method} +markAnimalAsDelivered(_campaignId : uint256)
+  {method} +markAnimalAsProcessed(_campaignId : uint256)
+  {method} +markBoxAsProcessed(_campaignId : uint256, _boxId : uint256)
+  {method} +markBoxAsDistributed(_campaignId : uint256, _boxId : uint256)
+  {method} +markBoxAsDelivered(_campaignId : uint256, _boxId : uint256)
+  {method} +isCompleted(_campaignId : uint256) : bool
+  {method} +areBoxesProcessed(_campaignId : uint256) : bool
+  {method} +areBoxesDistributedFromButcher(_campaignId : uint256) : bool
+  {method} +areBoxesDistributedToDelivery(_campaignId : uint256) : bool
+  {method} +areBoxesDelivered(_campaignId : uint256) : bool
+}
+struct BoxStatus {
+  +boxId : uint256
+  +campaignRef : uint256
+  +description : string
+  +isProcessed : bool
+  +isDistributedFromButcher : bool
+  +isDistributedToDelivery : bool
+  +isDelivered : bool
+}
+struct SupplyChain {
+  +campaignRef : uint256
+  +isAnimalDelivered : AnimalDeliverStatus
+  +isAnimalProcessed : AnimalProcessStatus
+  +areBoxesProcessed : BoxProcessStatus
+  +areBoxesDistributed : BoxDistributionStatus
+  +areBoxesDelivered : BoxDeliverStatus
+  +totalBoxes : uint256
+  +processedBoxes : uint256
+  +distributedBoxes : uint256
+  +deliveredBoxes : uint256
+  +stakeholders : StakeholderList
+}
+struct AnimalDeliverStatus {
+  +farmer : bool
+  +butcher : bool
+}
+struct AnimalProcessStatus {
+  +farmer : bool
+}
+struct BoxProcessStatus {
+  +butcher : bool
+}
+struct BoxDistributionStatus {
+  +delivery : bool
+  +butcher : bool
+}
+struct BoxDeliverStatus {
+  +delivery : bool
+}
+struct Stakeholder {
+  +owner : address
+  +share : uint8
+  +info : string
+}
+struct StakeholderList {
+  +farmer : Stakeholder
+  +butcher : Stakeholder
+  +delivery : Stakeholder
+}
+
+SupplyChains "1" *-- "many" SupplyChain
+SupplyChain "1" *-- "1" AnimalDeliverStatus
+SupplyChain "1" *-- "1" AnimalProcessStatus
+SupplyChain "1" *-- "1" BoxProcessStatus
+SupplyChain "1" *-- "1" BoxDistributionStatus
+SupplyChain "1" *-- "1" BoxDeliverStatus
+SupplyChain "1" *-- "1" StakeholderList
+StakeholderList "1" *-- "3" Stakeholder
+
+SupplyChains "1" *-- "many" BoxStatus
+
+@enduml
