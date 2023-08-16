@@ -37,7 +37,7 @@ contract Crowdfunding {
         require(deadline > current, "Deadline must be in the future");
 
         // add boxes to campaign
-        require(_boxes.length <= type(uint8).max, "Number of boxes can't be higher than (2^16)-1");
+        require(_boxes.length <= type(uint8).max, "Number of boxes can't be higher than (2^8)-1");
         uint16 totalNumOfBoxes = 0;
         for (uint8 index = 0; index < _boxes.length; index++) {
             Box memory box = _boxes[index];
@@ -113,9 +113,9 @@ contract Crowdfunding {
         uint256 _campaignId
     ) public view returns (BoxSellRef[] memory) {
         Campaign storage campaign = campaigns[_campaignId];
-        uint256 boxesSold = campaign.meta.boxesSold;
+        uint16 boxesSold = campaign.meta.boxesSold;
         BoxSellRef[] memory sellRefs = new BoxSellRef[](boxesSold);
-        for (uint256 index = 0; index < boxesSold; index++) {
+        for (uint16 index = 0; index < boxesSold; index++) {
             BoxSellRef storage sellRef = soldBoxes[_campaignId][index];
             sellRefs[index] = sellRef;
         }
@@ -136,6 +136,14 @@ contract Crowdfunding {
             msg.sender == campaign.owner.owner,
             "Only the owner can stop a campaign"
         );
+
+        // Pay ether back
+        uint16 boxesSold = campaign.meta.boxesSold;
+        for (uint16 index = 0; index < boxesSold; index++) {
+            BoxSellRef storage sellRef = soldBoxes[_campaignId][index];
+            Box storage box = boxes[_campaignId][sellRef.boxId];
+            payable(sellRef.owner).transfer(box.price);
+        }
 
         campaign.meta.isStopped = true;
     }
