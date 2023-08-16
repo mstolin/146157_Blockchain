@@ -18,7 +18,7 @@ contract Crowdfunding {
     uint256 numberOfCampaigns = 0;
     
     // Add the address of the supply chain contract
-    function setSupplyChainAddress(address _supplychainAddress) public {
+    function setSupplyChainsAddress(address _supplychainAddress) public {
         supplychainAddress = _supplychainAddress;
     }
 
