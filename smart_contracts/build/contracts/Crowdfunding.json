@@ -4,212 +4,26 @@
     {
       "inputs": [
         {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
+          "internalType": "address",
+          "name": "_supplychainAddress",
+          "type": "address"
         }
       ],
-      "name": "campaigns",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        },
-        {
-          "components": [
-            {
-              "internalType": "string",
-              "name": "title",
-              "type": "string"
-            },
-            {
-              "internalType": "string",
-              "name": "description",
-              "type": "string"
-            },
-            {
-              "internalType": "uint256",
-              "name": "deadline",
-              "type": "uint256"
-            }
-          ],
-          "internalType": "struct CampaignInfo",
-          "name": "info",
-          "type": "tuple"
-        },
-        {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "collectedAmount",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "createdAt",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "totalBoxes",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "boxesSold",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "totalBoxTypes",
-              "type": "uint256"
-            },
-            {
-              "internalType": "bool",
-              "name": "isStopped",
-              "type": "bool"
-            }
-          ],
-          "internalType": "struct CampaignMeta",
-          "name": "meta",
-          "type": "tuple"
-        },
-        {
-          "components": [
-            {
-              "internalType": "address",
-              "name": "owner",
-              "type": "address"
-            },
-            {
-              "internalType": "string",
-              "name": "ownerPublicKey",
-              "type": "string"
-            }
-          ],
-          "internalType": "struct CampaignOwner",
-          "name": "owner",
-          "type": "tuple"
-        },
-        {
-          "components": [
-            {
-              "internalType": "string",
-              "name": "earTag",
-              "type": "string"
-            },
-            {
-              "internalType": "string",
-              "name": "name",
-              "type": "string"
-            },
-            {
-              "internalType": "string",
-              "name": "farm",
-              "type": "string"
-            },
-            {
-              "internalType": "uint8",
-              "name": "age",
-              "type": "uint8"
-            }
-          ],
-          "internalType": "struct CampaignAnimalData",
-          "name": "animal",
-          "type": "tuple"
-        },
-        {
-          "components": [
-            {
-              "components": [
-                {
-                  "internalType": "address payable",
-                  "name": "owner",
-                  "type": "address"
-                },
-                {
-                  "internalType": "uint8",
-                  "name": "share",
-                  "type": "uint8"
-                },
-                {
-                  "internalType": "string",
-                  "name": "info",
-                  "type": "string"
-                }
-              ],
-              "internalType": "struct Stakeholder",
-              "name": "farmer",
-              "type": "tuple"
-            },
-            {
-              "components": [
-                {
-                  "internalType": "address payable",
-                  "name": "owner",
-                  "type": "address"
-                },
-                {
-                  "internalType": "uint8",
-                  "name": "share",
-                  "type": "uint8"
-                },
-                {
-                  "internalType": "string",
-                  "name": "info",
-                  "type": "string"
-                }
-              ],
-              "internalType": "struct Stakeholder",
-              "name": "butcher",
-              "type": "tuple"
-            },
-            {
-              "components": [
-                {
-                  "internalType": "address payable",
-                  "name": "owner",
-                  "type": "address"
-                },
-                {
-                  "internalType": "uint8",
-                  "name": "share",
-                  "type": "uint8"
-                },
-                {
-                  "internalType": "string",
-                  "name": "info",
-                  "type": "string"
-                }
-              ],
-              "internalType": "struct Stakeholder",
-              "name": "delivery",
-              "type": "tuple"
-            }
-          ],
-          "internalType": "struct StakeholderList",
-          "name": "stakeholders",
-          "type": "tuple"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "stateMutability": "nonpayable",
+      "type": "constructor"
     },
     {
       "inputs": [],
-      "name": "numberOfCampaigns",
+      "name": "supplychainAddress",
       "outputs": [
         {
-          "internalType": "uint256",
+          "internalType": "address",
           "name": "",
-          "type": "uint256"
+          "type": "address"
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     },
     {
       "inputs": [
@@ -44389,7 +44203,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.14",
-  "updatedAt": "2023-08-16T10:08:57.376Z",
+  "updatedAt": "2023-08-16T10:14:46.316Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

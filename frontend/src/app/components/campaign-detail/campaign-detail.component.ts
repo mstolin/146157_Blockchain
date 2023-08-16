@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 
-import { Store } from '@ngrx/store';
 import Box from 'src/app/models/box';
 import BoxSellRef from 'src/app/models/boxSellRef';
 import Campaign from 'src/app/models/campaign';
@@ -11,7 +10,6 @@ import { selectWallet } from 'src/app/state/wallet.selectors';
 import { utils } from 'web3';
 import { SupplyChainService } from "../../service/supplychain.service";
 import SupplyChain from "../../models/supplychain";
-import { selectWallet } from "../../state/wallet.selectors";
 
 @Component({
   selector: 'app-campaign-detail',

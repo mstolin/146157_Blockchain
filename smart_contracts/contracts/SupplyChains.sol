@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 import "./SupplyChainsTypes.sol";
-import "./Types.sol";
+import "./CrowdfundingTypes.sol";
 import "./Crowdfunding.sol";
 
 contract SupplyChains {
@@ -88,7 +88,7 @@ contract SupplyChains {
     SupplyChain storage supplychain = supplychains[_campaignId];
 
     require(
-      (msg.sender == supplychain.stakeholders.farmer.owner) || (msg.sender == supplychain.stakeholders.butcher.owner), 
+      (msg.sender == supplychain.stakeholders.farmer.owner) || (msg.sender == supplychain.stakeholders.butcher.owner),
       "Only the farmer and the butcher can mark the animal as delivered"
     );
     require(!supplychain.isAnimalDelivered.farmer || !supplychain.isAnimalDelivered.butcher, "The animal is already delivered");
@@ -140,11 +140,11 @@ contract SupplyChains {
     SupplyChain storage supplychain = supplychains[_campaignId];
 
     require(
-      (msg.sender == supplychain.stakeholders.delivery.owner) || (msg.sender == supplychain.stakeholders.butcher.owner), 
+      (msg.sender == supplychain.stakeholders.delivery.owner) || (msg.sender == supplychain.stakeholders.butcher.owner),
       "Only the butcher and the delivery service can mark a box as distributed");
     require(supplychain.areBoxesProcessed.butcher, "Boxes must be prepared before being distributed");
     require(
-      (!boxesStatus[_campaignId][_boxId].isDistributedFromButcher || !boxesStatus[_campaignId][_boxId].isDistributedToDelivery), 
+      (!boxesStatus[_campaignId][_boxId].isDistributedFromButcher || !boxesStatus[_campaignId][_boxId].isDistributedToDelivery),
       "The box is already distributed");
 
     if (msg.sender == supplychain.stakeholders.butcher.owner) {
@@ -176,12 +176,12 @@ contract SupplyChains {
 
     require(msg.sender == supplychain.stakeholders.delivery.owner, "Only the delivery service can mark a box as delivered");
     require(
-      supplychain.areBoxesDistributed.butcher || supplychain.areBoxesDistributed.delivery, 
+      supplychain.areBoxesDistributed.butcher || supplychain.areBoxesDistributed.delivery,
       "Boxes must be distributed before being delivered");
     require(!boxesStatus[_campaignId][_boxId].isDelivered, "The box is already delivered");
-    
+
     boxesStatus[_campaignId][_boxId].isDelivered = true;
-    
+
     supplychain.deliveredBoxes++;
 
     if(areBoxesDelivered(_campaignId)) {
@@ -197,10 +197,10 @@ contract SupplyChains {
     return (
       supplychain.isAnimalDelivered.farmer &&
       supplychain.isAnimalDelivered.butcher &&
-      supplychain.isAnimalProcessed.butcher && 
-      supplychain.areBoxesProcessed.butcher && 
-      supplychain.areBoxesDistributed.butcher && 
-      supplychain.areBoxesDistributed.delivery && 
+      supplychain.isAnimalProcessed.butcher &&
+      supplychain.areBoxesProcessed.butcher &&
+      supplychain.areBoxesDistributed.butcher &&
+      supplychain.areBoxesDistributed.delivery &&
       supplychain.areBoxesDelivered.delivery);
   }
 
