@@ -124,7 +124,7 @@ export default class SupplyChain {
     }
 
     get distributedBoxes() {
-      if (this._distributedBoxes.butcher >= this._distributedBoxes.delivery) {
+      if (this._distributedBoxes.butcher <= this._distributedBoxes.delivery) {
         return this._distributedBoxes.butcher;
       } else {
         return this._distributedBoxes.delivery;
