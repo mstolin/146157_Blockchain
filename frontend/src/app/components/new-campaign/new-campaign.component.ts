@@ -27,9 +27,9 @@ export class NewCampaignComponent {
   butcher: StakeholderReq = { owner: '', share: 30, info: '' };
   delivery: StakeholderReq = { owner: '', share: 30, info: '' };
 
-  firstBox: BoxReq = { id: 0, total: 1, available: 1, title: 'Box #1', description: 'Nice Box #1', price: '11964130000000000' };
-  secondBox: BoxReq = { id: 1, total: 1, available: 1, title: 'Box #2', description: 'Nice Box #1', price: '11964130000000000' };
-  thirdBox: BoxReq = { id: 2, total: 1, available: 1, title: 'Box #3', description: 'Nice Box #1', price: '11964130000000000' };
+  firstBox: BoxReq = { id: 0, total: 1, available: 1, title: 'Box #1', description: 'Nice Box #1', price: 11964130000000000n };
+  secondBox: BoxReq = { id: 1, total: 1, available: 1, title: 'Box #2', description: 'Nice Box #1', price: 11964130000000000n };
+  thirdBox: BoxReq = { id: 2, total: 1, available: 1, title: 'Box #3', description: 'Nice Box #1', price: 11964130000000000n };
 
   constructor(private store: Store, private crowdfundingService: CrowdfundingService, private walletService: WalletService) {
     this.wallet$.subscribe(wallet => {

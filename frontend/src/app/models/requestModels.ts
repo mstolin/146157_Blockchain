@@ -30,7 +30,7 @@ export type BoxReq = {
   id: number;
   title: string;
   description: string;
-  price: string;
+  price: bigint;
   total: number;
   available: number;
 };

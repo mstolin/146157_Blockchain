@@ -6,7 +6,7 @@ import { ContractAbi } from 'web3';
 import Campaign from '../models/campaign';
 import Crowdfunding from '../../assets/abi/Crowdfunding.json';
 import BoxOffer from '../models/boxOffer';
-import { CreateCampaignReq, BoxOfferReq } from '../models/requestModels';
+import { CreateCampaignReq, BoxReq } from '../models/requestModels';
 import { BoxSellRefResp, CampaignResp } from '../models/responseModels';
 import ContractService from './contract.service';
 import Box from '../models/box';
@@ -17,7 +17,7 @@ import BoxSellRef from '../models/boxSellRef';
 })
 export class CrowdfundingService extends ContractService {
 
-  private readonly _contractAddress: string = '0xbB980A2EFd2fB0121fD5b38b172f2c6eb839370d';
+  private readonly _contractAddress: string = '0x8054491D1044D1888ecAB1a14D681bb28fA078bC';
 
   constructor() {
     super();
@@ -34,11 +34,13 @@ export class CrowdfundingService extends ContractService {
     }
   }
 
-  createCampaign(campaign: CreateCampaignReq, boxes: BoxOfferReq[]): Promise<[Campaign, BoxOffer[]]> {
+  createCampaign(campaign: CreateCampaignReq, boxes: BoxReq[]): Promise<[Campaign, BoxOffer[]]> {
     return new Promise(async (resolve, reject) => {
       const contract = this.getContract();
       if (contract) {
         try {
+          console.log(campaign);
+          console.log(boxes);
           await contract
             .methods.createCampaign(
               campaign.title,
