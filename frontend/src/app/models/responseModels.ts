@@ -1,10 +1,9 @@
 import {
   AnimalDeliverStatus,
   AnimalProcessStatus,
-  BoxDeliverStatus,
-  BoxDistributionStatus,
-  BoxProcessStatus, DeliveredBoxesCounter, DistributedBoxesCounter,
-  ProcessedBoxesCounter
+  BoxesDeliverStatus,
+  BoxesDistributionStatus,
+  BoxesProcessStatus,
 } from "./supplychainStates";
 
 export type CampaignResp = {
@@ -77,21 +76,16 @@ export type SupplyChainResp = {
   isStarted: boolean;
   isAnimalDelivered: AnimalDeliverStatus;
   isAnimalProcessed: AnimalProcessStatus;
-  areBoxesProcessed: BoxProcessStatus;
-  areBoxesDistributed: BoxDistributionStatus;
-  areBoxesDelivered: BoxDeliverStatus;
+  areBoxesProcessed: BoxesProcessStatus;
+  areBoxesDistributed: BoxesDistributionStatus;
+  areBoxesDelivered: BoxesDeliverStatus;
   totalBoxes: number;
-  processedBoxes: ProcessedBoxesCounter;
-  distributedBoxes: DistributedBoxesCounter;
-  deliveredBoxes: DeliveredBoxesCounter;
+  deliveredBoxes: number;
   stakeholders: CampaignStakeholderListResp;
 };
 
 export type BoxStatusResp = {
   campaignRef: number;
   boxId: number;
-  isProcessed: boolean;
-  isDistributedFromButcher: boolean;
-  isDistributedToDelivery: boolean;
   isDelivered: boolean;
 }

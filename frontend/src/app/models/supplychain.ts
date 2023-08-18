@@ -2,10 +2,9 @@ import Stakeholder from './stakeholder';
 import {
   AnimalDeliverStatus,
   AnimalProcessStatus,
-  BoxDeliverStatus,
-  BoxDistributionStatus,
-  BoxProcessStatus, DeliveredBoxesCounter, DistributedBoxesCounter,
-  ProcessedBoxesCounter
+  BoxesDeliverStatus,
+  BoxesDistributionStatus,
+  BoxesProcessStatus,
 } from './supplychainStates';
 import { SupplyChainResp } from "./responseModels";
 
@@ -21,13 +20,11 @@ export default class SupplyChain {
     private readonly _isStarted: boolean;
     private readonly _isAnimalDelivered: AnimalDeliverStatus;
     private readonly _isAnimalProcessed: AnimalProcessStatus;
-    private readonly _areBoxesProcessed: BoxProcessStatus;
-    private readonly _areBoxesDistributed: BoxDistributionStatus;
-    private readonly _areBoxesDelivered: BoxDeliverStatus;
+    private readonly _areBoxesProcessed: BoxesProcessStatus;
+    private readonly _areBoxesDistributed: BoxesDistributionStatus;
+    private readonly _areBoxesDelivered: BoxesDeliverStatus;
     private readonly _totalBoxes: number;
-    private readonly _processedBoxes: ProcessedBoxesCounter;
-    private readonly _distributedBoxes: DistributedBoxesCounter;
-    private readonly _deliveredBoxes: DeliveredBoxesCounter;
+    private readonly _deliveredBoxes: number;
     private readonly _stakeholders: Stakeholders;
 
     constructor(
@@ -35,13 +32,11 @@ export default class SupplyChain {
         isStarted: boolean,
         isAnimalDelivered: AnimalDeliverStatus,
         isAnimalProcessed: AnimalProcessStatus,
-        areBoxesProcessed: BoxProcessStatus,
-        areBoxesDistributed: BoxDistributionStatus,
-        areBoxesDelivered: BoxDeliverStatus,
+        areBoxesProcessed: BoxesProcessStatus,
+        areBoxesDistributed: BoxesDistributionStatus,
+        areBoxesDelivered: BoxesDeliverStatus,
         totalBoxes: number,
-        processedBoxes: ProcessedBoxesCounter,
-        distributedBoxes: DistributedBoxesCounter,
-        deliveredBoxes: DeliveredBoxesCounter,
+        deliveredBoxes: number,
         stakeholders: Stakeholders
     ) {
         this._campaignRef = campaignRef;
@@ -52,8 +47,6 @@ export default class SupplyChain {
         this._areBoxesDistributed = areBoxesDistributed;
         this._areBoxesDelivered = areBoxesDelivered;
         this._totalBoxes = totalBoxes;
-        this._processedBoxes = processedBoxes;
-        this._distributedBoxes = distributedBoxes;
         this._deliveredBoxes = deliveredBoxes;
         this._stakeholders = stakeholders;
     }
@@ -68,8 +61,6 @@ export default class SupplyChain {
         resp.areBoxesDistributed,
         resp.areBoxesDelivered,
         resp.totalBoxes,
-        resp.processedBoxes,
-        resp.distributedBoxes,
         resp.deliveredBoxes,
         {
           farmer: Stakeholder.fromResponse(resp.stakeholders.farmer),
@@ -91,12 +82,12 @@ export default class SupplyChain {
         return (this._isAnimalDelivered.butcher && this._isAnimalDelivered.farmer);
     }
 
-    get isAnimalDeliveredButcher() {
-        return this._isAnimalDelivered.butcher;
+    get isAnimalDeliveredFromFarmer() {
+      return this._isAnimalDelivered.farmer;
     }
 
-    get isAnimalDeliveredFarmer() {
-        return this._isAnimalDelivered.farmer;
+    get isAnimalDeliveredToButcher() {
+        return this._isAnimalDelivered.butcher;
     }
 
     get isAnimalProcessed() {
@@ -111,6 +102,14 @@ export default class SupplyChain {
         return (this._areBoxesDistributed.butcher && this._areBoxesDistributed.delivery);
     }
 
+    get areBoxesDistributedFromButcher() {
+      return this._areBoxesDistributed.butcher;
+    }
+
+    get areBoxesDistributedToDelivery() {
+      return this._areBoxesDistributed.delivery;
+    }
+
     get areBoxesDelivered() {
         return this._areBoxesDelivered.delivery;
     }
@@ -119,20 +118,8 @@ export default class SupplyChain {
         return this._totalBoxes;
     }
 
-    get processedBoxes() {
-      return this._processedBoxes.butcher;
-    }
-
-    get distributedBoxes() {
-      if (this._distributedBoxes.butcher <= this._distributedBoxes.delivery) {
-        return this._distributedBoxes.butcher;
-      } else {
-        return this._distributedBoxes.delivery;
-      }
-    }
-
     get deliveredBoxes() {
-      return this._deliveredBoxes.delivery;
+      return this._deliveredBoxes;
     }
 
     get stakeholders() {

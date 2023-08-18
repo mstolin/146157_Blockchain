@@ -17,7 +17,7 @@ import BoxSellRef from '../models/boxSellRef';
 })
 export class CrowdfundingService extends ContractService {
 
-  private readonly _contractAddress: string = '0x72e3092661627bbA2B072130B522f2933fA85948';
+  private readonly _contractAddress: string = '0x71387427Bd2DCE786288BB2E24410A3F68F7B47f';
 
   constructor() {
     super();

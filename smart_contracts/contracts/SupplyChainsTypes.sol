@@ -13,19 +13,15 @@ struct SupplyChain {
   /// Process status of the animal
   AnimalProcessStatus isAnimalProcessed;
   /// Process status of the boxes
-  BoxProcessStatus areBoxesProcessed;
+  BoxesProcessStatus areBoxesProcessed;
   /// Distribution status of the boxes
-  BoxDistributionStatus areBoxesDistributed;
+  BoxesDistributionStatus areBoxesDistributed;
   /// Delivery status of the boxes
-  BoxDeliverStatus areBoxesDelivered;
+  BoxesDeliverStatus areBoxesDelivered;
   /// Total number of boxes
   uint16 totalBoxes;
-  /// Total number of prepared boxes
-  ProcessedBoxesCounter processedBoxes;
-  /// Total number of delivered boxes
-  DistributedBoxesCounter distributedBoxes;
   /// Total number of received boxes
-  DeliveredBoxesCounter deliveredBoxes;
+  uint16 deliveredBoxes;
   // Stakeholder involved in the process
   StakeholderList stakeholders;
 }
@@ -35,12 +31,6 @@ struct BoxStatus {
   uint256 campaignRef;
   /// The box sell ID
   uint16 boxId;
-  /// Process status of the box
-  bool isProcessed;
-  /// Distribution status of the box (marked by the butcher)
-  bool isDistributedFromButcher;
-  /// Distribution status of the box (marked by the delivery service)
-  bool isDistributedToDelivery;
   /// Delivery status of the box
   bool isDelivered;
 }
@@ -57,32 +47,19 @@ struct AnimalProcessStatus {
   bool butcher;
 }
 
-struct BoxProcessStatus {
+struct BoxesProcessStatus {
   /// Process status of the boxes (marked by the butcher)
   bool butcher;
 }
 
-struct BoxDistributionStatus {
+struct BoxesDistributionStatus {
   /// Distribution status of the boxes (marked by the butcher)
   bool butcher;
   /// Distribution status of the boxes (marked by the delivery service)
   bool delivery;
 }
 
-struct BoxDeliverStatus {
+struct BoxesDeliverStatus {
   /// Delivery status of the boxes (marked by the delivery service)
   bool delivery;
-}
-
-struct ProcessedBoxesCounter {
-  uint16 butcher;
-}
-
-struct DistributedBoxesCounter {
-  uint16 butcher;
-  uint16 delivery;
-}
-
-struct DeliveredBoxesCounter {
-  uint16 delivery;
 }

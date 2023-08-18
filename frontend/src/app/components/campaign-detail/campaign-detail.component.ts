@@ -31,7 +31,10 @@ export class CampaignDetailComponent implements OnInit {
   // supply chain
   supplychain!: SupplyChain;
   isSupplyChainCompleted!: boolean;
-  isPaid: boolean = false;
+  isDeliveredByFarmer!: string;
+  isDeliveredToButcher!: string;
+  areDistributedByButcher!: string;
+  areDistributedToDelivery!: string;
 
   constructor(private store: Store, private route: ActivatedRoute, private crowdfundingService: CrowdfundingService, private supplychainService: SupplyChainService) {
     this.wallet$.subscribe(wallet => {
@@ -67,14 +70,22 @@ export class CampaignDetailComponent implements OnInit {
       console.log(err);
     });
 
-    this.supplychainService.getSupplyChain(campaignId).then(supplychain => {
-      this.supplychain = supplychain;
-    }).catch(err => {
-      console.log(err);
-    });
+    this.loadSupplyChainStatus(campaignId);
 
     this.supplychainService.isSupplyChainCompleted(campaignId).then(isCompleted => {
       this.isSupplyChainCompleted = isCompleted;
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+
+  private loadSupplyChainStatus(campaignId: number) {
+    this.supplychainService.getSupplyChain(campaignId).then(supplychain => {
+      this.supplychain = supplychain;
+      this.supplychain.isAnimalDeliveredFromFarmer ? this.isDeliveredByFarmer = "Yes" : this.isDeliveredByFarmer = "No";
+      this.supplychain.isAnimalDeliveredToButcher ? this.isDeliveredToButcher = "Yes" : this.isDeliveredToButcher = "No";
+      this.supplychain.areBoxesDistributedFromButcher ? this.areDistributedByButcher = "Yes" : this.areDistributedByButcher = "No";
+      this.supplychain.areBoxesDistributedToDelivery ? this.areDistributedToDelivery = "Yes" : this.areDistributedToDelivery = "No";
     }).catch(err => {
       console.log(err);
     });
@@ -98,6 +109,7 @@ export class CampaignDetailComponent implements OnInit {
     if (this.owner) {
       this.supplychainService.markAnimalAsDelivered(this.supplychain.campaignRef).then(() => {
         console.log("delivered");
+        this.loadSupplyChainStatus(this.supplychain.campaignRef);
       }).catch(err => {
         console.log("ERR" + err);
       });
@@ -108,6 +120,29 @@ export class CampaignDetailComponent implements OnInit {
     if (this.owner) {
       this.supplychainService.markAnimalAsProcessed(this.supplychain.campaignRef).then(() => {
         console.log("processed");
+        this.loadSupplyChainStatus(this.supplychain.campaignRef);
+      }).catch(err => {
+        console.log("ERR" + err);
+      })
+    }
+  }
+
+  onBoxesProcessed() : void {
+    if (this.owner) {
+      this.supplychainService.markBoxesAsProcessed(this.supplychain.campaignRef).then(() => {
+        console.log("boxes processed");
+        this.loadSupplyChainStatus(this.supplychain.campaignRef);
+      }).catch(err => {
+        console.log("ERR" + err);
+      })
+    }
+  }
+
+  onBoxesDistributed() : void {
+    if (this.owner) {
+      this.supplychainService.markBoxesAsDistributed(this.supplychain.campaignRef).then(() => {
+        console.log("boxes distributed");
+        this.loadSupplyChainStatus(this.supplychain.campaignRef);
       }).catch(err => {
         console.log("ERR" + err);
       })

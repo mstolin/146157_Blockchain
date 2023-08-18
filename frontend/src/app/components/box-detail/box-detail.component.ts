@@ -23,11 +23,7 @@ export class BoxDetailComponent implements OnInit {
   privateKey?: string;
   address?: string;
 
-  animalDeliveryStatus!: boolean;
-  animalProcessStatus!: boolean;
-  boxesProcessStatus!: boolean;
   boxesDistributionStatus!: boolean;
-  boxesDeliveryStatus!: boolean;
   boxStatus!: BoxStatus;
 
   constructor(
@@ -53,19 +49,19 @@ export class BoxDetailComponent implements OnInit {
       })
       .catch(err => console.log('ERR:', err));
 
-    this.supplychainService.getBoxStatus(campaignId, boxId)
-        .then(boxStatus => {
-          this.boxStatus = boxStatus;
-        })
-        .catch(err => console.log('ERR:', err));
+    this.loadBoxStatus(campaignId, boxId);
 
     this.supplychainService.getSupplyChain(campaignId)
       .then(supplychain => {
-        this.animalDeliveryStatus = supplychain.isAnimalDelivered;
-        this.animalProcessStatus = supplychain.isAnimalProcessed;
-        this.boxesDeliveryStatus = supplychain.areBoxesDelivered;
         this.boxesDistributionStatus = supplychain.areBoxesDistributed;
-        this.boxesProcessStatus = supplychain.areBoxesProcessed;
+      })
+      .catch(err => console.log('ERR:', err));
+  }
+
+  private loadBoxStatus(campaignId: number, boxId: number) {
+    this.supplychainService.getBoxStatus(campaignId, boxId)
+      .then(boxStatus => {
+        this.boxStatus = boxStatus;
       })
       .catch(err => console.log('ERR:', err));
   }
@@ -117,30 +113,11 @@ export class BoxDetailComponent implements OnInit {
     }
   }
 
-  onProcessed() : void {
-    if (this.owner) {
-      this.supplychainService.markBoxAsProcessed(this.boxStatus.campaignRef, this.boxStatus.boxId).then(() => {
-        console.log("processed");
-      }).catch(err => {
-        console.log("ERR" + err);
-      });
-    }
-  }
-
-  onDistributed() : void {
-    if (this.owner) {
-      this.supplychainService.markBoxAsDistributed(this.boxStatus.campaignRef, this.boxStatus.boxId).then(() => {
-        console.log("distributed");
-      }).catch(err => {
-        console.log("ERR" + err);
-      });
-    }
-  }
-
   onDelivered() : void {
     if (this.owner) {
       this.supplychainService.markBoxAsDelivered(this.boxStatus.campaignRef, this.boxStatus.boxId).then(() => {
         console.log("delivered");
+        this.loadBoxStatus(this.boxStatus.campaignRef, this.boxStatus.boxId);
       }).catch(err => {
         console.log("ERR" + err);
       });

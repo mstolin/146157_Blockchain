@@ -14,7 +14,7 @@ import BoxStatus from "../models/boxStatus";
 })
 export class SupplyChainService extends ContractService {
 
-  private readonly _contractAddress: string = "0x94050fc55360dC3D6FeCEdA49dF37fF9c60dd005";
+  private readonly _contractAddress: string = "0xb25c4D54D426AAfF78DFE940f387f0a4C4eeaDED";
 
   constructor() {
     super();
@@ -144,24 +144,24 @@ export class SupplyChainService extends ContractService {
     }
   }
 
-  async markBoxAsProcessed(campaignRef: number, boxId: number) {
+  async markBoxesAsProcessed(campaignRef: number) {
     const contract = this.getContract();
     if (contract) {
       await contract
         .methods
-        .markBoxAsProcessed(campaignRef, boxId)
+        .markBoxesAsProcessed(campaignRef)
         .send({'from': this.selectedAddress});
     } else {
       throw('');
     }
   }
 
-  async markBoxAsDistributed(campaignRef: number, boxId: number) {
+  async markBoxesAsDistributed(campaignRef: number) {
     const contract = this.getContract();
     if (contract) {
       await contract
         .methods
-        .markBoxAsDistributed(campaignRef, boxId)
+        .markBoxesAsDistributed(campaignRef)
         .send({'from': this.selectedAddress});
     } else {
       throw('');

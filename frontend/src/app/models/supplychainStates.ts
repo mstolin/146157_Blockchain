@@ -7,28 +7,15 @@ export type AnimalProcessStatus = {
     butcher: boolean;
 };
 
-export type BoxProcessStatus = {
+export type BoxesProcessStatus = {
     butcher: boolean;
 };
 
-export type BoxDistributionStatus = {
+export type BoxesDistributionStatus = {
     butcher: boolean;
     delivery: boolean;
 };
 
-export type BoxDeliverStatus = {
+export type BoxesDeliverStatus = {
     delivery: boolean;
 };
-
-export type ProcessedBoxesCounter = {
-  butcher: number;
-}
-
-export type DistributedBoxesCounter = {
-  butcher: number;
-  delivery: number;
-}
-
-export type DeliveredBoxesCounter = {
-  delivery: number;
-}

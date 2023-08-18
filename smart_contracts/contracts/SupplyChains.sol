@@ -36,10 +36,7 @@ contract SupplyChains {
     supplychain.areBoxesDistributed.delivery = false;
     supplychain.areBoxesDelivered.delivery = false;
     supplychain.totalBoxes = 0;
-    supplychain.processedBoxes.butcher = 0;
-    supplychain.distributedBoxes.butcher = 0;
-    supplychain.distributedBoxes.delivery = 0;
-    supplychain.deliveredBoxes.delivery = 0;
+    supplychain.deliveredBoxes = 0;
 
     // import stakeholders from campaign
     supplychain.stakeholders = _campaign.stakeholders;
@@ -55,9 +52,6 @@ contract SupplyChains {
 
     boxesStatus[_campaignId][_box.id].campaignRef = _campaignId;
     boxesStatus[_campaignId][_box.id].boxId = _box.id;
-    boxesStatus[_campaignId][_box.id].isProcessed = false;
-    boxesStatus[_campaignId][_box.id].isDistributedFromButcher = false;
-    boxesStatus[_campaignId][_box.id].isDistributedToDelivery = false;
     boxesStatus[_campaignId][_box.id].isDelivered = false;
 
     supplychain.totalBoxes++;
@@ -110,9 +104,12 @@ contract SupplyChains {
     require(!supplychain.isAnimalDelivered.farmer || !supplychain.isAnimalDelivered.butcher, "The animal is already delivered");
 
     if (msg.sender == supplychain.stakeholders.farmer.owner) {
+      require(!supplychain.isAnimalDelivered.farmer, "The animal is already marked as delivered from the farmer");
+
       supplychain.isAnimalDelivered.farmer = true;
     }
     if (msg.sender == supplychain.stakeholders.butcher.owner) {
+      require(!supplychain.isAnimalDelivered.butcher, "The animal is already marked as delivered from the butcher");
       supplychain.isAnimalDelivered.butcher = true;
     }
   }
@@ -132,29 +129,23 @@ contract SupplyChains {
   }
 
   /**
-  * Mark a box as processed by the butcher
+  * Mark boxes as processed by the butcher
   */
-  function markBoxAsProcessed(uint256 _campaignId, uint16 _boxId) public {
+  function markBoxesAsProcessed(uint256 _campaignId) public {
     SupplyChain storage supplychain = supplychains[_campaignId];
 
     require(supplychain.isStarted, "The supply chain must be started before marking a box as processed");
     require(msg.sender == supplychain.stakeholders.butcher.owner, "Only the butcher can mark a box as processed");
     require(supplychain.isAnimalProcessed.butcher, "The animal must be processed before preparing boxes");
-    require(!boxesStatus[_campaignId][_boxId].isProcessed, "The box is already processed");
+    require(!supplychain.areBoxesProcessed.butcher, "The boxes are already processed");
 
-    boxesStatus[_campaignId][_boxId].isProcessed = true;
-
-    supplychain.processedBoxes.butcher++;
-
-    if(supplychain.totalBoxes == supplychain.processedBoxes.butcher) {
-      supplychain.areBoxesProcessed.butcher = true;
-    }
+    supplychain.areBoxesProcessed.butcher = true;
   }
 
   /**
-  * Mark a box as distributed by the delivery service
+  * Mark boxes as distributed from the butcher to the delivery service
   */
-  function markBoxAsDistributed(uint256 _campaignId, uint16 _boxId) public {
+  function markBoxesAsDistributed(uint256 _campaignId) public {
     SupplyChain storage supplychain = supplychains[_campaignId];
 
     require(supplychain.isStarted, "The supply chain must be started before marking a box as distributed");
@@ -163,25 +154,19 @@ contract SupplyChains {
       "Only the butcher and the delivery service can mark a box as distributed");
     require(supplychain.areBoxesProcessed.butcher, "Boxes must be prepared before being distributed");
     require(
-      (!boxesStatus[_campaignId][_boxId].isDistributedFromButcher || !boxesStatus[_campaignId][_boxId].isDistributedToDelivery),
-      "The box is already distributed");
+      (!supplychain.areBoxesDistributed.butcher || !supplychain.areBoxesDistributed.delivery),
+      "The boxes are already distributed");
 
     if (msg.sender == supplychain.stakeholders.butcher.owner) {
-      boxesStatus[_campaignId][_boxId].isDistributedFromButcher = true;
-      supplychain.distributedBoxes.butcher++;
+      require(!supplychain.areBoxesDistributed.butcher, "The boxes are already marked as distributed from the butcher");
 
-      if(supplychain.totalBoxes == supplychain.distributedBoxes.butcher) {
-        supplychain.areBoxesDistributed.butcher = true;
-      }
+      supplychain.areBoxesDistributed.butcher = true;
     }
 
     if (msg.sender == supplychain.stakeholders.delivery.owner) {
-      boxesStatus[_campaignId][_boxId].isDistributedToDelivery = true;
-      supplychain.distributedBoxes.delivery++;
+      require(!supplychain.areBoxesDistributed.delivery, "The boxes are already marked as distributed from the delivery service");
 
-      if (supplychain.totalBoxes == supplychain.distributedBoxes.delivery) {
-        supplychain.areBoxesDistributed.delivery = true;
-      }
+      supplychain.areBoxesDistributed.delivery = true;
     }
   }
 
@@ -194,15 +179,15 @@ contract SupplyChains {
     require(supplychain.isStarted, "The supply chain must be started before marking a box as delivered");
     require(msg.sender == supplychain.stakeholders.delivery.owner, "Only the delivery service can mark a box as delivered");
     require(
-      supplychain.areBoxesDistributed.butcher || supplychain.areBoxesDistributed.delivery,
+      supplychain.areBoxesDistributed.butcher && supplychain.areBoxesDistributed.delivery,
       "Boxes must be distributed before being delivered");
     require(!boxesStatus[_campaignId][_boxId].isDelivered, "The box is already delivered");
 
     boxesStatus[_campaignId][_boxId].isDelivered = true;
 
-    supplychain.deliveredBoxes.delivery++;
+    supplychain.deliveredBoxes++;
 
-    if(supplychain.totalBoxes == supplychain.deliveredBoxes.delivery) {
+    if(supplychain.totalBoxes == supplychain.deliveredBoxes) {
       supplychain.areBoxesDelivered.delivery = true;
       Crowdfunding(crowdfundingAddress).payOut(_campaignId);
     }
