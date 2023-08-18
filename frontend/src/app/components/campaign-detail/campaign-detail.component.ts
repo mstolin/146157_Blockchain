@@ -105,6 +105,10 @@ export class CampaignDetailComponent implements OnInit {
     });
   }
 
+  getBox(id: number): Box | undefined {
+    return this.allBoxes.find(box => box.id == id);
+  }
+
   onDelivered() : void {
     if (this.owner) {
       this.supplychainService.markAnimalAsDelivered(this.supplychain.campaignRef).then(() => {
@@ -147,21 +151,6 @@ export class CampaignDetailComponent implements OnInit {
         console.log("ERR" + err);
       })
     }
-  }
-
-  onPayOut() : void {
-    if (this.owner) {
-      this.crowdfundingService.payOut(this.campaign.id).then(() => {
-        this.isPaid = true;
-        console.log("payout");
-      }).catch(err => {
-        console.log("ERR" + err);
-      })
-    }
-  }
-
-  getBox(id: number): Box | undefined {
-    return this.allBoxes.find(box => box.id == id);
   }
 
 }

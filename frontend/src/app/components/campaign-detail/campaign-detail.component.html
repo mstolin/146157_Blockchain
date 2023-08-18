@@ -184,7 +184,7 @@
   <div class="container" *ngIf="soldBoxes.length > 0; else noSoldBoxes">
     <div class="row">
       <div class="col-md-6" *ngFor="let sellRef of soldBoxes">
-        <app-sold-box-thumbnail [title]="getBox(sellRef.id)!.title" [sellRef]="sellRef" />
+        <app-sold-box-thumbnail [title]="getBox(sellRef.boxId)!.title" [sellRef]="sellRef" />
       </div>
     </div>
   </div>
