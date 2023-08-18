@@ -20,6 +20,17 @@ contract SupplyChains {
     crowdfundingAddress = _crowdfundingAddress;
   }
 
+  // Events
+  event SupplyChainCreated(uint256 campaignRef);
+  event NewBox(uint256 campaignRef, uint16 SellRefId);
+  event SupplyChainStarted(uint256 campaignRef);
+  event AnimalMarkedAsDelivered(uint256 campaignRef, string user, address userAddress);
+  event AnimalMarkedAsProcessed(uint256 campaignRef, string user, address userAddress);
+  event BoxesMarkedAsProcessed(uint256 campaignRef, string user, address userAddress);
+  event BoxesMarkedAsDistributed(uint256 campaignRef, string user, address userAddress);
+  event BoxMarkedAsDelivered(uint256 campaignRef, uint16 boxId, string user, address userAddress);
+  event BoxesMarkedAsDelivered(uint256 campaignRef, string user, address userAddress);
+
   /**
   * Create a supply chain related to a campaign
   */
@@ -42,6 +53,8 @@ contract SupplyChains {
     supplychain.stakeholders = _campaign.stakeholders;
 
     NumberOfSupplyChains++;
+
+    emit SupplyChainCreated(supplychain.campaignRef);
   }
 
   /**
@@ -55,6 +68,8 @@ contract SupplyChains {
     boxesStatus[_campaignId][_box.id].isDelivered = false;
 
     supplychain.totalBoxes++;
+
+    emit NewBox(_campaignId, _box.id);
   }
   
   /**
@@ -65,6 +80,7 @@ contract SupplyChains {
 
     require(!supplychain.isStarted, "The supply chain is already started");
     supplychain.isStarted = true;
+    emit SupplyChainStarted(_campaignRef);
   }
 
   /**
@@ -107,10 +123,13 @@ contract SupplyChains {
       require(!supplychain.isAnimalDelivered.farmer, "The animal is already marked as delivered from the farmer");
 
       supplychain.isAnimalDelivered.farmer = true;
+      emit AnimalMarkedAsDelivered(_campaignId, "farmer", msg.sender);
     }
     if (msg.sender == supplychain.stakeholders.butcher.owner) {
       require(!supplychain.isAnimalDelivered.butcher, "The animal is already marked as delivered from the butcher");
+
       supplychain.isAnimalDelivered.butcher = true;
+      emit AnimalMarkedAsDelivered(_campaignId, "butcher", msg.sender);
     }
   }
 
@@ -126,6 +145,7 @@ contract SupplyChains {
     require(!supplychain.isAnimalProcessed.butcher, "The animal is already processed");
 
     supplychain.isAnimalProcessed.butcher = true;
+    emit AnimalMarkedAsProcessed(_campaignId, "butcher", msg.sender);
   }
 
   /**
@@ -140,6 +160,7 @@ contract SupplyChains {
     require(!supplychain.areBoxesProcessed.butcher, "The boxes are already processed");
 
     supplychain.areBoxesProcessed.butcher = true;
+    emit BoxesMarkedAsProcessed(_campaignId, "butcher", msg.sender);
   }
 
   /**
@@ -161,12 +182,14 @@ contract SupplyChains {
       require(!supplychain.areBoxesDistributed.butcher, "The boxes are already marked as distributed from the butcher");
 
       supplychain.areBoxesDistributed.butcher = true;
+      emit BoxesMarkedAsDistributed(_campaignId, "butcher", msg.sender);
     }
 
     if (msg.sender == supplychain.stakeholders.delivery.owner) {
       require(!supplychain.areBoxesDistributed.delivery, "The boxes are already marked as distributed from the delivery service");
 
       supplychain.areBoxesDistributed.delivery = true;
+      emit BoxesMarkedAsDistributed(_campaignId, "delivery", msg.sender);
     }
   }
 
@@ -186,9 +209,12 @@ contract SupplyChains {
     boxesStatus[_campaignId][_boxId].isDelivered = true;
 
     supplychain.deliveredBoxes++;
+    emit BoxMarkedAsDelivered(_campaignId, _boxId, "delivery", msg.sender);
 
     if(supplychain.totalBoxes == supplychain.deliveredBoxes) {
       supplychain.areBoxesDelivered.delivery = true;
+      emit BoxesMarkedAsDelivered(_campaignId, "delivery", msg.sender);
+
       Crowdfunding(crowdfundingAddress).payOut(_campaignId);
     }
   }

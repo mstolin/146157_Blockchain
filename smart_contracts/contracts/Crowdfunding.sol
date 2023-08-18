@@ -22,6 +22,12 @@ contract Crowdfunding {
         supplychainAddress = _supplychainAddress;
     }
 
+    // Events
+    event CampaignCreated(uint256 campaignId, address campaignOwnerAddress);
+    event CampaignStopped(uint256 campaignId);
+    event BoxSold(uint256 campaignId, uint16 boxId, uint16 SellRefId, address consumerAddress);
+    event Payment(uint256 campaignId, address stakeholderAddress, uint256 amountInWei);
+
     /**
      * Creates a new campaign
      */
@@ -80,6 +86,8 @@ contract Crowdfunding {
 
         // increase total num of campaigns
         numberOfCampaigns++;
+
+        emit CampaignCreated(campaign.id, msg.sender);
 
         // Start supply chain
         SupplyChains(supplychainAddress).createSupplyChain(campaign);
@@ -158,6 +166,7 @@ contract Crowdfunding {
         }
 
         campaign.meta.isStopped = true;
+        emit CampaignStopped(_campaignId);
     }
 
     /**
@@ -202,11 +211,14 @@ contract Crowdfunding {
         meta.boxesSold += 1;
         meta.collectedAmount += amount;
 
+        emit BoxSold(campaign.id, box.id, sellRef.id, msg.sender);
+
         SupplyChains(supplychainAddress).addBox(_campaignId, sellRef);
 
         if (campaign.meta.boxesSold == campaign.meta.totalBoxes) {
             // Mark campaign as stopped
             campaign.meta.isStopped = true;
+            emit CampaignStopped(campaign.id);
             // Start supply chain
             SupplyChains(supplychainAddress).startSupplyChain(campaign.id);
         }
@@ -235,7 +247,10 @@ contract Crowdfunding {
 
         // payout stakeholders
         payable(campaign.stakeholders.farmer.owner).transfer(farmerShare);
+        emit Payment(campaign.id, campaign.stakeholders.farmer.owner, farmerShare);
         payable(campaign.stakeholders.butcher.owner).transfer(butcherShare);
+        emit Payment(campaign.id, campaign.stakeholders.butcher.owner, butcherShare);
         payable(campaign.stakeholders.delivery.owner).transfer(deliveryShare);
+        emit Payment(campaign.id, campaign.stakeholders.delivery.owner, deliveryShare);
     }
 }
