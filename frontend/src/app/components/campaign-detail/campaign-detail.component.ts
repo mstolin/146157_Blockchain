@@ -24,6 +24,7 @@ export class CampaignDetailComponent implements OnInit {
   // campaign
   campaign!: Campaign;
   collectedEther!: string;
+  allBoxes: Box[] = [];
   availableBoxes: Box[] = [];
   soldBoxes: BoxSellRef[] = [];
 
@@ -52,6 +53,8 @@ export class CampaignDetailComponent implements OnInit {
       console.log(err);
     });
 
+    this.crowdfundingService.getBoxes(campaignId).then(boxes => this.allBoxes = boxes).catch(err => console.log(err));
+
     this.crowdfundingService.getAvailableBoxes(campaignId).then(boxes => {
       this.availableBoxes = boxes;
     }).catch(err => {
@@ -74,7 +77,7 @@ export class CampaignDetailComponent implements OnInit {
       this.isSupplyChainCompleted = isCompleted;
     }).catch(err => {
       console.log(err);
-    })
+    });
   }
 
   ngOnInit(): void {
@@ -121,4 +124,9 @@ export class CampaignDetailComponent implements OnInit {
       })
     }
   }
+
+  getBox(id: number): Box | undefined {
+    return this.allBoxes.find(box => box.id == id);
+  }
+
 }

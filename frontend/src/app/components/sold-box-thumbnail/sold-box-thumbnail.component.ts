@@ -8,6 +8,7 @@ import BoxSellRef from 'src/app/models/boxSellRef';
 })
 export class SoldBoxThumbnailComponent {
 
+  @Input() title!: string;
   @Input() sellRef!: BoxSellRef;
 
 }
