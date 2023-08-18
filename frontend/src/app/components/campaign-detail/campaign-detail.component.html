@@ -130,7 +130,7 @@
       </li>
       <li class="list-group-item d-flex justify-content-between align-items-start">
         <div class="ms-2 me-auto">
-          <div class="fw-bold">Boxes distributed to Delivery Service</div>
+          <div class="fw-bold">Boxes distributed to Consumers</div>
           <div *ngIf="!supplychain.areBoxesDelivered; else AllDelivered">
             <div>Not yet delivered - {{ supplychain.totalBoxes - supplychain.deliveredBoxes }} boxes to go</div>
           </div>
@@ -175,7 +175,7 @@
   <div class="container" *ngIf="soldBoxes.length > 0; else noSoldBoxes">
     <div class="row">
       <div class="col-md-6" *ngFor="let sellRef of soldBoxes">
-        <app-sold-box-thumbnail [sellRef]="sellRef" />
+        <app-sold-box-thumbnail [title]="getBox(sellRef.id)!.title" [sellRef]="sellRef" />
       </div>
     </div>
   </div>
