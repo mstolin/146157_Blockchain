@@ -228,6 +228,8 @@ contract Crowdfunding {
      * Pay-out all stakeholders of the campaign
      */
     function payOut(uint256 _campaignId) external payable {
+        require(msg.sender == supplychainAddress, "Only the supply chain can call this function");
+        
         Campaign storage campaign = campaigns[_campaignId];
         require(campaign.meta.isStopped, "The campaign must be finished");
         require(

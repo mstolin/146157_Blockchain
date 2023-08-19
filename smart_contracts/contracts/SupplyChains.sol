@@ -35,6 +35,8 @@ contract SupplyChains {
   * Create a supply chain related to a campaign
   */
   function createSupplyChain(Campaign memory _campaign) external {
+    require(msg.sender == crowdfundingAddress, "Only the crowdfunding contract can create a supply chain");
+
     SupplyChain storage supplychain = supplychains[_campaign.id];
 
     supplychain.campaignRef = _campaign.id;
@@ -61,6 +63,8 @@ contract SupplyChains {
   * Add a sold box to a supply chain
   */
   function addBox(uint256 _campaignRef, BoxSellRef memory _box) external {
+    require(msg.sender == crowdfundingAddress, "Only the crowdfunding contract can add a box to a supply chain");
+
     SupplyChain storage supplychain = supplychains[_campaignRef];
 
     boxesStatus[_campaignRef][_box.id].campaignRef = _campaignRef;
@@ -76,6 +80,8 @@ contract SupplyChains {
   * Mark a supply chain as started
   */
   function startSupplyChain(uint256 _campaignRef) external {
+    require(msg.sender == crowdfundingAddress, "Only the crowdfunding contract can start a supply chain");
+    
     SupplyChain storage supplychain = supplychains[_campaignRef];
 
     require(!supplychain.isStarted, "The supply chain is already started");
