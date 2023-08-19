@@ -4,7 +4,7 @@ class SupplyChains <<contract>> {
   {field} +supplychains : mapping(uint256 => SupplyChain)
   {field} +boxesStatus : mapping(uint256 => mapping(uint256 => BoxStatus))
   {field} +numberOfSupplyChains : uint256
-  {method} +createSupplyChains(_campaign : Campaign)
+  {method} +createSupplyChains(_campaignRef : uint256, _stakeholders : StakeholderList)
   {method} +addBox(_campaignId : uint256, _box BoxSellRef)
   {method} +startSupplyChain(_campaignRef : uint256)
   {method} +getSupplyChains(): SupplyChain[]
