@@ -30,6 +30,7 @@ contract SupplyChains {
   event BoxesMarkedAsDistributed(uint256 campaignRef, string user, address userAddress);
   event BoxMarkedAsDelivered(uint256 campaignRef, uint16 boxId, string user, address userAddress);
   event BoxesMarkedAsDelivered(uint256 campaignRef, string user, address userAddress);
+  event SupplyChainCompleted(uint256 campaignRef);
 
   /**
   * Create a supply chain related to a campaign
@@ -221,6 +222,7 @@ contract SupplyChains {
       supplychain.areBoxesDelivered.delivery = true;
       emit BoxesMarkedAsDelivered(_campaignRef, "delivery", msg.sender);
 
+      emit SupplyChainCompleted(_campaignRef);
       Crowdfunding(crowdfundingAddress).payOut(_campaignRef);
     }
   }
