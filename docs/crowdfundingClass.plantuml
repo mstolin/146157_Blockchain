@@ -1,9 +1,9 @@
 @startuml
 class  Crowdfunding <<contract>> {
-  {field} -campaigns : mapping(uint256 => Campaign)
-  {field} -boxes : mapping(uint256 => mapping(uint8 => Box))
-  {field} -soldBoxes : mapping(uint256 => mapping(uint256 => BoxSellRef))
-  {field} -numberOfCampaigns : uint256
+  {field} +campaigns : mapping(uint256 => Campaign)
+  {field} +boxes : mapping(uint256 => mapping(uint8 => Box))
+  {field} +soldBoxes : mapping(uint256 => mapping(uint256 => BoxSellRef))
+  {field} +numberOfCampaigns : uint256
   {method} +createCampaign(_title : string, _description : string, _duration : uint32, _campaignOwner : CampaignOwner,\n_stakeholders: StakeholderList, _animal : CampaignAnimalData, boxes : Box[])
   {method} +getNumberOfCampaigns(): uint256
   {method} +getCampaigns(): Campaign[]
@@ -38,16 +38,16 @@ struct Campaign {
 }
 struct CampaignInfo {
   +title : string
+  +description : string
+  +deadline : uint256
+}
+struct CampaignMeta {
+  +collectedAmount : uint256
   +createdAt : uint256
   +totalBoxes : uint16
   +boxesSold : uint16
   +totalBoxTypes : uint8
   +isStopped : bool
-}
-struct CampaignMeta {
-  +collectedAmount : uint256
-  +description : string
-  +deadline : uint256
 }
 struct CampaignAnimalData {
   +earTag : string

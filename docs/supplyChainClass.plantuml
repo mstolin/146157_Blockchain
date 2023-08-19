@@ -1,0 +1,75 @@
+@startuml SupplyChains
+class SupplyChains <<contract>> {
+  {field} +crowdfundingAddress : address
+  {field} +supplychains : mapping(uint256 => SupplyChain)
+  {field} +boxesStatus : mapping(uint256 => mapping(uint256 => BoxStatus))
+  {field} +numberOfSupplyChains : uint256
+  {method} +createSupplyChains(_campaignRef : uint256, _stakeholders : StakeholderList)
+  {method} +addBox(_campaignId : uint256, _box BoxSellRef)
+  {method} +startSupplyChain(_campaignRef : uint256)
+  {method} +getSupplyChains(): SupplyChain[]
+  {method} +getBoxesStatus(_campaignRef: uint256): BoxStatus[]
+  {method} +markAnimalAsDelivered(_campaignRef : uint256)
+  {method} +markAnimalAsProcessed(_campaignRef : uint256)
+  {method} +markBoxesAsProcessed(_campaignRef : uint256)
+  {method} +markBoxesAsDistributed(_campaignRef : uint256)
+  {method} +markBoxAsDelivered(_campaignRef : uint256, _boxId : uint16)
+  {method} +isCompleted(_campaignRef : uint256) : bool
+}
+struct BoxStatus {
+  +boxId : uint16
+  +campaignRef : uint256
+  +isDelivered : bool
+}
+struct SupplyChain {
+  +campaignRef : uint256
+  +isStarted : bool
+  +isAnimalDelivered : AnimalDeliverStatus
+  +isAnimalProcessed : AnimalProcessStatus
+  +areBoxesProcessed : BoxesProcessStatus
+  +areBoxesDistributed : BoxesDistributionStatus
+  +areBoxesDelivered : BoxesDeliverStatus
+  +totalBoxes : uint16
+  +deliveredBoxes : uint16
+  +stakeholders : StakeholderList
+}
+struct AnimalDeliverStatus {
+  +farmer : bool
+  +butcher : bool
+}
+struct AnimalProcessStatus {
+  +farmer : bool
+}
+struct BoxesProcessStatus {
+  +butcher : bool
+}
+struct BoxesDistributionStatus {
+  +delivery : bool
+  +butcher : bool
+}
+struct BoxesDeliverStatus {
+  +delivery : bool
+}
+struct Stakeholder {
+  +owner : address
+  +share : uint8
+  +info : string
+}
+struct StakeholderList {
+  +farmer : Stakeholder
+  +butcher : Stakeholder
+  +delivery : Stakeholder
+}
+
+SupplyChains "1" *-- "many" SupplyChain
+SupplyChain "1" *-- "1" AnimalDeliverStatus
+SupplyChain "1" *-- "1" AnimalProcessStatus
+SupplyChain "1" *-- "1" BoxesProcessStatus
+SupplyChain "1" *-- "1" BoxesDistributionStatus
+SupplyChain "1" *-- "1" BoxesDeliverStatus
+SupplyChain "1" *-- "1" StakeholderList
+StakeholderList "1" *-- "3" Stakeholder
+
+SupplyChains "1" *-- "many" BoxStatus
+
+@enduml

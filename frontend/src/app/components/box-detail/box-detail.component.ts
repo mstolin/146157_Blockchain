@@ -5,6 +5,8 @@ import { Store } from '@ngrx/store';
 import { selectWallet } from '../../state/wallet.selectors';
 import BoxSellRef from 'src/app/models/boxSellRef';
 import Box from 'src/app/models/box';
+import {SupplyChainService} from "../../service/supplychain.service";
+import BoxStatus from "../../models/boxStatus";
 
 @Component({
   selector: 'app-box-detail',
@@ -21,7 +23,15 @@ export class BoxDetailComponent implements OnInit {
   privateKey?: string;
   address?: string;
 
-  constructor(private store: Store, private route: ActivatedRoute, private crowdfundingService: CrowdfundingService) {
+  boxesDistributionStatus!: boolean;
+  boxStatus!: BoxStatus;
+
+  constructor(
+      private store: Store,
+      private route: ActivatedRoute,
+      private crowdfundingService: CrowdfundingService,
+      private supplychainService: SupplyChainService
+  ) {
     this.wallet$.subscribe(wallet => {
       if (wallet.activeAccount) {
         this.owner = wallet.activeAccount;
@@ -33,9 +43,25 @@ export class BoxDetailComponent implements OnInit {
     this.crowdfundingService.getSoldBox(campaignId, boxId)
       .then(sellRef => {
         this.sellRef = sellRef;
-        this.crowdfundingService.getBox(campaignId, boxId)
+        this.crowdfundingService.getBox(campaignId, sellRef.boxId)
           .then(box => this.box = box)
           .catch(err => console.log('ERR', err));
+      })
+      .catch(err => console.log('ERR:', err));
+
+    this.loadBoxStatus(campaignId, boxId);
+
+    this.supplychainService.getSupplyChain(campaignId)
+      .then(supplychain => {
+        this.boxesDistributionStatus = supplychain.areBoxesDistributed;
+      })
+      .catch(err => console.log('ERR:', err));
+  }
+
+  private loadBoxStatus(campaignId: number, boxId: number) {
+    this.supplychainService.getBoxStatus(campaignId, boxId)
+      .then(boxStatus => {
+        this.boxStatus = boxStatus;
       })
       .catch(err => console.log('ERR:', err));
   }
@@ -84,6 +110,17 @@ export class BoxDetailComponent implements OnInit {
       this.decrypt(Buffer.from(this.sellRef.physAddress, 'base64'), this.owner).then(address => {
         this.address = address;
       }).catch(err => console.log('ERR', err));
+    }
+  }
+
+  onDelivered() : void {
+    if (this.owner) {
+      this.supplychainService.markBoxAsDelivered(this.boxStatus.campaignRef, this.boxStatus.boxId).then(() => {
+        console.log("delivered");
+        this.loadBoxStatus(this.boxStatus.campaignRef, this.boxStatus.boxId);
+      }).catch(err => {
+        console.log("ERR" + err);
+      });
     }
   }
 

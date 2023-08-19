@@ -6,7 +6,7 @@ import { ContractAbi } from 'web3';
 import Campaign from '../models/campaign';
 import Crowdfunding from '../../assets/abi/Crowdfunding.json';
 import BoxOffer from '../models/boxOffer';
-import { CreateCampaignReq, BoxOfferReq } from '../models/requestModels';
+import { CreateCampaignReq, BoxReq } from '../models/requestModels';
 import { BoxSellRefResp, CampaignResp } from '../models/responseModels';
 import ContractService from './contract.service';
 import Box from '../models/box';
@@ -17,7 +17,7 @@ import BoxSellRef from '../models/boxSellRef';
 })
 export class CrowdfundingService extends ContractService {
 
-  private readonly _contractAddress: string = '0x0E75E4DA1aA192aA84A244a178224AE62DB85089';
+  private readonly _contractAddress: string = '0x71387427Bd2DCE786288BB2E24410A3F68F7B47f';
 
   constructor() {
     super();
@@ -34,11 +34,13 @@ export class CrowdfundingService extends ContractService {
     }
   }
 
-  createCampaign(campaign: CreateCampaignReq, boxes: BoxOfferReq[]): Promise<[Campaign, BoxOffer[]]> {
+  createCampaign(campaign: CreateCampaignReq, boxes: BoxReq[]): Promise<[Campaign, BoxOffer[]]> {
     return new Promise(async (resolve, reject) => {
       const contract = this.getContract();
       if (contract) {
         try {
+          console.log(campaign);
+          console.log(boxes);
           await contract
             .methods.createCampaign(
               campaign.title,
@@ -79,6 +81,14 @@ export class CrowdfundingService extends ContractService {
         reject();
       }
     });
+  }
+
+  async getStoppedCampaigns(): Promise<Campaign[]> {
+    return this.getCampaigns().then(campaigns => campaigns.filter(campaign => campaign.meta.isStopped));
+  }
+
+  async getActiveCampaigns(): Promise<Campaign[]> {
+    return this.getCampaigns().then(campaigns => campaigns.filter(campaign => !campaign.meta.isStopped));
   }
 
   getCampaign(campaignId: number): Promise<Campaign> {
@@ -154,7 +164,7 @@ export class CrowdfundingService extends ContractService {
     });
   }
 
-  stopCampaign(campaignId: number): Promise {
+  stopCampaign(campaignId: number): Promise<bool> {
     return new Promise(async (resolve, reject) => {
       const contract = this.getContract();
       if (contract) {
@@ -163,7 +173,7 @@ export class CrowdfundingService extends ContractService {
             .methods
             .stopCampaign(campaignId)
             .send({ 'from': this.selectedAddress });
-          resolve();
+          resolve(true);
         } catch (err) {
           reject(err);
         }
@@ -180,6 +190,18 @@ export class CrowdfundingService extends ContractService {
         .methods
         .buyBox(campaignId, boxId, address)
         .send({ from: this.selectedAddress, value });
+    } else {
+      throw('');
+    }
+  }
+
+  async payOut(campaignId: number) {
+    const contract = this.getContract();
+    if (contract) {
+      await contract
+        .methods
+        .payOut(campaignId)
+        .send({ from: this.selectedAddress });
     } else {
       throw('');
     }

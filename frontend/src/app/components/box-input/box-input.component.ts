@@ -11,4 +11,9 @@ export class BoxInputComponent {
   @Input() boxIndex!: number;
   @Input() boxOffer!: BoxReq;
 
+  @Input() set boxPrice(price: string) {
+    this.boxOffer.price = BigInt(price);
+  }
+
+
 }

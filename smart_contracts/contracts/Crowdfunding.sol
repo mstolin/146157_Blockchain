@@ -1,17 +1,32 @@
 // SPDX-License-Identifier: AGPL
 pragma solidity ^0.8.13;
 
-import "./Types.sol";
+import "./CrowdfundingTypes.sol";
+import "./SupplyChains.sol";
 
 contract Crowdfunding {
+    // address of the supply chain contract
+    address public supplychainAddress;
+
     // all campaigns
-    mapping(uint256 => Campaign) public campaigns;
+    mapping(uint256 => Campaign) campaigns;
     // Boxes of each campaign
-    mapping(uint256 => mapping(uint256 => Box)) boxes;
+    mapping(uint256 => mapping(uint8 => Box)) boxes;
     // Sold boxes of each campaign (campignId => sellId => BoxSellRef)
     mapping(uint256 => mapping(uint256 => BoxSellRef)) soldBoxes;
 
-    uint256 public numberOfCampaigns = 0;
+    uint256 numberOfCampaigns = 0;
+    
+    // Add the address of the supply chain contract
+    function setSupplyChainsAddress(address _supplychainAddress) public {
+        supplychainAddress = _supplychainAddress;
+    }
+
+    // Events
+    event CampaignCreated(uint256 campaignId, address campaignOwnerAddress);
+    event CampaignStopped(uint256 campaignId);
+    event BoxSold(uint256 campaignId, uint16 boxId, uint16 SellRefId, address consumerAddress);
+    event Payment(uint256 campaignId, address stakeholderAddress, uint256 amountInWei);
 
     /**
      * Creates a new campaign
@@ -24,7 +39,7 @@ contract Crowdfunding {
         StakeholderList memory _stakeholders,
         CampaignAnimalData memory _animal,
         Box[] memory _boxes
-    ) public returns (uint256) {
+    ) public {
         // check crowdfunding duration
         require(_duration > 0, "Duration must be higher than 0");
         require(_duration <= 6 weeks, "Duration can't be higher than 6 weeks");
@@ -37,8 +52,9 @@ contract Crowdfunding {
         require(deadline > current, "Deadline must be in the future");
 
         // add boxes to campaign
-        uint256 totalNumOfBoxes = 0;
-        for (uint256 index = 0; index < _boxes.length; index++) {
+        require(_boxes.length <= type(uint8).max, "Number of boxes can't be higher than (2^8)-1");
+        uint16 totalNumOfBoxes = 0;
+        for (uint8 index = 0; index < _boxes.length; index++) {
             Box memory box = _boxes[index];
             require(
                 box.total > 0,
@@ -46,7 +62,7 @@ contract Crowdfunding {
             );
             require(
                 box.total == box.available,
-                "Initially total and available must be equal"
+                "Initially total and available of a box must be equal"
             );
             totalNumOfBoxes += box.total;
             boxes[numberOfCampaigns][box.id] = box;
@@ -64,15 +80,17 @@ contract Crowdfunding {
         campaign.meta.isStopped = false;
         campaign.meta.totalBoxes = totalNumOfBoxes;
         campaign.meta.boxesSold = 0;
-        campaign.meta.totalBoxTypes = _boxes.length;
+        campaign.meta.totalBoxTypes = uint8(_boxes.length);
         campaign.animal = _animal;
         campaign.stakeholders = _stakeholders;
 
         // increase total num of campaigns
         numberOfCampaigns++;
 
-        // return the most recent campaign index
-        return numberOfCampaigns - 1;
+        emit CampaignCreated(campaign.id, msg.sender);
+
+        // Start supply chain
+        SupplyChains(supplychainAddress).createSupplyChain(campaign.id, campaign.stakeholders);
     }
 
     /**
@@ -99,9 +117,9 @@ contract Crowdfunding {
      */
     function getBoxes(uint256 _campaignId) public view returns (Box[] memory) {
         Campaign storage campaign = campaigns[_campaignId];
-        uint256 totalBoxTypes = campaign.meta.totalBoxTypes;
+        uint8 totalBoxTypes = campaign.meta.totalBoxTypes;
         Box[] memory boxesOfCampaign = new Box[](totalBoxTypes);
-        for (uint256 index = 0; index < totalBoxTypes; index++) {
+        for (uint8 index = 0; index < totalBoxTypes; index++) {
             Box storage box = boxes[_campaignId][index];
             boxesOfCampaign[index] = box;
         }
@@ -115,9 +133,9 @@ contract Crowdfunding {
         uint256 _campaignId
     ) public view returns (BoxSellRef[] memory) {
         Campaign storage campaign = campaigns[_campaignId];
-        uint256 boxesSold = campaign.meta.boxesSold;
+        uint16 boxesSold = campaign.meta.boxesSold;
         BoxSellRef[] memory sellRefs = new BoxSellRef[](boxesSold);
-        for (uint256 index = 0; index < boxesSold; index++) {
+        for (uint16 index = 0; index < boxesSold; index++) {
             BoxSellRef storage sellRef = soldBoxes[_campaignId][index];
             sellRefs[index] = sellRef;
         }
@@ -127,7 +145,7 @@ contract Crowdfunding {
     /**
      * Removes a campaign
      */
-    function stopCampaign(uint256 _campaignId) public returns (bool) {
+    function stopCampaign(uint256 _campaignId) public {
         Campaign storage campaign = campaigns[_campaignId];
         require(!campaign.meta.isStopped, "Campaign already stopped");
         require(
@@ -139,9 +157,16 @@ contract Crowdfunding {
             "Only the owner can stop a campaign"
         );
 
-        campaign.meta.isStopped = true;
+        // Pay ether back
+        uint16 boxesSold = campaign.meta.boxesSold;
+        for (uint16 index = 0; index < boxesSold; index++) {
+            BoxSellRef storage sellRef = soldBoxes[_campaignId][index];
+            Box storage box = boxes[_campaignId][sellRef.boxId];
+            payable(sellRef.owner).transfer(box.price);
+        }
 
-        return true;
+        campaign.meta.isStopped = true;
+        emit CampaignStopped(_campaignId);
     }
 
     /**
@@ -149,7 +174,7 @@ contract Crowdfunding {
      */
     function buyBox(
         uint256 _campaignId,
-        uint256 _boxId,
+        uint8 _boxId,
         string memory _physAddress
     ) public payable {
         // get campaign ref
@@ -169,7 +194,7 @@ contract Crowdfunding {
         require(amount >= box.price, "Given amount is below box price");
 
         // Add buyer (Don't increase boxes sold yet, we need it starting at 0)
-        uint256 sellId = campaign.meta.boxesSold;
+        uint16 sellId = campaign.meta.boxesSold;
         BoxSellRef storage sellRef = soldBoxes[_campaignId][
             campaign.meta.boxesSold
         ];
@@ -186,35 +211,48 @@ contract Crowdfunding {
         meta.boxesSold += 1;
         meta.collectedAmount += amount;
 
+        emit BoxSold(campaign.id, box.id, sellRef.id, msg.sender);
+
+        SupplyChains(supplychainAddress).addBox(_campaignId, sellRef);
+
         if (campaign.meta.boxesSold == campaign.meta.totalBoxes) {
             // Mark campaign as stopped
             campaign.meta.isStopped = true;
-            // TODO Start Supply Chain
+            emit CampaignStopped(campaign.id);
+            // Start supply chain
+            SupplyChains(supplychainAddress).startSupplyChain(campaign.id);
         }
     }
 
     /**
      * Pay-out all stakeholders of the campaign
      */
-    function payOut(uint256 _campaignId) public {
+    function payOut(uint256 _campaignId) external payable {
+        require(msg.sender == supplychainAddress, "Only the supply chain can call this function");
+        
         Campaign storage campaign = campaigns[_campaignId];
         require(campaign.meta.isStopped, "The campaign must be finished");
         require(
             campaign.meta.boxesSold == campaign.meta.totalBoxes,
             "There can't be any boxes left"
         );
-
-        // TODO Check if supply chain has been completed
-        // e.g. require(campaign.supplyChain.isCompleted);
+        // Check if supply chain has been completed
+        require(
+            SupplyChains(supplychainAddress).isCompleted(campaign.id),
+            "Supply chain must be completed"
+        );
 
         // Generate shares
-        uint256 farmerShare = campaign.meta.collectedAmount * campaign.stakeholders.farmer.share;
-        uint256 butcherShare = campaign.meta.collectedAmount * campaign.stakeholders.butcher.share;
-        uint256 deliveryShare = campaign.meta.collectedAmount * campaign.stakeholders.delivery.share;
+        uint256 farmerShare = (campaign.meta.collectedAmount * campaign.stakeholders.farmer.share) / 100;
+        uint256 butcherShare = (campaign.meta.collectedAmount * campaign.stakeholders.butcher.share) / 100;
+        uint256 deliveryShare = (campaign.meta.collectedAmount * campaign.stakeholders.delivery.share) / 100;
 
         // payout stakeholders
         payable(campaign.stakeholders.farmer.owner).transfer(farmerShare);
+        emit Payment(campaign.id, campaign.stakeholders.farmer.owner, farmerShare);
         payable(campaign.stakeholders.butcher.owner).transfer(butcherShare);
+        emit Payment(campaign.id, campaign.stakeholders.butcher.owner, butcherShare);
         payable(campaign.stakeholders.delivery.owner).transfer(deliveryShare);
+        emit Payment(campaign.id, campaign.stakeholders.delivery.owner, deliveryShare);
     }
 }

@@ -4,6 +4,11 @@
   </div>
 
   <div class="container">
+    <div class="row" *ngIf="owner && owner == campaign.owner.address">
+      <div>
+        <button class="btn btn-primary" (click)="stopCampaign()">Stop</button>
+      </div>
+    </div>
     <div class="row">
       <p>By <strong>{{ campaign.owner.address }}</strong></p>
     </div>
@@ -72,24 +77,81 @@
     </ul>
   </div>
 
-  <div class="container" *ngIf="campaign.meta.isStopped">
+  <div class="container" *ngIf="(campaign.meta.isStopped && supplychain.isStarted)">
     <ol class="list-group list-group-numbered">
       <li class="list-group-item d-flex justify-content-between align-items-start">
         <div class="ms-2 me-auto">
           <div class="fw-bold">Animal delivered to Butcher</div>
-          No
+          <div *ngIf="!supplychain.isAnimalDelivered; else Delivered">
+            <div>Not delivered yet</div>
+            <div>Farmer: {{ isDeliveredByFarmer }} - Butcher: {{ isDeliveredToButcher }}</div>
+            <button (click)="onDelivered()" class="btn btn-primary m-1">Mark as delivered</button>
+          </div>
+          <ng-template #Delivered>
+            <div>Delivered</div>
+          </ng-template>
         </div>
       </li>
       <li class="list-group-item d-flex justify-content-between align-items-start">
         <div class="ms-2 me-auto">
           <div class="fw-bold">Animal processed by Butcher</div>
-          No
+          <div *ngIf="!supplychain.isAnimalProcessed; else Processed">
+            <div>Not processed yet</div>
+            <div *ngIf="supplychain.isAnimalDelivered">
+              <button (click)="onProcessed()" class="btn btn-primary m-1">Mark as processed</button>
+            </div>
+          </div>
+          <ng-template #Processed>
+            <div>Processed</div>
+          </ng-template>
         </div>
       </li>
       <li class="list-group-item d-flex justify-content-between align-items-start">
         <div class="ms-2 me-auto">
-          <div class="fw-bold">Boxes processed by butcher</div>
-          No
+          <div class="fw-bold">Boxes processed by Butcher</div>
+          <div *ngIf="!supplychain.areBoxesProcessed; else BoxesProcessed">
+            <div>Not yet processed</div>
+            <div *ngIf="supplychain.isAnimalProcessed">
+              <button (click)="onBoxesProcessed()" class="btn btn-primary m-1">Mark as processed</button>
+            </div>
+          </div>
+          <ng-template #BoxesProcessed>
+            <div>Boxes processed</div>
+          </ng-template>
+        </div>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">Boxes distributed to Delivery Service</div>
+          <div *ngIf="!supplychain.areBoxesDistributed; else BoxesDistributed">
+            <div>Not yet distributed</div>
+            <div *ngIf="supplychain.areBoxesProcessed">
+              <div>Butcher: {{ areDistributedByButcher }} - Delivery: {{ areDistributedToDelivery }}</div>
+            </div>
+            <div *ngIf="supplychain.areBoxesProcessed">
+              <button (click)="onBoxesDistributed()" class="btn btn-primary m-1">Mark as distributed</button>
+            </div>
+          </div>
+          <ng-template #BoxesDistributed>
+            <div>Boxes distributed</div>
+          </ng-template>
+        </div>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">Boxes distributed to Consumers</div>
+          <div *ngIf="!supplychain.areBoxesDelivered; else AllDelivered">
+            <div>Not yet delivered - {{ supplychain.totalBoxes - supplychain.deliveredBoxes }} boxes to go</div>
+          </div>
+          <ng-template #AllDelivered>
+            <div>Boxes delivered</div>
+          </ng-template>
+        </div>
+      </li>
+      <li *ngIf="isSupplyChainCompleted" class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">Supply Chain completed</div>
+          <div>Payment done</div>
         </div>
       </li>
     </ol>
@@ -122,7 +184,7 @@
   <div class="container" *ngIf="soldBoxes.length > 0; else noSoldBoxes">
     <div class="row">
       <div class="col-md-6" *ngFor="let sellRef of soldBoxes">
-        <app-sold-box-thumbnail [sellRef]="sellRef" />
+        <app-sold-box-thumbnail [title]="getBox(sellRef.boxId)!.title" [sellRef]="sellRef" />
       </div>
     </div>
   </div>
