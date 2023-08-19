@@ -3,14 +3,16 @@ const SupplyChains = artifacts.require('SupplyChains');
 
 const RANDOM_SECRET = 'RANDOM_SECRET';
 
+const box_price = web3.utils.toWei('0.1', 'ether');
+
 contract('SupplyChains', (accounts) => {
-  const FARMER_ADDR = accounts[7];
-  const BUTCHER_ADDR = accounts[8];
-  const DELIVERY_ADDR = accounts[9];
+  const FARMER_ADDR = accounts[3];
+  const BUTCHER_ADDR = accounts[4];
+  const DELIVERY_ADDR = accounts[5];
 
   const BUYER_ADDR = accounts[2];
 
-  // Same tests of crowdfunding.js
+  // function imported from the crowdfunding test
   function generateBoxes(boxesTotal) {
     let boxes = [];
     for (let index = 0; index < boxesTotal.length; index++) {
@@ -20,13 +22,14 @@ contract('SupplyChains', (accounts) => {
         'total': boxesTotal[index],
         'title': `Box #${index}`,
         'description': `Box #${index} is a very good one`,
-        'price': 2
+        'price': box_price,
       };
       boxes[index] = box;
     }
     return boxes;
   }
 
+  // function imported from the crowdfunding test
   function generateCampaign(id, boxesTotal, owner) {
     return {
       'id': id,
@@ -66,6 +69,7 @@ contract('SupplyChains', (accounts) => {
     };
   }
 
+  // function imported from the crowdfunding test
   async function createCampaign(contract, campaign, from) {
     await contract
       .createCampaign(
@@ -90,8 +94,10 @@ contract('SupplyChains', (accounts) => {
 
     const someAddr = 'via Roma 1, Tento';
 
+    const price = web3.utils.toWei('0.1', 'ether');
+
     // Buy one box
-    await contract.buyBox(campaignId, 0, someAddr, { 'from': BUYER_ADDR, 'value': 2 });
+    await contract.buyBox(campaignId, 0, someAddr, { 'from': BUYER_ADDR, 'value': box_price });
 
     allBoxes = await contract.getBoxes.call(campaignId);
     assert.equal(allBoxes[0].available, 0);
@@ -108,23 +114,23 @@ contract('SupplyChains', (accounts) => {
     let campaigns = await contract.getCampaigns.call();
     let campaignResp = campaigns[campaignId];
     assert.equal(campaignResp.meta.boxesSold, 1);
-    assert.equal(campaignResp.meta.collectedAmount, 2);
+    assert.equal(campaignResp.meta.collectedAmount, box_price);
     assert.isFalse(campaignResp.meta.isStopped);
 
     // Buy last boxes
-    await contract.buyBox(campaignId, 1, someAddr, { 'from': BUYER_ADDR, 'value': 2 });
+    await contract.buyBox(campaignId, 1, someAddr, { 'from': BUYER_ADDR, 'value': box_price });
     campaigns = await contract.getCampaigns.call();
     campaignResp = campaigns[campaignId];
     assert.equal(campaignResp.meta.boxesSold, 2);
-    assert.equal(campaignResp.meta.collectedAmount, 4);
+    assert.equal(campaignResp.meta.collectedAmount, box_price * 2);
     assert.isFalse(campaignResp.meta.isStopped);
 
-    await contract.buyBox(campaignId, 1, someAddr, { 'from': BUYER_ADDR, 'value': 2 });
+    await contract.buyBox(campaignId, 1, someAddr, { 'from': BUYER_ADDR, 'value': box_price });
 
     campaigns = await contract.getCampaigns.call();
     campaignResp = campaigns[campaignId];
     assert.equal(campaignResp.meta.boxesSold, 3);
-    assert.equal(campaignResp.meta.collectedAmount, 6);
+    assert.equal(campaignResp.meta.collectedAmount, box_price * 3);
     assert.isTrue(campaignResp.meta.isStopped);
 
     allBoxes = await contract.getBoxes.call(campaignId);
@@ -146,6 +152,7 @@ contract('SupplyChains', (accounts) => {
     const crowdfunding_contract = await Crowdfunding.deployed();
     const supplychain_contract = await SupplyChains.deployed();
 
+    // set the supplychain address in the crowdfunding contract and viceversa
     await crowdfunding_contract.setSupplyChainsAddress(supplychain_contract.address);
     await supplychain_contract.setCrowdfundingAddress(crowdfunding_contract.address);
 
@@ -154,8 +161,8 @@ contract('SupplyChains', (accounts) => {
     await generateCampaignAndBuyAll(crowdfunding_contract, campaignId);
 
     // retrieve the supplychain and check if it is correct
-    const supplychains = await supplychain_contract.getSupplyChains.call();
-    supplychain = supplychains[campaignId];
+    let supplychains = await supplychain_contract.getSupplyChains.call();
+    let supplychain = supplychains[campaignId];
     assert.equal(supplychain.campaignRef, campaignId);
     assert.isFalse(supplychain.isAnimalDelivered.farmer);
     assert.isFalse(supplychain.isAnimalDelivered.butcher);
@@ -176,16 +183,14 @@ contract('SupplyChains', (accounts) => {
     const crowdfunding_contract = await Crowdfunding.deployed();
     const supplychain_contract = await SupplyChains.deployed();
 
-    const campaignId = await crowdfunding_contract.getNumberOfCampaigns.call();
-
-    await generateCampaignAndBuyAll(crowdfunding_contract, campaignId);
+    const campaignId = 0;
 
     let supplychains = await supplychain_contract.getSupplyChains.call();
-    supplychain = supplychains[campaignId];
+    let supplychain = supplychains[campaignId];
     assert.isFalse(supplychain.isAnimalDelivered.butcher);
     assert.isFalse(supplychain.isAnimalDelivered.farmer);
 
-    // test
+    // mark the animal as delivered by the farmer
     await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': FARMER_ADDR });
     
     supplychains = await supplychain_contract.getSupplyChains.call();
@@ -193,6 +198,7 @@ contract('SupplyChains', (accounts) => {
     assert.isTrue(supplychain.isAnimalDelivered.farmer);
     assert.isFalse(supplychain.isAnimalDelivered.butcher);
 
+    // mark the animal as delivered by the butcher
     await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': BUTCHER_ADDR });
 
     supplychains = await supplychain_contract.getSupplyChains.call();
@@ -205,18 +211,13 @@ contract('SupplyChains', (accounts) => {
     const crowdfunding_contract = await Crowdfunding.deployed();
     const supplychain_contract = await SupplyChains.deployed();
 
-    const campaignId = await crowdfunding_contract.getNumberOfCampaigns.call();
-
-    await generateCampaignAndBuyAll(crowdfunding_contract, campaignId);
+    const campaignId = 0;
 
     let supplychains = await supplychain_contract.getSupplyChains.call();
-    supplychain = supplychains[campaignId];
+    let supplychain = supplychains[campaignId];
     assert.isFalse(supplychain.isAnimalProcessed.butcher);
-    
-    await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': FARMER_ADDR });
-    await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': BUTCHER_ADDR });
 
-    // test
+    // mark the animal as processed by the butcher
     await supplychain_contract.markAnimalAsProcessed(campaignId, { 'from': BUTCHER_ADDR });
     
     supplychains = await supplychain_contract.getSupplyChains.call();
@@ -228,23 +229,13 @@ contract('SupplyChains', (accounts) => {
     const crowdfunding_contract = await Crowdfunding.deployed();
     const supplychain_contract = await SupplyChains.deployed();
 
-    const campaignId = await crowdfunding_contract.getNumberOfCampaigns.call();
-
-    await generateCampaignAndBuyAll(crowdfunding_contract, campaignId);
+    const campaignId = 0;
 
     let supplychains = await supplychain_contract.getSupplyChains.call();
-    supplychain = supplychains[campaignId];
+    let supplychain = supplychains[campaignId];
     assert.isFalse(supplychain.areBoxesProcessed.butcher);
 
-    await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': FARMER_ADDR });
-    await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': BUTCHER_ADDR });
-    await supplychain_contract.markAnimalAsProcessed(campaignId, { 'from': BUTCHER_ADDR });
-
-    // test
-    supplychains = await supplychain_contract.getSupplyChains.call();
-    supplychain = supplychains[campaignId];
-    assert.isFalse(supplychain.areBoxesProcessed.butcher);
-
+    // mark the boxes as processed by the butcher
     await supplychain_contract.markBoxesAsProcessed(campaignId, { 'from': BUTCHER_ADDR });
     
     supplychains = await supplychain_contract.getSupplyChains.call();
@@ -256,28 +247,14 @@ contract('SupplyChains', (accounts) => {
     const crowdfunding_contract = await Crowdfunding.deployed();
     const supplychain_contract = await SupplyChains.deployed();
 
-    const campaignId = await crowdfunding_contract.getNumberOfCampaigns.call();
-
-    await generateCampaignAndBuyAll(crowdfunding_contract, campaignId);
+    const campaignId = 0;
 
     let supplychains = await supplychain_contract.getSupplyChains.call();
-    supplychain = supplychains[campaignId];
+    let supplychain = supplychains[campaignId];
     assert.isFalse(supplychain.areBoxesDistributed.butcher);
     assert.isFalse(supplychain.areBoxesDistributed.delivery);
 
-    await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': FARMER_ADDR });
-    await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': BUTCHER_ADDR });
-
-    await supplychain_contract.markAnimalAsProcessed(campaignId, { 'from': BUTCHER_ADDR });
-
-    await supplychain_contract.markBoxesAsProcessed(campaignId, { 'from': BUTCHER_ADDR });
-
-    // test
-    supplychains = await supplychain_contract.getSupplyChains.call();
-    supplychain = supplychains[campaignId];
-    assert.isFalse(supplychain.areBoxesDistributed.butcher);
-    assert.isFalse(supplychain.areBoxesDistributed.delivery);
-
+    // mark the boxes as distributed by the butcher
     await supplychain_contract.markBoxesAsDistributed(campaignId, { 'from': BUTCHER_ADDR });
 
     supplychains = await supplychain_contract.getSupplyChains.call();
@@ -285,6 +262,7 @@ contract('SupplyChains', (accounts) => {
     assert.isTrue(supplychain.areBoxesDistributed.butcher);
     assert.isFalse(supplychain.areBoxesDelivered.delivery);
 
+    // mark the boxes as distributed by the delivery
     await supplychain_contract.markBoxesAsDistributed(campaignId, { 'from': DELIVERY_ADDR });
 
     supplychains = await supplychain_contract.getSupplyChains.call();
@@ -293,29 +271,19 @@ contract('SupplyChains', (accounts) => {
     assert.isTrue(supplychain.areBoxesDistributed.delivery);
   });
 
-  it('should mark the boxes as delivered and the supply chain should be completed', async() => {
+  it('should mark some boxes as delivered', async() => {
     const crowdfunding_contract = await Crowdfunding.deployed();
     const supplychain_contract = await SupplyChains.deployed();
 
-    const campaignId = await crowdfunding_contract.getNumberOfCampaigns.call();
-
-    await generateCampaignAndBuyAll(crowdfunding_contract, campaignId);
+    const campaignId = 0;
 
     let supplychains = await supplychain_contract.getSupplyChains.call();
-    supplychain = supplychains[campaignId];
+    let supplychain = supplychains[campaignId];
     assert.equal(supplychain.areBoxesDelivered.delivery, false);
 
-    await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': FARMER_ADDR });
-    await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': BUTCHER_ADDR });
-    await supplychain_contract.markAnimalAsProcessed(campaignId, { 'from': BUTCHER_ADDR });
-    await supplychain_contract.markBoxesAsProcessed(campaignId, { 'from': BUTCHER_ADDR });
-    await supplychain_contract.markBoxesAsDistributed(campaignId, { 'from': DELIVERY_ADDR });
-    await supplychain_contract.markBoxesAsDistributed(campaignId, { 'from': BUTCHER_ADDR });
-
-    // test
+    // check that there are no boxes delivered
     let isCompleted = await supplychain_contract.isCompleted.call(campaignId);
     assert.isFalse(isCompleted);
-    assert.equal(supplychain.deliveredBoxes, 0);
 
     boxesStatus = await supplychain_contract.getBoxesStatus.call(campaignId);
     assert.isFalse(boxesStatus[0].isDelivered);
@@ -323,6 +291,7 @@ contract('SupplyChains', (accounts) => {
     assert.isFalse(boxesStatus[2].isDelivered);
     assert.equal(supplychain.deliveredBoxes, 0);
 
+    // mark the box with id 0 as delivered
     await supplychain_contract.markBoxAsDelivered(campaignId, 0, { 'from': DELIVERY_ADDR });
 
     supplychains = await supplychain_contract.getSupplyChains.call();
@@ -335,9 +304,128 @@ contract('SupplyChains', (accounts) => {
     assert.isFalse(boxesStatus[2].isDelivered);
     assert.equal(supplychain.deliveredBoxes, 1);
 
+    // mark the box with id 1 as delivered
     await supplychain_contract.markBoxAsDelivered(campaignId, 1, { 'from': DELIVERY_ADDR });
+
+    supplychains = await supplychain_contract.getSupplyChains.call();
+    supplychain = supplychains[campaignId];
+    assert.isFalse(supplychain.areBoxesDelivered.delivery);
+
+    boxesStatus = await supplychain_contract.getBoxesStatus.call(campaignId);
+    assert.isTrue(boxesStatus[0].isDelivered);
+    assert.isTrue(boxesStatus[1].isDelivered);
+    assert.isFalse(boxesStatus[2].isDelivered);
+    assert.equal(supplychain.deliveredBoxes, 2);
+
+    isCompleted = await supplychain_contract.isCompleted.call(campaignId);
+    assert.isFalse(isCompleted);
+  });
+
+  
+  it('should complete the supplychain and payout', async() => {
+    const crowdfunding_contract = await Crowdfunding.deployed();
+    const supplychain_contract = await SupplyChains.deployed();
+
+    const campaignId = 0;
+
+    let supplychains = await supplychain_contract.getSupplyChains.call();
+    let supplychain = supplychains[campaignId];
+
+    let isCompleted = await supplychain_contract.isCompleted.call(campaignId);
+    assert.isFalse(isCompleted);
+    assert.equal(supplychain.deliveredBoxes, 2);
+
+    // retrive the balance before the payout
+    let oldFarmerBalance = await web3.eth.getBalance(FARMER_ADDR);
+    let oldButcherBalance = await web3.eth.getBalance(BUTCHER_ADDR);
+    let oldDeliveryBalance = await web3.eth.getBalance(DELIVERY_ADDR);
+
+    // mark the box with id 2 as delivered
     await supplychain_contract.markBoxAsDelivered(campaignId, 2, { 'from': DELIVERY_ADDR });
 
+    supplychains = await supplychain_contract.getSupplyChains.call();
+    supplychain = supplychains[campaignId];
+    assert.isTrue(supplychain.areBoxesDelivered.delivery);
+
+    // check that all boxes are marked as delivered
+    boxesStatus = await supplychain_contract.getBoxesStatus.call(campaignId);
+    assert.isTrue(boxesStatus[0].isDelivered);
+    assert.isTrue(boxesStatus[1].isDelivered);
+    assert.isTrue(boxesStatus[2].isDelivered);
+    assert.equal(supplychain.deliveredBoxes, 3);
+
+    // check that the supplychain is completed
+    isCompleted = await supplychain_contract.isCompleted.call(campaignId);
+    assert.isTrue(isCompleted);
+
+    // retrive the balance after the payout
+    let newFarmerBalance = await web3.eth.getBalance(FARMER_ADDR);
+    let newButcherBalance = await web3.eth.getBalance(BUTCHER_ADDR);
+    let newDeliveryBalance = await web3.eth.getBalance(DELIVERY_ADDR);
+
+    // check that the balance is greater
+    assert.isTrue(newFarmerBalance > oldFarmerBalance, "Farmer balance should be greater!");
+    assert.isTrue(newButcherBalance > oldButcherBalance, "Butcher balance should be greater!");
+    assert.isTrue(newDeliveryBalance > oldDeliveryBalance, "Delivery balance should be greater!");
+  });
+
+  it('should buy all from a second campaign and start a new supply chain', async () => {
+    const crowdfunding_contract = await Crowdfunding.deployed();
+    const supplychain_contract = await SupplyChains.deployed();
+
+    const campaignId = await crowdfunding_contract.getNumberOfCampaigns.call();
+
+    await generateCampaignAndBuyAll(crowdfunding_contract, campaignId);
+
+    // retrieve the supplychain and check if it is correct
+    let supplychains = await supplychain_contract.getSupplyChains.call();
+    let supplychain = supplychains[campaignId];
+    assert.equal(supplychain.campaignRef, campaignId);
+    assert.isFalse(supplychain.isAnimalDelivered.farmer);
+    assert.isFalse(supplychain.isAnimalDelivered.butcher);
+    assert.isFalse(supplychain.isAnimalProcessed.butcher);
+    assert.isFalse(supplychain.areBoxesProcessed.butcher);
+    assert.isFalse(supplychain.areBoxesDistributed.butcher);
+    assert.isFalse(supplychain.areBoxesDistributed.delivery);
+    assert.isFalse(supplychain.areBoxesDelivered.delivery);
+    assert.equal(supplychain.totalBoxes, 3);
+    assert.equal(supplychain.deliveredBoxes, 0);
+    assert.equal(supplychain.stakeholders.farmer.owner, FARMER_ADDR);
+    assert.equal(supplychain.stakeholders.butcher.owner, BUTCHER_ADDR);
+    assert.equal(supplychain.stakeholders.delivery.owner, DELIVERY_ADDR);
+    assert.isTrue(supplychain.isStarted);
+  });
+
+  it('should go through the supplychain until the stakeholders are paid', async () => {
+    const crowdfunding_contract = await Crowdfunding.deployed();
+    const supplychain_contract = await SupplyChains.deployed();
+
+    const campaignId = 1;
+
+    // retrieve the supplychain and check if it is correct
+    let supplychains = await supplychain_contract.getSupplyChains.call();
+    let supplychain = supplychains[campaignId];
+    assert.equal(supplychain.campaignRef, campaignId);
+
+    // go through the supplychain process
+    await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': FARMER_ADDR });
+    await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': BUTCHER_ADDR });
+    await supplychain_contract.markAnimalAsProcessed(campaignId, { 'from': BUTCHER_ADDR });
+    await supplychain_contract.markBoxesAsProcessed(campaignId, { 'from': BUTCHER_ADDR });
+    await supplychain_contract.markBoxesAsDistributed(campaignId, { 'from': BUTCHER_ADDR });
+    await supplychain_contract.markBoxesAsDistributed(campaignId, { 'from': DELIVERY_ADDR });
+    await supplychain_contract.markBoxAsDelivered(campaignId, 0, { 'from': DELIVERY_ADDR });
+    await supplychain_contract.markBoxAsDelivered(campaignId, 1, { 'from': DELIVERY_ADDR });
+
+    // retrieve the balance before the payout
+    let oldFarmerBalance = await web3.eth.getBalance(FARMER_ADDR);
+    let oldButcherBalance = await web3.eth.getBalance(BUTCHER_ADDR);
+    let oldDeliveryBalance = await web3.eth.getBalance(DELIVERY_ADDR);
+
+    // mark the last box as delivered
+    await supplychain_contract.markBoxAsDelivered(campaignId, 2, { 'from': DELIVERY_ADDR });
+
+    // check that all boxes are marked as delivered
     supplychains = await supplychain_contract.getSupplyChains.call();
     supplychain = supplychains[campaignId];
     assert.isTrue(supplychain.areBoxesDelivered.delivery);
@@ -348,44 +436,19 @@ contract('SupplyChains', (accounts) => {
     assert.isTrue(boxesStatus[2].isDelivered);
     assert.equal(supplychain.deliveredBoxes, 3);
 
-    isCompleted = await supplychain_contract.isCompleted.call(campaignId);
-    assert.isTrue(isCompleted);
-  });
-
-  it('should complete the supplychain and payout', async() => {
-    const crowdfunding_contract = await Crowdfunding.deployed();
-    const supplychain_contract = await SupplyChains.deployed();
-
-    const campaignId = await crowdfunding_contract.getNumberOfCampaigns.call();
-
-    await generateCampaignAndBuyAll(crowdfunding_contract, campaignId);
-
-    let supplychains = await supplychain_contract.getSupplyChains.call();
-    supplychain = supplychains[campaignId];
-
-    await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': FARMER_ADDR });
-    await supplychain_contract.markAnimalAsDelivered(campaignId, { 'from': BUTCHER_ADDR });
-    await supplychain_contract.markAnimalAsProcessed(campaignId, { 'from': BUTCHER_ADDR });
-    await supplychain_contract.markBoxesAsProcessed(campaignId, { 'from': BUTCHER_ADDR });
-    await supplychain_contract.markBoxesAsDistributed(campaignId, { 'from': DELIVERY_ADDR });
-    await supplychain_contract.markBoxesAsDistributed(campaignId, { 'from': BUTCHER_ADDR });
-    await supplychain_contract.markBoxAsDelivered(campaignId, 0, { 'from': DELIVERY_ADDR });
-    await supplychain_contract.markBoxAsDelivered(campaignId, 1, { 'from': DELIVERY_ADDR });
-    await supplychain_contract.markBoxAsDelivered(campaignId, 2, { 'from': DELIVERY_ADDR });
-
+    // check that the supplychain is completed
     isCompleted = await supplychain_contract.isCompleted.call(campaignId);
     assert.isTrue(isCompleted);
 
-    // test
+    // retrive the balance after the payout
+    let newFarmerBalance = await web3.eth.getBalance(FARMER_ADDR);
+    let newButcherBalance = await web3.eth.getBalance(BUTCHER_ADDR);
+    let newDeliveryBalance = await web3.eth.getBalance(DELIVERY_ADDR);
 
-    let oldFarmerBalance = await web3.eth.getBalance(FARMER_ADDR);
-    let oldButcherBalance = await web3.eth.getBalance(BUTCHER_ADDR);
-    let oldDeliveryBalance = await web3.eth.getBalance(DELIVERY_ADDR);
-
-    await crowdfunding_contract.payOut(campaignId);
-
-    assert.isTrue(await web3.eth.getBalance(FARMER_ADDR) > oldFarmerBalance, "Farmer balance should be greater!");
-    assert.isTrue(await web3.eth.getBalance(BUTCHER_ADDR) > oldButcherBalance, "Butcher balance should be greater!");
-    assert.isTrue(await web3.eth.getBalance(DELIVERY_ADDR) > oldDeliveryBalance, "Delivery balance should be greater!");
+    // check that the balance is greater
+    assert.isTrue(newFarmerBalance > oldFarmerBalance, "Farmer balance should be greater!");
+    assert.isTrue(newButcherBalance > oldButcherBalance, "Butcher balance should be greater!");
+    assert.isTrue(newDeliveryBalance > oldDeliveryBalance, "Delivery balance should be greater!");
   });
+
 });
