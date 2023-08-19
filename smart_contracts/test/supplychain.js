@@ -3,7 +3,7 @@ const SupplyChains = artifacts.require('SupplyChains');
 
 const RANDOM_SECRET = 'RANDOM_SECRET';
 
-const box_price = web3.utils.toWei('0.1', 'ether');
+const box_price = web3.utils.toWei('0.3', 'ether');
 
 contract('SupplyChains', (accounts) => {
   const FARMER_ADDR = accounts[3];
@@ -93,8 +93,6 @@ contract('SupplyChains', (accounts) => {
     await createCampaign(contract, campaign, owner);
 
     const someAddr = 'via Roma 1, Tento';
-
-    const price = web3.utils.toWei('0.1', 'ether');
 
     // Buy one box
     await contract.buyBox(campaignId, 0, someAddr, { 'from': BUYER_ADDR, 'value': box_price });
