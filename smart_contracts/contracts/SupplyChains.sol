@@ -62,18 +62,18 @@ contract SupplyChains {
   /**
   * Add a sold box to a supply chain
   */
-  function addBox(uint256 _campaignRef, BoxSellRef memory _box) external {
+  function addBox(uint256 _campaignRef, uint16 _boxId) external {
     require(msg.sender == crowdfundingAddress, "Only the crowdfunding contract can add a box to a supply chain");
 
     SupplyChain storage supplychain = supplychains[_campaignRef];
 
-    boxesStatus[_campaignRef][_box.id].campaignRef = _campaignRef;
-    boxesStatus[_campaignRef][_box.id].boxId = _box.id;
-    boxesStatus[_campaignRef][_box.id].isDelivered = false;
+    boxesStatus[_campaignRef][_boxId].campaignRef = _campaignRef;
+    boxesStatus[_campaignRef][_boxId].boxId = _boxId;
+    boxesStatus[_campaignRef][_boxId].isDelivered = false;
 
     supplychain.totalBoxes++;
 
-    emit NewBox(_campaignRef, _box.id);
+    emit NewBox(_campaignRef, _boxId);
   }
   
   /**

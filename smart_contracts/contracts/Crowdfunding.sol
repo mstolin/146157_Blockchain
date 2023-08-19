@@ -213,7 +213,7 @@ contract Crowdfunding {
 
         emit BoxSold(campaign.id, box.id, sellRef.id, msg.sender);
 
-        SupplyChains(supplychainAddress).addBox(_campaignId, sellRef);
+        SupplyChains(supplychainAddress).addBox(campaign.id, sellRef.id);
 
         if (campaign.meta.boxesSold == campaign.meta.totalBoxes) {
             // Mark campaign as stopped
