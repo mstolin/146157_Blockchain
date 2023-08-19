@@ -90,7 +90,7 @@ contract Crowdfunding {
         emit CampaignCreated(campaign.id, msg.sender);
 
         // Start supply chain
-        SupplyChains(supplychainAddress).createSupplyChain(campaign);
+        SupplyChains(supplychainAddress).createSupplyChain(campaign.id, campaign.stakeholders);
     }
 
     /**

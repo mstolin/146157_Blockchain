@@ -34,12 +34,12 @@ contract SupplyChains {
   /**
   * Create a supply chain related to a campaign
   */
-  function createSupplyChain(Campaign memory _campaign) external {
+  function createSupplyChain(uint256 _campaignRef, StakeholderList memory _stakeholders) external {
     require(msg.sender == crowdfundingAddress, "Only the crowdfunding contract can create a supply chain");
 
-    SupplyChain storage supplychain = supplychains[_campaign.id];
+    SupplyChain storage supplychain = supplychains[_campaignRef];
 
-    supplychain.campaignRef = _campaign.id;
+    supplychain.campaignRef = _campaignRef;
     supplychain.isStarted = false;
     supplychain.isAnimalDelivered.butcher = false;
     supplychain.isAnimalDelivered.farmer = false;
@@ -52,7 +52,7 @@ contract SupplyChains {
     supplychain.deliveredBoxes = 0;
 
     // import stakeholders from campaign
-    supplychain.stakeholders = _campaign.stakeholders;
+    supplychain.stakeholders = _stakeholders;
 
     NumberOfSupplyChains++;
 
