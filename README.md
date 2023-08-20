@@ -18,7 +18,7 @@ starts automatically.
 The supply chain contains the farmer, the butcher, and the delivery service. After the customer has received his meats, 
 all participants of the supply chain are automatically paid with the crowdfunding stake.
 
-For more details, see the report at [Report.pdf]().
+For more details, see the report at [Report.pdf](Report.pdf).
 
 ## Setup
 
