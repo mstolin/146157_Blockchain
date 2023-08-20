@@ -1,11 +1,11 @@
-# Project Name
+# Blockmeat
 
 - [Introduction](#introduction)
 - [Setup](#setup)
 - [Smart Contracts](#smart_contracts)
 - [Frontend](#frontend)
 
-This is a blockchain project. Description and name are WIP.
+This project was created as an exam requirements for the course Blockchain at the University of Trento.
 
 ## Introduction
 
@@ -16,7 +16,9 @@ crowdfunding was successfull, this means that all eatable/usable parts of the an
 starts automatically.
 
 The supply chain contains the farmer, the butcher, and the delivery service. After the customer has received his meats, 
-all participants of the supply chain are automatically paid with the crowdfunding stake. 
+all participants of the supply chain are automatically paid with the crowdfunding stake.
+
+For more details, see the report at [Report.pdf]().
 
 ## Setup
 
@@ -74,7 +76,8 @@ cd ganache/
 
 After the smart contracts have been tested successfully. You can migrate them to the debug ganache blockchain. First,
 set up the debug blockchain as in [Start Ganache](#1-start-ganache). Then migrate the contracts using truffle. You can 
-see if everything was successful in the ganache output.
+see if everything was successful in the ganache output. Afterward, it is required to update the ABIs located at
+`frontend/src/assets/abi`.
 
 ```sh
 cd smart_contracts/
